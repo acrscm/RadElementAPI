@@ -1,0 +1,37 @@
+2018-09-14 12:56:26.335 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 12:58:13.973 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:25:44.607 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:27:58.310 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:29:42.038 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:32:04.480 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:33:36.967 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:36:25.775 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:40:10.926 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 13:40:52.754 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 15:18:27.588 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 15:19:38.182 -04:00 [Error] Failed to add record on db
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details. ---> MySql.Data.MySqlClient.MySqlException: Column 'valueType' cannot be null ---> MySql.Data.MySqlClient.MySqlException: Column 'valueType' cannot be null
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in C:\projects\mysqlconnector\src\MySqlConnector\Core\ResultSet.cs:line 42
+   --- End of inner exception stack trace ---
+   at MySql.Data.MySqlClient.MySqlDataReader.ActivateResultSet(ResultSet resultSet) in C:\projects\mysqlconnector\src\MySqlConnector\MySql.Data.MySqlClient\MySqlDataReader.cs:line 74
+   at MySql.Data.MySqlClient.MySqlDataReader.ReadFirstResultSetAsync(IOBehavior ioBehavior) in C:\projects\mysqlconnector\src\MySqlConnector\MySql.Data.MySqlClient\MySqlDataReader.cs:line 299
+   at MySql.Data.MySqlClient.MySqlDataReader.CreateAsync(MySqlCommand command, CommandBehavior behavior, ResultSetProtocol resultSetProtocol, IOBehavior ioBehavior) in C:\projects\mysqlconnector\src\MySqlConnector\MySql.Data.MySqlClient\MySqlDataReader.cs:line 284
+   at MySqlConnector.Core.TextCommandExecutor.ExecuteReaderAsync(String commandText, MySqlParameterCollection parameterCollection, CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextCommandExecutor.cs:line 37
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteDbDataReader(CommandBehavior behavior) in C:\projects\mysqlconnector\src\MySqlConnector\MySql.Data.MySqlClient\MySqlCommand.cs:line 252
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.Execute(IRelationalConnection connection, DbCommandMethod executeMethod, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.ExecuteReader(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(DbContext _, ValueTuple`2 parameters)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IReadOnlyList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at RadElementApi.Controllers.DatabaseController.AddElementToDB(DataElement data) in C:\Sujith\Work\Assist\RadElementApi\RadElementApi\Controllers\DatabaseController.cs:line 226
+   at RadElementApi.Controllers.DatabaseController.AddElementsAndCodestoDB(List`1 dataElements) in C:\Sujith\Work\Assist\RadElementApi\RadElementApi\Controllers\DatabaseController.cs:line 120
+   at RadElementApi.Controllers.DatabaseController.Post() in C:\Sujith\Work\Assist\RadElementApi\RadElementApi\Controllers\DatabaseController.cs:line 60
+2018-09-14 15:20:49.715 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 16:29:27.566 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-14 16:32:08.981 -04:00 [Warning] No output formatter was found for content type '""' to write the response.

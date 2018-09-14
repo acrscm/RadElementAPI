@@ -1,0 +1,28 @@
+2018-09-13 10:50:46.271 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 10:51:52.751 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 10:52:06.978 -04:00 [Error] An unhandled exception has occurred while executing the request
+System.IO.FileNotFoundException: Could not load file or assembly 'Dapper, Version=1.50.5.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
+File name: 'Dapper, Version=1.50.5.0, Culture=neutral, PublicKeyToken=null'
+   at Acr.Assist.Marval.Data.ModuleRepository.CheckIfModuleExists(ModuleIdDetails moduleIdDetails)
+   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)
+   at Acr.Assist.Marval.Data.ModuleRepository.CheckIfModuleExists(ModuleIdDetails moduleIdDetails)
+   at Acr.Assist.Marval.Service.ModuleService.GetModule(ModuleIdDetails moduleIdDetails) in C:\Sujith\Work\Assist\assistmarvalapi\Acr.Assist.Marval.Service\ModuleService.cs:line 35
+   at RadElementApi.Controllers.DatabaseController.Post() in C:\Sujith\Work\Assist\RadElementApi\RadElementApi\Controllers\DatabaseController.cs:line 49
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeNextActionFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Rethrow(ActionExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeInnerFilterAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeFilterPipelineAsync()
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.InvokeAsync()
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+
+
+2018-09-13 10:54:46.539 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 10:59:45.063 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 13:50:20.548 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 13:55:25.874 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 14:02:55.926 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
+2018-09-13 14:05:38.313 -04:00 [Warning] No output formatter was found for content type '""' to write the response.
