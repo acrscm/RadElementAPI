@@ -1,0 +1,94 @@
+<ReportingModule>
+  <Metadata>
+    <Label>Test_for_CDE-DSI</Label>
+    <ID>Test_for_CDE-DSI</ID>
+    <SchemaVersion>1.0</SchemaVersion>
+    <ModuleVersion>1.0</ModuleVersion>
+    <Info>
+      <Diagrams>
+        <Diagram
+          DisplaySequence="1">
+          <Location>keyimage.PNG</Location>
+          <Label>keyimage</Label>
+        </Diagram>
+      </Diagrams>
+      <Description>This module describes the Common Data elements and Macros forTest_for_CDE-DSI</Description>
+      <References>
+        <Citation
+          Url="http://radelement.org/"> CDE URL </Citation>
+        <Citation
+          Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">
+              CDE google sheet </Citation>
+      </References>
+      <Contact>
+        <Name>Sujith Nair</Name>
+        <Email>snair@acr.org</Email>
+        <Institution>American College of Radiology</Institution>
+      </Contact>
+    </Info>
+  </Metadata>
+  <DataElements>
+    <NumericDataElement
+      Id="diameter"
+      IsRequired="true"
+      DisplaySequence="1">
+      <Label>diameter</Label>
+      <Hint>asdasd</Hint>
+      <Diagrams>
+        <Diagram>
+          <Location>keyimage.PNG</Location>
+          <Label>keyimage.PNG</Label>
+        </Diagram>
+      </Diagrams>
+      <Maximum>30</Maximum>
+    </NumericDataElement>
+    <NumericDataElement
+      Id="ewfewtwet"
+      IsRequired="true"
+      DisplaySequence="2">
+      <Label>ewfewtwet</Label>
+      <Minimum>1</Minimum>
+      <Maximum>22</Maximum>
+    </NumericDataElement>
+    <ChoiceDataElement
+      Id="wqeqwe"
+      IsRequired="false"
+      DisplaySequence="3"
+      AllowFreetext="true">
+      <Label>wqeqwe</Label>
+      <ChoiceInfo>
+        <Choice>
+          <Value>1</Value>
+          <Label>1</Label>
+        </Choice>
+        <Choice>
+          <Value>2</Value>
+          <Label>2</Label>
+        </Choice>
+      </ChoiceInfo>
+    </ChoiceDataElement>
+  </DataElements>
+  <Rules>
+    <DecisionPoint
+      Id="macrodp">
+      <Label>Macro Banch</Label>
+      <Branch>
+        <EqualCondition
+          DataElementId="conditionConst"
+          ComparisonValue="10" />
+        <EndPointRef
+          EndPointId="macroEndpoint"></EndPointRef>
+      </Branch>
+    </DecisionPoint>
+  </Rules>
+  <EndPoints>
+    <EndPoint
+      Id="macroEndpoint">
+      <Label>A</Label>
+      <ReportTexts>
+        <ReportText
+          SectionId="findings">	Sample Report Text</ReportText>
+      </ReportTexts>
+    </EndPoint>
+  </EndPoints>
+</ReportingModule>

@@ -33,16 +33,16 @@
 
   <ItemGroup>
     <Reference Include="Acr.Assist.Marval.Core">
-      <HintPath>..\..\assistmarvalapi\Acr.Assist.Marval.Core\bin\Debug\netcoreapp2.1\Acr.Assist.Marval.Core.dll</HintPath>
+      <HintPath>Lib\Acr.Assist.Marval.Core.dll</HintPath>
     </Reference>
     <Reference Include="Acr.Assist.Marval.Data">
-      <HintPath>..\..\assistmarvalapi\Acr.Assist.Marval.Data\bin\Debug\netcoreapp2.1\Acr.Assist.Marval.Data.dll</HintPath>
+      <HintPath>Lib\Acr.Assist.Marval.Data.dll</HintPath>
     </Reference>
     <Reference Include="Acr.Assist.Marval.Infrastructure">
-      <HintPath>..\..\assistmarvalapi\Acr.Assist.Marval.Infrastructure\bin\Debug\netcoreapp2.1\Acr.Assist.Marval.Infrastructure.dll</HintPath>
+      <HintPath>Lib\Acr.Assist.Marval.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Acr.Assist.Marval.Service">
-      <HintPath>..\..\assistmarvalapi\Acr.Assist.Marval.Service\bin\Debug\netcoreapp2.1\Acr.Assist.Marval.Service.dll</HintPath>
+      <HintPath>Lib\Acr.Assist.Marval.Service.dll</HintPath>
     </Reference>
   </ItemGroup>
 

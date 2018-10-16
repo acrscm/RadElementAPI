@@ -254,9 +254,7 @@
         
     	<ChoiceDataElement Id="thresholdgrowth" IsRequired="true" CdeId="RDE84" DisplaySequence="6">
             <Label>Threshold Growth</Label>
-    		<Hint>Increase in diameter of a mass compared to its baseline by a minimum of 5 mm AND depending on the time interval between examinations, by the following amounts:    			
-    			less than or equal to 6 months: >50% diameter increase 
-    		    greater than 6 months: >100% diameter increase
+    		<Hint>Increase in diameter of a mass compared to its baseline by a minimum of 5 mm AND depending on the time interval between examinations, by the following amounts: less than or equal to 6 months: >50% diameter increase greater than 6 months: >100% diameter increase
     		</Hint>
             <ChoiceInfo>
 			   <Choice>
