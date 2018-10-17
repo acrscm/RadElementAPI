@@ -1,5 +1,66 @@
-<ReportingModule><Metadata><Label>Hip Subsidence</Label><ID>Hip_Subsidence</ID><SchemaVersion>1.0</SchemaVersion><ModuleVersion>1.0</ModuleVersion><Info><Diagrams></Diagrams><Description>This module describes the Common Data elements and Macros forHip Subsidence</Description><References>
-              <Citation Url="http-//radelement.org/"> CDE URL </Citation>
-              <Citation Url="https-//docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">
+<ReportingModule>
+    <Metadata>
+        <Label>Hip Subsidence</Label>
+        <ID>Hip_Subsidence</ID>
+        <SchemaVersion>1.0</SchemaVersion>
+        <ModuleVersion>1.0</ModuleVersion>
+        <Info>
+            <Diagrams></Diagrams>
+            <Description>This module describes the Common Data elements and Macros forHip Subsidence</Description>
+            <References>
+                <Citation Url="http-//radelement.org/"> CDE URL </Citation>
+                <Citation Url="https-//docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">
               CDE google sheet </Citation>
-            </References><Contact><Name>Reviewer1 test</Name><Email>reviewer1@yopmail.com</Email><Institution>undefined</Institution></Contact> </Info></Metadata><DataElements><NumericDataElement Id="HipSubsidence" IsRequired="true" DisplaySequence="1"><Label>Hip Subsidence</Label><Hint>Measure the  amount of  subsidence. Alert if  subsidence  is greater than or equal to 10 mm</Hint><ChoiceInfo></ChoiceInfo><Minimum>0</Minimum><Maximum>30</Maximum></NumericDataElement><MultiChoiceDataElement Id="TotalHipArthroplastyStatus" DisplaySequence="2"><Label>Total Hip Arthroplasty Status</Label><Hint>Status of the total hip arthroplasty</Hint><ChoiceInfo><Choice><Value>0-Normal</Value><Label>0- Normal</Label></Choice><Choice><Value>1-Abnormal</Value><Label>1- Abnormal</Label></Choice><Choice><Value>2-Indeterminate</Value><Label>2- Indeterminate</Label></Choice></ChoiceInfo></MultiChoiceDataElement></DataElements> <Rules><DecisionPoint Id="macrodp">	<Label>Macro Banch</Label>	<Branch>		<EqualCondition DataElementId="conditionConst" ComparisonValue="10"/>		<EndPointRef EndPointId="macroEndpoint"></EndPointRef>	</Branch>	</DecisionPoint>	</Rules> <EndPoints><EndPoint Id="macroEndpoint"><Label>A</Label><ReportTexts><ReportText SectionId="findings">	Sample Report Text</ReportText></ReportTexts></EndPoint></EndPoints></ReportingModule>
+            </References>
+            <Contact>
+                <Name>Reviewer1 test</Name>
+                <Email>reviewer1@yopmail.com</Email>
+                <Institution>undefined</Institution>
+            </Contact>
+        </Info>
+    </Metadata>
+    <DataElements>
+        <NumericDataElement Id="HipSubsidence" IsRequired="true" DisplaySequence="1">
+            <Label>Hip Subsidence</Label>
+            <Hint>Measure the  amount of  subsidence. Alert if  subsidence  is greater than or equal to 10 mm</Hint>
+            <ChoiceInfo></ChoiceInfo>
+            <Minimum>0</Minimum>
+            <Maximum>30</Maximum>
+        </NumericDataElement>
+        <MultiChoiceDataElement Id="TotalHipArthroplastyStatus" DisplaySequence="2">
+            <Label>Total Hip Arthroplasty Status</Label>
+            <Hint>Status of the total hip arthroplasty</Hint>
+            <ChoiceInfo>
+                <Choice>
+                    <Value>0-Unknown</Value>
+                    <Label>0-Unknown</Label>
+                </Choice>
+                <Choice>
+                    <Value>1-Present</Value>
+                    <Label>1-Present</Label>
+                </Choice>
+                <Choice>
+                    <Value>2-Absent</Value>
+                    <Label>2-Absent</Label>
+                </Choice>
+            </ChoiceInfo>
+        </MultiChoiceDataElement>
+    </DataElements>
+    <Rules>
+        <DecisionPoint Id="macrodp">
+            <Label>Macro Banch</Label>
+            <Branch>
+                <EqualCondition DataElementId="conditionConst" ComparisonValue="10"/>
+                <EndPointRef EndPointId="macroEndpoint"></EndPointRef>
+            </Branch>
+        </DecisionPoint>
+    </Rules>
+    <EndPoints>
+        <EndPoint Id="macroEndpoint">
+            <Label>A</Label>
+            <ReportTexts>
+                <ReportText SectionId="findings">	Sample Report Text</ReportText>
+            </ReportTexts>
+        </EndPoint>
+    </EndPoints>
+</ReportingModule>
