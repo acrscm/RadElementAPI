@@ -7,55 +7,38 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forPeriprosthetic Hip Fracture</Description>
+         <Description>This module describes the common data elements for periprosthetic hip fracture use case.</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Munib Sana, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="Periprostheticfracture" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="Periprostheticfracture" IsRequired="true" DisplaySequence="1">
          <Label>Periprosthetic fracture</Label>
          <Hint>Detect if periprosthetic fracture is present</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Fracturepresent</Value>
-               <Label>1-Fracture present</Label>
+               <Value>1Fracturepresent</Value>
+               <Label>1 Fracture present</Label>
             </Choice>
             <Choice>
-               <Value>2-Fractureabsent</Value>
-               <Label>2-Fracture absent</Label>
+               <Value>2Fractureabsent</Value>
+               <Label>2 Fracture absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="Totalhiparthroplastystatus" DisplaySequence="2">
-         <Label>Total hip arthroplasty status</Label>
-         <Hint>Status of the total hip arthroplasty</Hint>
-         <ChoiceInfo>
-            <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
-            </Choice>
-            <Choice>
-               <Value>1-Normal</Value>
-               <Label>1-Normal</Label>
-            </Choice>
-            <Choice>
-               <Value>2-Abnormal</Value>
-               <Label>2-Abnormal</Label>
-            </Choice>
-         </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
+  
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

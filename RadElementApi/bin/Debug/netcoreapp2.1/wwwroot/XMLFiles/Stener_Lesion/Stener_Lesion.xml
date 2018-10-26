@@ -6,7 +6,7 @@
     <ModuleVersion>1.0</ModuleVersion>
     <Info>
       <Diagrams></Diagrams>
-      <Description>This module describes the Common Data elements and Macros forStener_Lesion</Description>
+      <Description>This module describes the common data elements for stener lesion use case.</Description>
       <References>
         <Citation
           Url="http://radelement.org/"> CDE URL </Citation>
@@ -15,8 +15,8 @@
               CDE google sheet </Citation>
       </References>
       <Contact>
-        <Name>Reviewer1 test</Name>
-        <Email>reviewer1@yopmail.com</Email>
+        <Name>Woojin Kim, MD</Name>
+        <Email>DSIUseCases@acr.org</Email>
         <Institution>American College of Radiology</Institution>
       </Contact>
     </Info>
@@ -30,16 +30,20 @@
       <Hint>If UCL is abnormal, determine the UCL tear type</Hint>
       <ChoiceInfo>
         <Choice>
-          <Value>0-Unknown</Value>
-          <Label>0-Unknown</Label>
+          <Value>0Unknown</Value>
+          <Label>0 Unknown</Label>
         </Choice>
         <Choice>
-          <Value>1-Partialtear</Value>
-          <Label>1-Partial tear</Label>
+          <Value>1Partialtear</Value>
+          <Label>1 Partial tear</Label>
+        </Choice>
+		<Choice>
+          <Value>2Full-thickness tear</Value>
+          <Label>2 Full-thickness tear</Label>
         </Choice>
       </ChoiceInfo>
     </ChoiceDataElement>
-    <MultiChoiceDataElement
+    <ChoiceDataElement
       Id="UCLStatus"
       IsRequired="true"
       DisplaySequence="3">
@@ -47,20 +51,20 @@
       <Hint>Determine the status of the UCL</Hint>
       <ChoiceInfo>
         <Choice>
-          <Value>0-Unknown</Value>
-          <Label>0-Unknown</Label>
+          <Value>0Unknown</Value>
+          <Label>0 Unknown</Label>
         </Choice>
         <Choice>
-          <Value>1-Normal</Value>
-          <Label>1-Normal</Label>
+          <Value>1Normal</Value>
+          <Label>1 Normal</Label>
         </Choice>
         <Choice>
-          <Value>2-Abnormal</Value>
-          <Label>2-Abnormal</Label>
+          <Value>2Abnormal</Value>
+          <Label>2 Abnormal</Label>
         </Choice>
       </ChoiceInfo>
-    </MultiChoiceDataElement>
-    <MultiChoiceDataElement
+    </ChoiceDataElement>
+    <ChoiceDataElement
       Id="Stenerlesiondetection"
       IsRequired="true"
       DisplaySequence="3">
@@ -68,19 +72,19 @@
       <Hint>If UCL is abnormal, detect the presence of a Stener lesion</Hint>
       <ChoiceInfo>
         <Choice>
-          <Value>0-Unknown</Value>
-          <Label>0-Unknown</Label>
+          <Value>0Unknown</Value>
+          <Label>0 Unknown</Label>
         </Choice>
         <Choice>
-          <Value>1-StenerLesionPresent</Value>
-          <Label>1-Stener lesion present</Label>
+          <Value>1StenerLesionPresent</Value>
+          <Label>1 Stener lesion present</Label>
         </Choice>
         <Choice>
-          <Value>2-StenerLesionAbsent</Value>
-          <Label>2-Stener lesion absent</Label>
+          <Value>2StenerLesionAbsent</Value>
+          <Label>2 Stener lesion absent</Label>
         </Choice>
       </ChoiceInfo>
-    </MultiChoiceDataElement>
+    </ChoiceDataElement>
   </DataElements>
   <Rules>
     <DecisionPoint

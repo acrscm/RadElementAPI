@@ -7,37 +7,37 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forTrauma Fracture</Description>
+         <Description>This module describes the common data elements for trauma fracture use case.</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Dan Chernoff, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="FractureDetection" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="FractureDetection" IsRequired="true" DisplaySequence="1">
          <Label>Fracture Detection</Label>
          <Hint>Detect the presence of a fracture</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Fracture</Value>
-               <Label>1-Fracture</Label>
+               <Value>1Fracture</Value>
+               <Label>1 Fracture</Label>
             </Choice>
             <Choice>
-               <Value>2-NoFracture</Value>
-               <Label>2-No Fracture</Label>
+               <Value>2NoFracture</Value>
+               <Label>2 No Fracture</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

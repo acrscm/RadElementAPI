@@ -7,14 +7,14 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forOsteochondritis Dissecans</Description>
+         <Description>This module describes the common data elements for osteochondritis dissecans use case.</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Munib Sana, MD</Name>
+            <Email>DSIUseCase@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
@@ -44,42 +44,42 @@
          <Minimum>0</Minimum>
          <Maximum>1</Maximum>
       </NumericDataElement>
-      <MultiChoiceDataElement Id="Integrityofoverlyingcartilage" DisplaySequence="5">
+      <ChoiceDataElement Id="Integrityofoverlyingcartilage" DisplaySequence="5">
          <Label>Integrity of overlying cartilage</Label>
          <Hint>Disruption of the cartilage surface</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Focalbreaks</Value>
-               <Label>1-Focal breaks</Label>
+               <Value>1Focalbreaks</Value>
+               <Label>1 Focal breaks</Label>
             </Choice>
             <Choice>
-               <Value>2-Incongruity</Value>
-               <Label>2-Incongruity</Label>
+               <Value>2Incongruity</Value>
+               <Label>2 Incongruity</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="Integrityofsubchondralboneplate" DisplaySequence="6">
+      </ChoiceDataElement>
+      <ChoiceDataElement Id="Integrityofsubchondralboneplate" DisplaySequence="6">
          <Label>Integrity of subchondral bone plate</Label>
          <Hint>Disruption of the cartilage surface</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Focalbreaks</Value>
-               <Label>1-Focal breaks</Label>
+               <Value>1Focalbreaks</Value>
+               <Label>1 Focal breaks</Label>
             </Choice>
             <Choice>
-               <Value>2-Incongruity</Value>
-               <Label>2-Incongruity</Label>
+               <Value>2Incongruity</Value>
+               <Label>2 Incongruity</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

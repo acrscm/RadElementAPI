@@ -7,14 +7,14 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forLeft Ventricular Late Gadolinium Enhancement Assessment for MR</Description>
+         <Description>This module describes the common data elements for left ventricular late gadolinium enhancement assessment for MR use case.</Description>
          <References>
             <Citation Url="http-//radelement.org/">CDE URL</Citation>
             <Citation Url="https-//docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Akos Szemes, MD, PhD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
@@ -25,80 +25,80 @@
          <Hint>Number of  segments with LGE based on the AHA model</Hint>
          <ChoiceInfo />
       </NumericDataElement>
-      <MultiChoiceDataElement Id="ListofSegmentswithLGE" IsRequired="true" DisplaySequence="2">
+      <ChoiceDataElement Id="ListofSegmentswithLGE" IsRequired="true" DisplaySequence="2">
          <Label>List of Segments with LGE</Label>
          <Hint>List of segments with LGE (displayed on polar map). Segmentation value according to AHA segmentation</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>1-Basalanterior</Value>
-               <Label>1- Basal anterior</Label>
+               <Value>1Basalanterior</Value>
+               <Label>1 Basal anterior</Label>
             </Choice>
             <Choice>
-               <Value>2-Basalanteroseptal</Value>
-               <Label>2- Basal anteroseptal</Label>
+               <Value>2Basalanteroseptal</Value>
+               <Label>2 Basal anteroseptal</Label>
             </Choice>
             <Choice>
-               <Value>3-Basalinferoseptal</Value>
-               <Label>3- Basal inferoseptal</Label>
+               <Value>3Basalinferoseptal</Value>
+               <Label>3 Basal inferoseptal</Label>
             </Choice>
             <Choice>
-               <Value>4-Basalinferior</Value>
-               <Label>4- Basal inferior</Label>
+               <Value>4Basalinferior</Value>
+               <Label>4 Basal inferior</Label>
             </Choice>
             <Choice>
-               <Value>5-Basalinferolateral</Value>
-               <Label>5- Basal inferolateral</Label>
+               <Value>5Basalinferolateral</Value>
+               <Label>5 Basal inferolateral</Label>
             </Choice>
             <Choice>
-               <Value>6-Basalanterolateral</Value>
-               <Label>6- Basal anterolateral</Label>
+               <Value>6Basalanterolateral</Value>
+               <Label>6 Basal anterolateral</Label>
             </Choice>
             <Choice>
-               <Value>7-Midanterior</Value>
-               <Label>7- Mid anterior</Label>
+               <Value>7Midanterior</Value>
+               <Label>7 Mid anterior</Label>
             </Choice>
             <Choice>
-               <Value>8-Midanteroseptal</Value>
-               <Label>8- Mid anteroseptal</Label>
+               <Value>8Midanteroseptal</Value>
+               <Label>8 Mid anteroseptal</Label>
             </Choice>
             <Choice>
-               <Value>9-Midinferoseptal</Value>
-               <Label>9- Mid inferoseptal</Label>
+               <Value>9Midinferoseptal</Value>
+               <Label>9 Mid inferoseptal</Label>
             </Choice>
             <Choice>
-               <Value>10-Midinferior</Value>
-               <Label>10- Mid inferior</Label>
+               <Value>10Midinferior</Value>
+               <Label>10 Mid inferior</Label>
             </Choice>
             <Choice>
-               <Value>11-Midinferolateral</Value>
-               <Label>11- Mid inferolateral</Label>
+               <Value>11Midinferolateral</Value>
+               <Label>11 Mid inferolateral</Label>
             </Choice>
             <Choice>
-               <Value>12-Midanterolateral</Value>
-               <Label>12- Mid anterolateral</Label>
+               <Value>12Midanterolateral</Value>
+               <Label>12 Mid anterolateral</Label>
             </Choice>
             <Choice>
-               <Value>13-Apicalanterior</Value>
-               <Label>13- Apical anterior</Label>
+               <Value>13Apicalanterior</Value>
+               <Label>13 Apical anterior</Label>
             </Choice>
             <Choice>
-               <Value>14-Apicalseptal</Value>
-               <Label>14- Apical septal</Label>
+               <Value>14Apicalseptal</Value>
+               <Label>14 Apical septal</Label>
             </Choice>
             <Choice>
-               <Value>15-Apicalinferior</Value>
-               <Label>15- Apical inferior</Label>
+               <Value>15Apicalinferior</Value>
+               <Label>15 Apical inferior</Label>
             </Choice>
             <Choice>
-               <Value>16-Apicallateral</Value>
-               <Label>16- Apical lateral</Label>
+               <Value>16Apicallateral</Value>
+               <Label>16 Apical lateral</Label>
             </Choice>
             <Choice>
-               <Value>17-Apex</Value>
-               <Label>17- Apex</Label>
+               <Value>17Apex</Value>
+               <Label>17 Apex</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
       <NumericDataElement Id="TransmuralityofLGE" IsRequired="true" DisplaySequence="3">
          <Label>Transmurality of LGE</Label>
          <Hint>Transmurality of LGE in each segment (displayed on polar map) in %</Hint>

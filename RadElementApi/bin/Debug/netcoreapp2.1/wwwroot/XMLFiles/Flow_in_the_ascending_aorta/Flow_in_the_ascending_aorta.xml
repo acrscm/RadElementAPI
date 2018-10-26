@@ -7,14 +7,14 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forFlow in the ascending aorta</Description>
+         <Description>This module describes the common data elements for flow in the ascending aorta use case</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Benoit Desjardins, MD, PhD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
@@ -30,24 +30,24 @@
          <Hint>Pressure of aortic flow (Pa)</Hint>
          <ChoiceInfo />
       </NumericDataElement>
-      <MultiChoiceDataElement Id="Presenceofaliasing" DisplaySequence="3">
+      <ChoiceDataElement Id="Presenceofaliasing" DisplaySequence="3">
          <Label>Presence of aliasing</Label>
          <Hint>Presence of aliasing</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0- Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Aliasingpresent</Value>
-               <Label>1-Aliasing present</Label>
+               <Value>1Aliasingpresent</Value>
+               <Label>1 Aliasing present</Label>
             </Choice>
             <Choice>
-               <Value>2-Aliasingabsent</Value>
-               <Label>2-Aliasing absent</Label>
+               <Value>2Aliasingabsent</Value>
+               <Label>2 Aliasing absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

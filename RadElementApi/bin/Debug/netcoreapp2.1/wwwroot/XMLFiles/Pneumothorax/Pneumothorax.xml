@@ -7,96 +7,96 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forPneumothorax.</Description>
+         <Description>This module describes the common data elements for pneumothorax use case.</Description>
          <References>
             <Citation Url="http-//radelement.org/">CDE URL</Citation>
             <Citation Url="https-//docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Eric J. Stern, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="PneumothoraxDetection" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="PneumothoraxDetection" IsRequired="true" DisplaySequence="1">
          <Label>Pneumothorax Detection</Label>
          <Hint>Detection of pneumothorax</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Pneumothoraxpresent</Value>
-               <Label>1-Pneumothorax present</Label>
+               <Value>1Pneumothoraxpresent</Value>
+               <Label>1 Pneumothorax present</Label>
             </Choice>
             <Choice>
-               <Value>2-Pneumothoraxabsent</Value>
-               <Label>2-Pneumothorax absent</Label>
+               <Value>2Pneumothoraxabsent</Value>
+               <Label>2 Pneumothorax absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
       <NumericDataElement Id="PleuralSeparation" DisplaySequence="2">
          <Label>Pleural Separation</Label>
          <Hint>Measure pleural separation in mm</Hint>
          <ChoiceInfo />
       </NumericDataElement>
-      <MultiChoiceDataElement Id="PneumothoraxSide" DisplaySequence="3">
+      <ChoiceDataElement Id="PneumothoraxSide" DisplaySequence="3">
          <Label>Pneumothorax Side</Label>
          <Hint>Defines the side of pneumothorax when present</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Rightsidepneumothorax</Value>
-               <Label>0- Right side pneumothorax</Label>
+               <Value>0Rightsidepneumothorax</Value>
+               <Label>0 Right side pneumothorax</Label>
             </Choice>
             <Choice>
-               <Value>1-Leftsidepneumothorax</Value>
-               <Label>1- Left side pneumothorax</Label>
+               <Value>1Leftsidepneumothorax</Value>
+               <Label>1 Left side pneumothorax</Label>
             </Choice>
             <Choice>
-               <Value>2-Bilateralpneumothorax</Value>
-               <Label>2- Bilateral pneumothorax</Label>
+               <Value>2Bilateralpneumothorax</Value>
+               <Label>2 Bilateral pneumothorax</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="PneumothoraxSize" DisplaySequence="4">
+      </ChoiceDataElement>
+      <ChoiceDataElement Id="PneumothoraxSize" DisplaySequence="4">
          <Label>Pneumothorax Size</Label>
          <Hint>Classify  the sizeof  pneumothorax(or  pneumothoraces)as  a  function  of interpleural distance. Launch if pneumothorax is detected.</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Smallpneumothorax</Value>
-               <Label>0- Small pneumothorax</Label>
+               <Value>0Smallpneumothorax</Value>
+               <Label>0 Small pneumothorax</Label>
             </Choice>
             <Choice>
-               <Value>1-Moderatepneumothorax</Value>
-               <Label>1- Moderate pneumothorax</Label>
+               <Value>1Moderatepneumothorax</Value>
+               <Label>1 Moderate pneumothorax</Label>
             </Choice>
             <Choice>
-               <Value>2-Largepneumothorax</Value>
-               <Label>2- Large pneumothorax</Label>
+               <Value>2Largepneumothorax</Value>
+               <Label>2 Large pneumothorax</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="ChestTube" DisplaySequence="5">
+      </ChoiceDataElement>
+      <ChoiceDataElement Id="ChestTube" DisplaySequence="5">
          <Label>Chest Tube</Label>
          <Hint>Detect the presence of chest tube(s)</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Tube(s)present</Value>
-               <Label>1-Tube(s) present</Label>
+               <Value>1Tube(s)present</Value>
+               <Label>1 Tube(s) present</Label>
             </Choice>
             <Choice>
-               <Value>2-Tubeabsent</Value>
-               <Label>2-Tube absent</Label>
+               <Value>2Tubeabsent</Value>
+               <Label>2 Tube absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

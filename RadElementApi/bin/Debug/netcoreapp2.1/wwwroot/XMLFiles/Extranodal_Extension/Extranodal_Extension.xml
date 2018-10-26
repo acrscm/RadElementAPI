@@ -7,14 +7,14 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forExtranodal Extension</Description>
+         <Description>This module describes the common data elements for extranodal extension use case</Description>
          <References>
             <Citation Url="http-//radelement.org/">CDE URL</Citation>
             <Citation Url="https-//docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Reid F. Thompson, MD, PhD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
@@ -22,27 +22,27 @@
    <DataElements>
       <NumericDataElement Id="LymphNodeIdentification" IsRequired="true" DisplaySequence="1">
          <Label>Lymph Node Identification</Label>
-         <Hint>Detect and delineate visiblelymph nodes, 3D structure coordinates</Hint>
+         <Hint>Detect and delineate visible lymph nodes, 3D structure coordinates</Hint>
          <ChoiceInfo />
       </NumericDataElement>
-      <MultiChoiceDataElement Id="LymphNodeClassification" IsRequired="true" DisplaySequence="2">
+      <ChoiceDataElement Id="LymphNodeClassification" IsRequired="true" DisplaySequence="2">
          <Label>Lymph Node Classification</Label>
-         <Hint>Classify individual  lymph  nodesas  radiographically  normal,  involved  by cancer, or indeterminate</Hint>
+         <Hint>Classify individual  lymph  nodes as  radiographically  normal,  involved  by cancer, or indeterminate</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0- Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Radiographicallynormal</Value>
-               <Label>1- Radiographically normal</Label>
+               <Value>1Radiographicallynormal</Value>
+               <Label>1 Radiographically normal</Label>
             </Choice>
             <Choice>
-               <Value>2-Involvedbycancer</Value>
-               <Label>2- Involved by cancer</Label>
+               <Value>2Involvedbycancer</Value>
+               <Label>2 Involved by cancer</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

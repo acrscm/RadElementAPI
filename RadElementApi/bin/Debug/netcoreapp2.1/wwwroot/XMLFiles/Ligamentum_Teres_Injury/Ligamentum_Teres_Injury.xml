@@ -7,59 +7,59 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forLigamentum Teres Injury</Description>
+         <Description>This module describes the common data elements for ligamentum teres injury use case.</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Woojin Kim, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="Ligamentumteresstatus" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="Ligamentumteresstatus" IsRequired="true" DisplaySequence="1">
          <Label>Ligamentum teres status</Label>
          <Hint>Status of the LT</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Normal</Value>
-               <Label>1-Normal</Label>
+               <Value>1Normal</Value>
+               <Label>1 Normal</Label>
             </Choice>
             <Choice>
-               <Value>2-Abnormal</Value>
-               <Label>2-Abnormal</Label>
+               <Value>2Abnormal</Value>
+               <Label>2 Abnormal</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="LigamentumTeresAbnormalityClassification" DisplaySequence="2">
+      </ChoiceDataElement>
+      <ChoiceDataElement Id="LigamentumTeresAbnormalityClassification" DisplaySequence="2">
          <Label>Ligamentum Teres Abnormality Classification</Label>
          <Hint>If LT is abnormal, classify the injury</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Tendinopathy</Value>
-               <Label>1-Tendinopathy</Label>
+               <Value>1Tendinopathy</Value>
+               <Label>1 Tendinopathy</Label>
             </Choice>
             <Choice>
-               <Value>2-Partialtear</Value>
-               <Label>2-Partial tear</Label>
+               <Value>2Partialtear</Value>
+               <Label>2 Partial tear</Label>
             </Choice>
             <Choice>
-               <Value>3-Full-thicknesstear</Value>
-               <Label>3-Full-thickness tear</Label>
+               <Value>3Full-thicknesstear</Value>
+               <Label>3 Full-thickness tear</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

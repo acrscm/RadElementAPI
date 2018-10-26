@@ -7,37 +7,37 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forAccessory Muscles Causing Neurovascular Compromise</Description>
+         <Description>This module describes common data elements for accessory muscles causing neurovascular compromise use case.</Description>
          <References>
-            <Citation Url="http-//radelement.org/">CDE URL</Citation>
-            <Citation Url="https-//docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
+            <Citation Url="http://radelement.org/">CDE URL</Citation>
+            <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Munib Sana, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="AccessoryMuscle" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="AccessoryMuscle" IsRequired="true" DisplaySequence="1">
          <Label>Accessory Muscle</Label>
          <Hint>Presence of accessory muscle</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0- Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Present</Value>
-               <Label>1- Present</Label>
+               <Value>1Present</Value>
+               <Label>1 Present</Label>
             </Choice>
             <Choice>
-               <Value>2-Absent</Value>
-               <Label>2- Absent</Label>
+               <Value>2Absent</Value>
+               <Label>2 Absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

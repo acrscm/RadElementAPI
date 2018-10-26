@@ -7,37 +7,37 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forClassifying Suspicious Microcalcifications</Description>
+         <Description>This module describes the common data elements for classifying suspicious microcalcifications use case</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Christoph Lee, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="SuspiciousMicrocalcificationDetection" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="SuspiciousMicrocalcificationDetection" IsRequired="true" DisplaySequence="1">
          <Label>Suspicious Microcalcification Detection</Label>
          <Hint>Identify suspicious microcalcifications</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0- Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Suspiciousmicrocalcificationpresent</Value>
-               <Label>1- Suspicious microcalcification present</Label>
+               <Value>1Suspiciousmicrocalcificationpresent</Value>
+               <Label>1 Suspicious microcalcification present</Label>
             </Choice>
             <Choice>
-               <Value>2-Suspiciousmicrocalcificationabsent</Value>
-               <Label>2- Suspicious microcalcification absent</Label>
+               <Value>2Suspiciousmicrocalcificationabsent</Value>
+               <Label>2 Suspicious microcalcification absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
       <NumericDataElement Id="ProbabilityOfMalignantMicrocalcification" IsRequired="true" DisplaySequence="2">
          <Label>Probability Of Malignant Microcalcification</Label>
          <Hint>For a selected microcalcification, identify the probability of malignancy ( 0-benign, 1-malignant)</Hint>

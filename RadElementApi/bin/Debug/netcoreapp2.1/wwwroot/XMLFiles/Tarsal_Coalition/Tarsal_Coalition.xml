@@ -7,89 +7,89 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forTarsal Coalition</Description>
+         <Description>This module describes the common data elements for tarsal coalition use case.</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Jay Patti, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
    </Metadata>
    <DataElements>
-      <MultiChoiceDataElement Id="TarsalCoalitiondetection" IsRequired="true" DisplaySequence="1">
+      <ChoiceDataElement Id="TarsalCoalitiondetection" IsRequired="true" DisplaySequence="1">
          <Label>Tarsal Coalition detection</Label>
          <Hint>The presence of tarsal coalition</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-TarsalCoalitionPresent</Value>
-               <Label>1-Tarsal coalition present</Label>
+               <Value>1TarsalCoalitionPresent</Value>
+               <Label>1 Tarsal coalition present</Label>
             </Choice>
             <Choice>
-               <Value>2-TarsalCoalitionAbsent</Value>
-               <Label>2-Tarsal coalition absent</Label>
+               <Value>2TarsalCoalitionAbsent</Value>
+               <Label>2 Tarsal coalition absent</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="TarsalCoalitioncharacterization" DisplaySequence="2">
+      </ChoiceDataElement>
+      <ChoiceDataElement Id="TarsalCoalitioncharacterization" DisplaySequence="2">
          <Label>Tarsal Coalition characterization</Label>
          <Hint>If tarsal coalition exists, characterize the coalition</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Osseous</Value>
-               <Label>1-Osseous</Label>
+               <Value>1Osseous</Value>
+               <Label>1 Osseous</Label>
             </Choice>
             <Choice>
-               <Value>2-Fibrous</Value>
-               <Label>2-Fibrous</Label>
+               <Value>2Fibrous</Value>
+               <Label>2 Fibrous</Label>
             </Choice>
             <Choice>
-               <Value>3-Cartilaginous</Value>
-               <Label>3-Cartilaginous</Label>
+               <Value>3Cartilaginous</Value>
+               <Label>3 Cartilaginous</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
-      <MultiChoiceDataElement Id="TarsalCoalitionclassification" DisplaySequence="3">
+      </ChoiceDataElement>
+      <ChoiceDataElement Id="TarsalCoalitionclassification" DisplaySequence="3">
          <Label>Tarsal Coalition classification</Label>
          <Hint>If tarsal coalition exists, classify the type of coalition</Hint>
          <ChoiceInfo>
 			<Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
 			<Choice>
-               <Value>1-Calcaneonavicular</Value>
-               <Label>1-Calcaneonavicular</Label>
+               <Value>1Calcaneonavicular</Value>
+               <Label>1 Calcaneonavicular</Label>
             </Choice>
             <Choice>
-               <Value>2-Talocalcaneal</Value>
-               <Label>2-Talocalcaneal</Label>
+               <Value>2Talocalcaneal</Value>
+               <Label>2 Talocalcaneal</Label>
             </Choice>
             <Choice>
-               <Value>3-Calcaneicuboid</Value>
-               <Label>3-Calcaneicuboid</Label>
+               <Value>3Calcaneicuboid</Value>
+               <Label>3 Calcaneicuboid</Label>
             </Choice>
             <Choice>
-               <Value>4-Talonavicular</Value>
-               <Label>4-Talonavicular</Label>
+               <Value>4Talonavicular</Value>
+               <Label>4 Talonavicular</Label>
             </Choice>
             <Choice>
-               <Value>5-Cubonavicular</Value>
-               <Label>5-Cubonavicular</Label>
+               <Value>5Cubonavicular</Value>
+               <Label>5 Cubonavicular</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">

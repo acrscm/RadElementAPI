@@ -6,7 +6,7 @@
     <ModuleVersion>1.0</ModuleVersion>
     <Info>
       <Diagrams></Diagrams>
-      <Description>This module describes the Common Data elements and Macros forMotor Cortex QSM</Description>
+      <Description>This module describes the common data elements for motor cortex QSM use case</Description>
       <References>
         <Citation
           Url="http://radelement.org/"> CDE URL </Citation>
@@ -15,8 +15,8 @@
               CDE google sheet </Citation>
       </References>
       <Contact>
-        <Name>Reviewer1 test</Name>
-        <Email>reviewer1@yopmail.com</Email>
+        <Name>Apostolos John Tsiouris, MD</Name>
+        <Email>DSIUseCases@acr.org</Email>
         <Institution>American College of Radiology</Institution>
       </Contact>
     </Info>

@@ -41,6 +41,8 @@ namespace RadElementApi.Controllers
 
                 List<string> cdeAssistModules = new List<string>()
                 {
+
+
                     "80785026-5023-40F2-BDA2-5BB2F17DF169" , // Accessory_Muscles_Causing_Neurovascular_Compromise
                     "BD9C136D-2008-4FDF-865A-8798C7F81017", //Acute_Appendicitis
                     "DEFF53AC-6F08-4788-90DF-029C0267AFB6" , //Cardiomegaly
@@ -88,13 +90,13 @@ namespace RadElementApi.Controllers
                     "AC64649E-23C8-4048-97B3-5B0BD3A9CED0", // Pulmonary Artery Diameter
                     "DC3520CF-2F67-41C9-915F-237920FDDE2B",//Pulmonary artery to aortic diameter ratio
                     "E9BCFBF5-83C2-4AC0-A22A-2BAB8082B0F2", // Pulmonary to Systemic Flow Ratio
-                    "8A6D5229-ED1A-4F37-A604-0874BC55AF07" // TAVR Aortic Root Measurements
+                    "8A6D5229-ED1A-4F37-A604-0874BC55AF07", // TAVR Aortic Root Measurements
+                    "543CD4DB-841C-4191-8D55-A45B1E3A5342",
+                    "8770B9EF-C512-4AD2-B7B8-DA0EE1BE6E33" // soft tissue tumor bed size change
+                };
 
 
-             };
 
-
-                
                 foreach (var cdeassistModule in cdeAssistModules)
                 {
 
@@ -114,7 +116,6 @@ namespace RadElementApi.Controllers
 
                 dbcontext.Dispose();
 
-
             }
             catch (Exception ex)
             {
@@ -126,12 +127,12 @@ namespace RadElementApi.Controllers
         private void AddElementSet(AssistModule cdemodule, List<uint> elementIds)
         {
             LoggerInstance.Log(LogLevel.Debug, cdemodule.ModuleId + ", " + cdemodule.ModuleName);
-                    Elementset set = new Elementset()
+            Elementset set = new Elementset()
             {
-                Name = cdemodule.ModuleName,
+                Name = cdemodule.ModuleName.Replace("_", " "),
                 Description = cdemodule.MetaData.Info.Description,
-                Url  = "https://assist.acr.org/marval/",
-                ContactName = "Adam Flanders, MD", //TODO : change to contact under metadata
+                Url = "https://acrdsi.org/",
+                ContactName = cdemodule.MetaData.Info.Contact.Name, //TODO : change to contact under metadata
                 Email = cdemodule.MetaData.Info.Contact.Email
             };
 
@@ -171,7 +172,7 @@ namespace RadElementApi.Controllers
                 uint elementId = AddElementToDB(dataElement);
 
                 // Add code to db
-               // AddCodeToDB( dataElement, elementId);
+                // AddCodeToDB( dataElement, elementId);
 
                 elementIds.Add(elementId);
 
@@ -181,9 +182,9 @@ namespace RadElementApi.Controllers
 
         }
 
-        private void AddCodeToDB( DataElement dataElement, uint elementId)
+        private void AddCodeToDB(DataElement dataElement, uint elementId)
         {
-           
+
             Code code = new Code()
             {
                 AccessionDate = DateTime.Now,
@@ -216,13 +217,13 @@ namespace RadElementApi.Controllers
             {
                 Name = data.Label,
                 ShortName = "",
-                Definition = data.Label,
+                Definition = data.HintText,
                 MaxCardinality = 1,
                 MinCardinality = 1,
-                Source = "CAR/DS Neuro CDE",
-                Status = "Active",
+                Source = "DSI TOUCH-AI",
+                Status = "Proposed",
                 StatusDate = DateTime.Now,
-                Editor = "adam",
+                Editor = "",
                 Instructions = "",
                 Question = data.Label,
                 References = "",
@@ -232,6 +233,18 @@ namespace RadElementApi.Controllers
                 ValueSize = 0,
                 Unit = ""
             };
+
+            //switch (data.DataElementType)
+            //{
+            //    case "Multi choice":
+            //        break;
+            //    case "Integer":
+            //        break;
+            //    case "choice":
+            //        break;
+            //    case "numeric":
+            //        break;
+            //}
 
             if (data is IntegerElement)
             {
@@ -243,21 +256,22 @@ namespace RadElementApi.Controllers
             }
 
 
-            if (data is ChoiceElement)
+            if (data.DataElementType == "Choice")
             {
                 ChoiceElement choiceElement = data as ChoiceElement;
                 element.ValueType = "valueSet";
                 element.ValueSet = GetValueSet(choiceElement.Options);
             }
 
-            if (data is MultipleChoiceElement)
+            if (data.DataElementType == "Multi Choice")
             {
                 MultipleChoiceElement choiceElement = data as MultipleChoiceElement;
                 element.ValueType = "valueSet";
+                element.MaxCardinality = (short)choiceElement.Options.Count;
                 element.ValueSet = GetValueSet(choiceElement.Options);
             }
 
-           
+
 
             if (data is NumericElement)
             {
@@ -284,16 +298,16 @@ namespace RadElementApi.Controllers
             dbcontext.SaveChanges();
 
 
-            if (data is ChoiceElement)
+            if (data.DataElementType == "Multi choice")
             {
-                ChoiceElement choiceElement = data as ChoiceElement;
+                MultipleChoiceElement choiceElement = data as MultipleChoiceElement;
                 AddElementValues(choiceElement.Options, element.Id);
 
             }
 
-            if (data is MultipleChoiceElement)
+            if (data.DataElementType == "Choice")
             {
-                MultipleChoiceElement choiceElement = data as MultipleChoiceElement;
+                ChoiceElement choiceElement = data as ChoiceElement;
                 AddElementValues(choiceElement.Options, element.Id);
 
             }

@@ -7,14 +7,14 @@
       <ModuleVersion>1.0</ModuleVersion>
       <Info>
          <Diagrams />
-         <Description>This module describes the Common Data elements and Macros forMidline Shift</Description>
+         <Description>This module describes the common data elements for midline shift use case</Description>
          <References>
             <Citation Url="http://radelement.org/">CDE URL</Citation>
             <Citation Url="https://docs.google.com/spreadsheets/d/1mXqXAByeur3C5ud-wbLY2vggB29-nSxU5nYpoInGsK4/edit#gid=891834841">CDE google sheet</Citation>
          </References>
          <Contact>
-            <Name>Reviewer1 test</Name>
-            <Email>reviewer1@yopmail.com</Email>
+            <Name>Sumit Niogi, MD</Name>
+            <Email>DSIUseCases@acr.org</Email>
             <Institution>undefined</Institution>
          </Contact>
       </Info>
@@ -27,28 +27,28 @@
          <Minimum>0</Minimum>
          <Maximum>10</Maximum>
       </NumericDataElement>
-      <MultiChoiceDataElement Id="MidlineShiftDirection" DisplaySequence="2">
+      <ChoiceDataElement Id="MidlineShiftDirection" DisplaySequence="2">
          <Label>Midline Shift Direction</Label>
          <Hint>The direction of midline shift, if present.</Hint>
          <ChoiceInfo>
             <Choice>
-               <Value>0-Unknown</Value>
-               <Label>0-Unknown</Label>
+               <Value>0Unknown</Value>
+               <Label>0 Unknown</Label>
             </Choice>
             <Choice>
-               <Value>1-Nomidlineshift</Value>
-               <Label>1-No midline shift</Label>
+               <Value>1Nomidlineshift</Value>
+               <Label>1 No midline shift</Label>
             </Choice>
             <Choice>
-               <Value>2-Left</Value>
-               <Label>2-Left</Label>
+               <Value>2Left</Value>
+               <Label>2 Left</Label>
             </Choice>
             <Choice>
-               <Value>3-Right</Value>
-               <Label>3-Right</Label>
+               <Value>3Right</Value>
+               <Label>3 Right</Label>
             </Choice>
          </ChoiceInfo>
-      </MultiChoiceDataElement>
+      </ChoiceDataElement>
    </DataElements>
    <Rules>
       <DecisionPoint Id="macrodp">
