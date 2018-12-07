@@ -1,0 +1,11 @@
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\bin\Debug\netcoreapp2.0\RadElementApi.deps.json
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\bin\Debug\netcoreapp2.0\RadElementApi.runtimeconfig.json
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\bin\Debug\netcoreapp2.0\RadElementApi.runtimeconfig.dev.json
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\bin\Debug\netcoreapp2.0\RadElementApi.dll
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\bin\Debug\netcoreapp2.0\RadElementApi.pdb
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\obj\Debug\netcoreapp2.0\RadElementApi.csproj.CoreCompileInputs.cache
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\obj\Debug\netcoreapp2.0\RadElementApi.AssemblyInfoInputs.cache
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\obj\Debug\netcoreapp2.0\RadElementApi.AssemblyInfo.cs
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\obj\Debug\netcoreapp2.0\RadElementApi.dll
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\obj\Debug\netcoreapp2.0\RadElementApi.pdb
+C:\Sujith\Work\Assist\RadElementApi\RadElementApi\obj\Debug\netcoreapp2.0\RadElementApi.csprojAssemblyReference.cache
