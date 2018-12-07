@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acr.Assist.RadElement.API", "Acr.Assist.RadElement.API\Acr.Assist.RadElement.API.csproj", "{AFA335D3-D14B-4F50-B205-34E91A1B901E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acr.Assist.RadElement.Core", "Acr.Assist.RadElement.Core\Acr.Assist.RadElement.Core.csproj", "{F842A7BB-67F2-4BD0-A611-14E02DD17BF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acr.Assist.RadElement.Integrations", "Acr.Assist.RadElement.Integrations\Acr.Assist.RadElement.Integrations.csproj", "{B830117C-AA05-4929-9DBD-DF55318F9DE8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acr.Assist.RadElement.Service", "Acr.Assist.RadElement.Service\Acr.Assist.RadElement.Service.csproj", "{C7884175-67F7-4B95-ACDD-160793A8679D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acr.Assist.RadElement.Infrastructure", "Acr.Assist.RadElement.Infrastructure\Acr.Assist.RadElement.Infrastructure.csproj", "{1DCAD539-555C-47DD-9BBA-544E4501E1EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acr.Assist.RadElement.Data", "Acr.Assist.RadElement.Data\Acr.Assist.RadElement.Data.csproj", "{AC2078BB-2E7A-46D6-89C2-E5F2333D1123}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFA335D3-D14B-4F50-B205-34E91A1B901E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFA335D3-D14B-4F50-B205-34E91A1B901E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFA335D3-D14B-4F50-B205-34E91A1B901E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFA335D3-D14B-4F50-B205-34E91A1B901E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F842A7BB-67F2-4BD0-A611-14E02DD17BF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F842A7BB-67F2-4BD0-A611-14E02DD17BF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F842A7BB-67F2-4BD0-A611-14E02DD17BF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F842A7BB-67F2-4BD0-A611-14E02DD17BF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B830117C-AA05-4929-9DBD-DF55318F9DE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B830117C-AA05-4929-9DBD-DF55318F9DE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B830117C-AA05-4929-9DBD-DF55318F9DE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B830117C-AA05-4929-9DBD-DF55318F9DE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7884175-67F7-4B95-ACDD-160793A8679D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7884175-67F7-4B95-ACDD-160793A8679D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7884175-67F7-4B95-ACDD-160793A8679D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7884175-67F7-4B95-ACDD-160793A8679D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DCAD539-555C-47DD-9BBA-544E4501E1EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DCAD539-555C-47DD-9BBA-544E4501E1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DCAD539-555C-47DD-9BBA-544E4501E1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DCAD539-555C-47DD-9BBA-544E4501E1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC2078BB-2E7A-46D6-89C2-E5F2333D1123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC2078BB-2E7A-46D6-89C2-E5F2333D1123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC2078BB-2E7A-46D6-89C2-E5F2333D1123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC2078BB-2E7A-46D6-89C2-E5F2333D1123}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC1385F0-B419-45CF-836B-C6184EC79658}
+	EndGlobalSection
+EndGlobal
