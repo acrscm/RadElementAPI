@@ -26,7 +26,6 @@
     <ProjectReference Include="..\Acr.Assist.RadElement.Core\Acr.Assist.RadElement.Core.csproj" />
     <ProjectReference Include="..\Acr.Assist.RadElement.Data\Acr.Assist.RadElement.Data.csproj" />
     <ProjectReference Include="..\Acr.Assist.RadElement.Infrastructure\Acr.Assist.RadElement.Infrastructure.csproj" />
-    <ProjectReference Include="..\Acr.Assist.RadElement.Integrations\Acr.Assist.RadElement.Integrations.csproj" />
     <ProjectReference Include="..\Acr.Assist.RadElement.Service\Acr.Assist.RadElement.Service.csproj" />
   </ItemGroup>
 

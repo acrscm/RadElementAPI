@@ -1,8 +1,12 @@
-﻿namespace Acr.Assist.RadElement.Core.Domain
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace Acr.Assist.RadElement.Core.Domain
 {
     /// <summary>
     /// Gets or sets the Data element type
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum DataElementType
     {
         /// <summary>

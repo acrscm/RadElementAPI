@@ -1,11 +1,9 @@
 ﻿using System;
 using Acr.Assist.RadElement.Core.Data;
 using Acr.Assist.RadElement.Core.Infrastructure;
-using Acr.Assist.RadElement.Core.Integrations;
 using Acr.Assist.RadElement.Core.Services;
 using Acr.Assist.RadElement.Data;
 using Acr.Assist.RadElement.Infrastructure;
-using Acr.Assist.RadElement.Integrations;
 using Acr.Assist.RadElement.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,12 +47,12 @@ namespace Acr.Assist.RadElement.API
                 .CreateLogger();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<IConfigurationManager, ConfigurationManager>();
-            services.AddTransient<IRadElementService, RadElementService>();
+            services.AddTransient<IElementService, ElementService>();
+            services.AddTransient<IElementSetService, ElementSetService>();
+            services.AddTransient<IModuleService, ModuleService>();
             services.AddTransient<IRadElementDbContext, RadElementDbContext>();
             services.AddSingleton<ILogger>(Log.Logger);
-
-            services.AddTransient<IMarvalMicroService, MarvalMicroService>();
-
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc(Configuration["Version"], new Swashbuckle.AspNetCore.Swagger.Info { Title = Configuration["Title"], Version = Configuration["Version"] });

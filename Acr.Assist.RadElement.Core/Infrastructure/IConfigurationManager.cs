@@ -41,11 +41,6 @@ namespace Acr.Assist.RadElement.Core.Infrastructure
         string RootPath { get; }
 
         /// <summary>
-        /// Gets the email notification micro service URL.
-        /// </summary>
-        string MarvalMicroServiceUrl { get; }
-
-        /// <summary>
         /// Gets the access token.
         /// </summary>
         string AccessToken { get; }

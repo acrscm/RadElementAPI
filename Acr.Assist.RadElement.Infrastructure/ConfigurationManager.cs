@@ -25,9 +25,7 @@ namespace Acr.Assist.RadElement.Infrastructure
         public string SwaggerRoutePrefix => configuration["Environment:SwaggerRoutePrefix"];
 
         public string RootPath => AppDomain.CurrentDomain.BaseDirectory;
-
-        public string MarvalMicroServiceUrl => configuration["Integrations:MarvalService"];
-
+        
         public string AccessToken => configuration["AccessToken"];
     }
 }
