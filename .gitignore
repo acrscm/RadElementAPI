@@ -1,0 +1,12 @@
+Acr.Assist.RadElement.API/bin
+Acr.Assist.RadElement.API/Logs
+Acr.Assist.RadElement.API/obj
+Acr.Assist.RadElement.Core/bin
+Acr.Assist.RadElement.Core/obj
+Acr.Assist.RadElement.Data/obj
+Acr.Assist.RadElement.Data/bin/
+Acr.Assist.RadElement.Infrastructure/obj
+Acr.Assist.RadElement.Infrastructure/bin/
+Acr.Assist.RadElement.Service/obj
+Acr.Assist.RadElement.Service/bin/
+.vs

@@ -310,7 +310,7 @@ namespace Acr.Assist.RadElement.Service
                 ElementValue elementvalue = new ElementValue()
                 {
                     Name = option.Label,
-                    Value = option.Value,
+                    Value = option.Value.Length > 32 ? option.Value.Substring(0, 32) : option.Value,
                     Definition = option.Label,
                     ElementId = elementId,
                 };
