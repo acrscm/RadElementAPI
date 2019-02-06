@@ -21,11 +21,6 @@ namespace Acr.Assist.RadElement.Core.Infrastructure
         public string Audience { get; set; }
 
         /// <summary>
-        /// Gets or sets the expiry of token in minutes
-        /// </summary>
-        public int ExpiryInMinutes { get; set; }
-
-        /// <summary>
         /// Gets or sets the key file
         /// </summary>
         public string KeyFilePath { get; set; }
