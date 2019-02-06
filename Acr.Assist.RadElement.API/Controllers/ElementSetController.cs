@@ -2,14 +2,20 @@
 using Acr.Assist.RadElement.Core.Domain;
 using Acr.Assist.RadElement.Core.DTO;
 using Acr.Assist.RadElement.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Acr.Assist.RadElement.API.Controllers
 {
+    /// <summary>
+    /// Endpoint for elements set controller
+    /// </summary>
+    /// <seealso cref="Acr.Assist.RadElement.API.Controllers.BaseController" />
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
+    [Authorize]
     public class ElementSetController : BaseController
     {
         private readonly IElementSetService elementSetService;

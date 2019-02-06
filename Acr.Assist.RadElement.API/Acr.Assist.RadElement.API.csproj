@@ -4,8 +4,16 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>App_Data/api-comments.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>App_Data/api-comments.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Content Include="App_Data\api-comments.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +35,12 @@
     <ProjectReference Include="..\Acr.Assist.RadElement.Data\Acr.Assist.RadElement.Data.csproj" />
     <ProjectReference Include="..\Acr.Assist.RadElement.Infrastructure\Acr.Assist.RadElement.Infrastructure.csproj" />
     <ProjectReference Include="..\Acr.Assist.RadElement.Service\Acr.Assist.RadElement.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App_Data\api-comments.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

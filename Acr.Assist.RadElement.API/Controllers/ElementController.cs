@@ -2,14 +2,20 @@
 using Acr.Assist.RadElement.Core.Domain;
 using Acr.Assist.RadElement.Core.DTO;
 using Acr.Assist.RadElement.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Acr.Assist.RadElement.API.Controllers
 {
+    /// <summary>
+    /// Endpoint for elements controller
+    /// </summary>
+    /// <seealso cref="Acr.Assist.RadElement.API.Controllers.BaseController" />
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
+    [Authorize]
     public class ElementController : BaseController
     {
         private readonly IElementService radElementService;
@@ -24,10 +30,10 @@ namespace Acr.Assist.RadElement.API.Controllers
         {
             this.radElementService = radElementService;
             this.logger = logger;
-        }        
+        }
 
         /// <summary>
-        /// Gets the element.
+        /// Gets the elements.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -81,7 +87,7 @@ namespace Acr.Assist.RadElement.API.Controllers
         /// Creates the element.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        /// <param name="elementtype">The elementtype.</param>
+        /// <param name="elementType">Type of the element.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPost]
@@ -97,7 +103,7 @@ namespace Acr.Assist.RadElement.API.Controllers
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>
-        /// <param name="elementtype">The elementtype.</param>
+        /// <param name="elementType">Type of the element.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPut]
@@ -113,7 +119,6 @@ namespace Acr.Assist.RadElement.API.Controllers
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>
-        /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpDelete]
         [Route("set/{setId:int}/element/{elementId:int}")]

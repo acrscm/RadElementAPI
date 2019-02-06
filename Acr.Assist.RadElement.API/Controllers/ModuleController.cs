@@ -1,14 +1,20 @@
 ﻿using System.Threading.Tasks;
 using System.Xml;
 using Acr.Assist.RadElement.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Acr.Assist.RadElement.API.Controllers
 {
+    /// <summary>
+    /// Endpoint for modules controller
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     [Consumes("application/XML")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
+    [Authorize]
     public class ModuleController : Controller
     {
         private readonly IModuleService moduleService;
