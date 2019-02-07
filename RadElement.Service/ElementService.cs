@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-using Acr.Assist.RadElement.Core.Data;
-using Acr.Assist.RadElement.Core.Domain;
-using Acr.Assist.RadElement.Core.DTO;
-using Acr.Assist.RadElement.Core.Services;
+using RadElement.Core.Data;
+using RadElement.Core.Domain;
+using RadElement.Core.DTO;
+using RadElement.Core.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Acr.Assist.RadElement.Service
+namespace RadElement.Service
 {
     public class ElementService : IElementService
     {

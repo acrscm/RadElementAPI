@@ -1,4 +1,4 @@
-﻿namespace Acr.Assist.RadElement.Core.DTO
+﻿namespace RadElement.Core.DTO
 {
     public class XmlContent
     {

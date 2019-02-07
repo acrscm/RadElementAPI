@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Acr.Assist.RadElement.Core.Infrastructure
+namespace RadElement.Core.Infrastructure
 {
     /// <summary>
     /// Interface for managing configuration related information

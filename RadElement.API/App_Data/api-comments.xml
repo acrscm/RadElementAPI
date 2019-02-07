@@ -4,57 +4,57 @@
         <name>RadElement.API</name>
     </assembly>
     <members>
-        <member name="T:Acr.Assist.RadElement.API.Controllers.BaseController">
+        <member name="T:RadElement.API.Controllers.BaseController">
             <summary>
             Base  class for all controllers
             </summary>
         </member>
-        <member name="P:Acr.Assist.RadElement.API.Controllers.BaseController.LoggerInstance">
+        <member name="P:RadElement.API.Controllers.BaseController.LoggerInstance">
             <summary>
             Instance of the Logger
             </summary>
         </member>
-        <member name="T:Acr.Assist.RadElement.API.Controllers.ElementController">
+        <member name="T:RadElement.API.Controllers.ElementController">
             <summary>
             Endpoint for elements controller
             </summary>
-            <seealso cref="T:Acr.Assist.RadElement.API.Controllers.BaseController" />
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.#ctor(Acr.Assist.RadElement.Core.Services.IElementService,Microsoft.Extensions.Logging.ILogger{Acr.Assist.RadElement.API.Controllers.ElementController})">
+        <member name="M:RadElement.API.Controllers.ElementController.#ctor(RadElement.Core.Services.IElementService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ElementController})">
             <summary>
             Intializes Rad element service and logger.
             </summary>
             <param name="radElementService"></param>
             <param name="logger"></param>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.GetElements">
+        <member name="M:RadElement.API.Controllers.ElementController.GetElements">
             <summary>
             Gets the elements.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.GetElementByElementId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.GetElementByElementId(System.Int32)">
             <summary>
             Gets the element by element identifier.
             </summary>
             <param name="elementId">The element identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.GetElementBySetId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.GetElementBySetId(System.Int32)">
             <summary>
             Gets the cde element by set identifier.
             </summary>
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.SearchElement(System.String)">
+        <member name="M:RadElement.API.Controllers.ElementController.SearchElement(System.String)">
             <summary>
             Searches the cde element.
             </summary>
             <param name="searchKeyword">The search keyword.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.CreateElement(System.Int32,Acr.Assist.RadElement.Core.Domain.DataElementType,Acr.Assist.RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.Int32,RadElement.Core.Domain.DataElementType,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Creates the element.
             </summary>
@@ -63,7 +63,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.UpdateElement(System.Int32,System.Int32,Acr.Assist.RadElement.Core.Domain.DataElementType,Acr.Assist.RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.Int32,System.Int32,RadElement.Core.Domain.DataElementType,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Updates the element.
             </summary>
@@ -73,7 +73,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementController.DeleteElement(System.Int32,System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.DeleteElement(System.Int32,System.Int32)">
             <summary>
             Deletes the element.
             </summary>
@@ -81,47 +81,47 @@
             <param name="elementId">The element identifier.</param>
             <returns></returns>
         </member>
-        <member name="T:Acr.Assist.RadElement.API.Controllers.ElementSetController">
+        <member name="T:RadElement.API.Controllers.ElementSetController">
             <summary>
             Endpoint for elements set controller
             </summary>
-            <seealso cref="T:Acr.Assist.RadElement.API.Controllers.BaseController" />
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.#ctor(Acr.Assist.RadElement.Core.Services.IElementSetService,Microsoft.Extensions.Logging.ILogger{Acr.Assist.RadElement.API.Controllers.ElementSetController})">
+        <member name="M:RadElement.API.Controllers.ElementSetController.#ctor(RadElement.Core.Services.IElementSetService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ElementSetController})">
             <summary>
-            Initializes a new instance of the <see cref="T:Acr.Assist.RadElement.API.Controllers.ElementSetController"/> class.
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.ElementSetController"/> class.
             </summary>
             <param name="elementSetService">The element set service.</param>
             <param name="logger">The logger.</param>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.GetSets">
+        <member name="M:RadElement.API.Controllers.ElementSetController.GetSets">
             <summary>
             Gets the cde sets.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.GetSetBySetId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.GetSetBySetId(System.Int32)">
             <summary>
             Gets the cde set by set identifier.
             </summary>
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.SearchSet(System.String)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.SearchSet(System.String)">
             <summary>
             Searches the cde set.
             </summary>
             <param name="searchKeyword">The search keyword.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.CreateSet(Acr.Assist.RadElement.Core.DTO.CreateUpdateSet)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.CreateSet(RadElement.Core.DTO.CreateUpdateSet)">
             <summary>
             Creates the set.
             </summary>
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.UpdateSet(System.Int32,Acr.Assist.RadElement.Core.DTO.CreateUpdateSet)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.UpdateSet(System.Int32,RadElement.Core.DTO.CreateUpdateSet)">
             <summary>
             Updates the set.
             </summary>
@@ -129,34 +129,34 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ElementSetController.DeleteSet(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.DeleteSet(System.Int32)">
             <summary>
             Updates the set.
             </summary>
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="T:Acr.Assist.RadElement.API.Controllers.ModuleController">
+        <member name="T:RadElement.API.Controllers.ModuleController">
             <summary>
             Endpoint for modules controller
             </summary>
             <seealso cref="T:Microsoft.AspNetCore.Mvc.Controller" />
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ModuleController.#ctor(Acr.Assist.RadElement.Core.Services.IModuleService,Microsoft.Extensions.Logging.ILogger{Acr.Assist.RadElement.API.Controllers.ModuleController})">
+        <member name="M:RadElement.API.Controllers.ModuleController.#ctor(RadElement.Core.Services.IModuleService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ModuleController})">
             <summary>
             Intializes Rad element service and logger.
             </summary>
             <param name="radElementService"></param>
             <param name="logger"></param>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ModuleController.CreateModule(System.Xml.XmlElement)">
+        <member name="M:RadElement.API.Controllers.ModuleController.CreateModule(System.Xml.XmlElement)">
             <summary>
             Inserts the content of the data by XML.
             </summary>
             <param name="xmlContent">Content of the XML.</param>
             <returns></returns>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Controllers.ModuleController.UpdateModule(System.Xml.XmlElement,System.Int32)">
+        <member name="M:RadElement.API.Controllers.ModuleController.UpdateModule(System.Xml.XmlElement,System.Int32)">
             <summary>
             Updates the module.
             </summary>
@@ -164,66 +164,66 @@
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="T:Acr.Assist.RadElement.API.Filters.AuthorizationHeaderOperationFilter">
+        <member name="T:RadElement.API.Filters.AuthorizationHeaderOperationFilter">
             <summary>
             Adds the authorization header for swager documentation
             </summary>
             <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter" />
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Filters.AuthorizationHeaderOperationFilter.Apply(Swashbuckle.AspNetCore.Swagger.Operation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+        <member name="M:RadElement.API.Filters.AuthorizationHeaderOperationFilter.Apply(Swashbuckle.AspNetCore.Swagger.Operation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
             <summary>
             Applies the specified operation.
             </summary>
             <param name="operation">The operation.</param>
             <param name="context">The context.</param>
         </member>
-        <member name="T:Acr.Assist.RadElement.API.Program">
+        <member name="T:RadElement.API.Program">
             <summary>
              Entry point for the application
             </summary>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Program.Main(System.String[])">
+        <member name="M:RadElement.API.Program.Main(System.String[])">
             <summary>
             Defines the entry point of the application.
             </summary>
             <param name="args">The arguments.</param>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Program.BuildWebHost(System.String[])">
+        <member name="M:RadElement.API.Program.BuildWebHost(System.String[])">
             <summary>
             Builds the web host.
             </summary>
             <param name="args">The arguments.</param>
             <returns></returns>
         </member>
-        <member name="T:Acr.Assist.RadElement.API.Startup">
+        <member name="T:RadElement.API.Startup">
             <summary>
             Class called when the application starts
             </summary>
         </member>
-        <member name="P:Acr.Assist.RadElement.API.Startup.Configuration">
+        <member name="P:RadElement.API.Startup.Configuration">
             <summary>
             Returns the configuration
             </summary>
         </member>
-        <member name="P:Acr.Assist.RadElement.API.Startup.HostingEnvironment">
+        <member name="P:RadElement.API.Startup.HostingEnvironment">
             <summary>
             Represents the hosting environment
             </summary>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+        <member name="M:RadElement.API.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
             <summary>
             Called when application starts up
             </summary>
             <param name="configuration"></param>
             <param name="hostingEnvironment">Represents the hosting environment</param>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:RadElement.API.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Configures the services.
             </summary>
             <param name="services">The services.</param>
         </member>
-        <member name="M:Acr.Assist.RadElement.API.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+        <member name="M:RadElement.API.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
             <summary>
             Configures the specified application.
             </summary>

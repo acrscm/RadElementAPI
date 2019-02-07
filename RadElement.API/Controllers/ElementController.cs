@@ -1,20 +1,21 @@
 ﻿using System.Threading.Tasks;
-using Acr.Assist.RadElement.Core.Domain;
-using Acr.Assist.RadElement.Core.DTO;
-using Acr.Assist.RadElement.Core.Services;
-using Microsoft.AspNetCore.Authorization;
+using RadElement.Core.Domain;
+using RadElement.Core.DTO;
+using RadElement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Acr.Assist.RadElement.API.Controllers
+namespace RadElement.API.Controllers
 {
     /// <summary>
     /// Endpoint for elements controller
     /// </summary>
-    /// <seealso cref="Acr.Assist.RadElement.API.Controllers.BaseController" />
+    /// <seealso cref="RadElement.API.Controllers.BaseController" />
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
+    [Authorize]
     public class ElementController : BaseController
     {
         private readonly IElementService radElementService;

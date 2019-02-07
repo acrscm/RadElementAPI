@@ -1,9 +1,9 @@
-﻿using Acr.Assist.RadElement.Core.Data;
-using Acr.Assist.RadElement.Core.Domain;
-using Acr.Assist.RadElement.Core.Infrastructure;
+﻿using RadElement.Core.Data;
+using RadElement.Core.Domain;
+using RadElement.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace Acr.Assist.RadElement.Data
+namespace RadElement.Data
 {
     public partial class RadElementDbContext : DbContext, IRadElementDbContext
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Acr.Assist.RadElement.API.Filters
+namespace RadElement.API.Filters
 {
     /// <summary>
     /// Adds the authorization header for swager documentation

@@ -1,9 +1,9 @@
-﻿using Acr.Assist.RadElement.Core.Domain;
+﻿using RadElement.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Acr.Assist.RadElement.Core.Data
+namespace RadElement.Core.Data
 {
     public interface IRadElementDbContext
     {

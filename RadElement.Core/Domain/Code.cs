@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Acr.Assist.RadElement.Core.Domain
+namespace RadElement.Core.Domain
 {
     public class Code
     {

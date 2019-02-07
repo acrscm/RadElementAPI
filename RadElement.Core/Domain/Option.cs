@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Acr.Assist.RadElement.Core.Domain
+namespace RadElement.Core.Domain
 {
     /// <summary>
     /// Represents the option

@@ -1,6 +1,6 @@
-﻿using Acr.Assist.RadElement.Core.Domain;
+﻿using RadElement.Core.Domain;
 
-namespace Acr.Assist.RadElement.Core.DTO
+namespace RadElement.Core.DTO
 {
     /// <summary>
     /// Represents a multiple choice data element

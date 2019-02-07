@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Acr.Assist.RadElement.Core.Infrastructure
+namespace RadElement.Core.Infrastructure
 {
     /// <summary>
     /// Constains the details for configuring authorization

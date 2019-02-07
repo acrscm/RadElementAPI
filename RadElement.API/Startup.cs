@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using Acr.Assist.RadElement.API.Filters;
-using Acr.Assist.RadElement.Core.Data;
-using Acr.Assist.RadElement.Core.Infrastructure;
-using Acr.Assist.RadElement.Core.Services;
-using Acr.Assist.RadElement.Data;
-using Acr.Assist.RadElement.Infrastructure;
-using Acr.Assist.RadElement.Service;
+using RadElement.API.Filters;
+using RadElement.Core.Data;
+using RadElement.Core.Infrastructure;
+using RadElement.Core.Services;
+using RadElement.Data;
+using RadElement.Infrastructure;
+using RadElement.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace Acr.Assist.RadElement.API
+namespace RadElement.API
 {
     /// <summary>
     /// Class called when the application starts

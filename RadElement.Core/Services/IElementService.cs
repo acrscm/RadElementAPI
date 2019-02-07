@@ -1,9 +1,9 @@
-﻿using Acr.Assist.RadElement.Core.Domain;
-using Acr.Assist.RadElement.Core.DTO;
+﻿using RadElement.Core.Domain;
+using RadElement.Core.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Acr.Assist.RadElement.Core.Services
+namespace RadElement.Core.Services
 {
     public interface IElementService
     {

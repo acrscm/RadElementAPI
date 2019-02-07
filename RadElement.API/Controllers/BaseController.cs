@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Acr.Assist.RadElement.API.Controllers
+namespace RadElement.API.Controllers
 {
     /// <summary>
     /// Base  class for all controllers

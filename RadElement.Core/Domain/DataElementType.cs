@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Acr.Assist.RadElement.Core.Domain
+namespace RadElement.Core.Domain
 {
     /// <summary>
     /// Gets or sets the Data element type

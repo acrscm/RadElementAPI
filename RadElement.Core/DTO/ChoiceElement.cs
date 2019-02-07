@@ -1,7 +1,7 @@
-﻿using Acr.Assist.RadElement.Core.Domain;
+﻿using RadElement.Core.Domain;
 using System.Collections.Generic;
 
-namespace Acr.Assist.RadElement.Core.DTO
+namespace RadElement.Core.DTO
 {
     /// <summary>
     /// Represents the single choice element

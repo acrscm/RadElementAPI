@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using System.Xml;
-using Acr.Assist.RadElement.Core.Services;
+using RadElement.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Acr.Assist.RadElement.API.Controllers
+namespace RadElement.API.Controllers
 {
     /// <summary>
     /// Endpoint for modules controller

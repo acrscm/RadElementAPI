@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Acr.Assist.RadElement.Core.Domain
+namespace RadElement.Core.Domain
 {
     /// <summary>
     /// Represents an Assist Module

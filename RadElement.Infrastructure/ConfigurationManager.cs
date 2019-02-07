@@ -1,9 +1,9 @@
 ﻿
-using Acr.Assist.RadElement.Core.Infrastructure;
+using RadElement.Core.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace Acr.Assist.RadElement.Infrastructure
+namespace RadElement.Infrastructure
 {
     public class ConfigurationManager : IConfigurationManager
     {

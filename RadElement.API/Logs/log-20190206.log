@@ -1,4 +1,4 @@
-2019-02-06 16:59:51.827 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '"Acr.Assist.RadElement.Data.RadElementDbContext"'."
+2019-02-06 16:59:51.827 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '".RadElement.Data.RadElementDbContext"'."
 ""System.InvalidCastException: Unable to convert MySQL date/time to System.DateTime.
    at MySqlConnector.Core.TextRow.ParseDateTime(ReadOnlySpan`1 value) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 170
    at MySqlConnector.Core.TextRow.GetValueCore(ReadOnlySpan`1 data, ColumnDefinitionPayload columnDefinition) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 91
@@ -26,8 +26,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 36
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 42
+   at .RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 36
+   at .RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 42
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -58,8 +58,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 36
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 42
+   at .RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 36
+   at .RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 42
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -76,10 +76,10 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
-   at Acr.Assist.RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Startup.cs:line 134
+   at .RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Startup.cs:line 134
 --- End of stack trace from previous location where exception was thrown ---
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
-2019-02-06 17:00:15.735 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '"Acr.Assist.RadElement.Data.RadElementDbContext"'."
+2019-02-06 17:00:15.735 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '".RadElement.Data.RadElementDbContext"'."
 ""System.InvalidCastException: Unable to convert MySQL date/time to System.DateTime.
    at MySqlConnector.Core.TextRow.ParseDateTime(ReadOnlySpan`1 value) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 170
    at MySqlConnector.Core.TextRow.GetValueCore(ReadOnlySpan`1 data, ColumnDefinitionPayload columnDefinition) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 91
@@ -121,8 +121,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 36
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 42
+   at .RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 36
+   at .RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 42
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -139,10 +139,10 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
-   at Acr.Assist.RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Startup.cs:line 134
+   at .RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Startup.cs:line 134
 --- End of stack trace from previous location where exception was thrown ---
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
-2019-02-06 17:01:22.896 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '"Acr.Assist.RadElement.Data.RadElementDbContext"'."
+2019-02-06 17:01:22.896 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '".RadElement.Data.RadElementDbContext"'."
 ""System.InvalidCastException: Unable to convert MySQL date/time to System.DateTime.
    at MySqlConnector.Core.TextRow.ParseDateTime(ReadOnlySpan`1 value) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 170
    at MySqlConnector.Core.TextRow.GetValueCore(ReadOnlySpan`1 data, ColumnDefinitionPayload columnDefinition) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 91
@@ -184,8 +184,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElement(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 47
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElementByElementId(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 55
+   at .RadElement.Service.ElementService.GetElement(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 47
+   at .RadElement.API.Controllers.ElementController.GetElementByElementId(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 55
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -202,10 +202,10 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
-   at Acr.Assist.RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Startup.cs:line 134
+   at .RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Startup.cs:line 134
 --- End of stack trace from previous location where exception was thrown ---
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
-2019-02-06 17:03:28.446 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '"Acr.Assist.RadElement.Data.RadElementDbContext"'."
+2019-02-06 17:03:28.446 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '".RadElement.Data.RadElementDbContext"'."
 ""System.InvalidCastException: Unable to convert MySQL date/time to System.DateTime.
    at MySqlConnector.Core.TextRow.ParseDateTime(ReadOnlySpan`1 value) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 170
    at MySqlConnector.Core.TextRow.GetValueCore(ReadOnlySpan`1 data, ColumnDefinitionPayload columnDefinition) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 91
@@ -247,8 +247,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElement(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 47
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElementByElementId(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 55
+   at .RadElement.Service.ElementService.GetElement(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 47
+   at .RadElement.API.Controllers.ElementController.GetElementByElementId(Int32 elementId) in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 55
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -265,10 +265,10 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
-   at Acr.Assist.RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Startup.cs:line 134
+   at .RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Startup.cs:line 134
 --- End of stack trace from previous location where exception was thrown ---
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
-2019-02-06 17:07:23.490 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '"Acr.Assist.RadElement.Data.RadElementDbContext"'."
+2019-02-06 17:07:23.490 +05:30 [Error] An exception occurred in the database while iterating the results of a query for context type '".RadElement.Data.RadElementDbContext"'."
 ""System.InvalidCastException: Unable to convert MySQL date/time to System.DateTime.
    at MySqlConnector.Core.TextRow.ParseDateTime(ReadOnlySpan`1 value) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 170
    at MySqlConnector.Core.TextRow.GetValueCore(ReadOnlySpan`1 data, ColumnDefinitionPayload columnDefinition) in C:\projects\mysqlconnector\src\MySqlConnector\Core\TextRow.cs:line 91
@@ -296,8 +296,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 36
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 42
+   at .RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 36
+   at .RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 42
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -321,8 +321,8 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at System.Linq.AsyncEnumerable.AsyncIterator`1.MoveNext(CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.Query.Internal.AsyncLinqOperatorProvider.ExceptionInterceptor`1.EnumeratorExceptionInterceptor.MoveNext(CancellationToken cancellationToken)
    at System.Linq.AsyncEnumerable.Aggregate_[TSource,TAccumulate,TResult](IAsyncEnumerable`1 source, TAccumulate seed, Func`3 accumulator, Func`2 resultSelector, CancellationToken cancellationToken)
-   at Acr.Assist.RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.Service\ElementService.cs:line 36
-   at Acr.Assist.RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Controllers\ElementController.cs:line 42
+   at .RadElement.Service.ElementService.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.Service\ElementService.cs:line 36
+   at .RadElement.API.Controllers.ElementController.GetElements() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Controllers\ElementController.cs:line 42
    at Microsoft.AspNetCore.Mvc.Internal.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at System.Threading.Tasks.ValueTask`1.get_Result()
    at Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker.InvokeActionMethodAsync()
@@ -339,6 +339,6 @@ System.InvalidCastException: Unable to convert MySQL date/time to System.DateTim
    at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
-   at Acr.Assist.RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\Acr.Assist.RadElement.API\Startup.cs:line 134
+   at .RadElement.API.Startup.<>c.<<Configure>b__9_0>d.MoveNext() in E:\ACR\ACR Assist\RadElementAPI\.RadElement.API\Startup.cs:line 134
 --- End of stack trace from previous location where exception was thrown ---
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)

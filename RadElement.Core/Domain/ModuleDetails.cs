@@ -1,4 +1,4 @@
-﻿namespace Acr.Assist.RadElement.Core.Domain
+﻿namespace RadElement.Core.Domain
 {
     /// <summary>
     /// Contains the details of the module

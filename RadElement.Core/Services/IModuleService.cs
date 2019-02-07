@@ -1,8 +1,8 @@
-﻿using Acr.Assist.RadElement.Core.DTO;
+﻿using RadElement.Core.DTO;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Acr.Assist.RadElement.Core.Services
+namespace RadElement.Core.Services
 {
     public interface IModuleService
     {

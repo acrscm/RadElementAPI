@@ -1,10 +1,10 @@
-﻿using Acr.Assist.RadElement.Core.Domain;
-using Acr.Assist.RadElement.Core.DTO;
+﻿using RadElement.Core.Domain;
+using RadElement.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Acr.Assist.RadElement.Service
+namespace RadElement.Service
 {
     public class AssistModuleHelper
     {
