@@ -118,6 +118,11 @@ namespace RadElement.Service
         {
             try
             {
+                if (content == null || string.IsNullOrEmpty(content.ModuleName) || string.IsNullOrEmpty(content.ContactName) || string.IsNullOrEmpty(content.Description))
+                {
+                    return new JsonResult("Element set is invalid", HttpStatusCode.BadRequest);
+                }
+
                 ElementSet set = new ElementSet()
                 {
                     Name = content.ModuleName.Replace("_", " "),
@@ -154,6 +159,11 @@ namespace RadElement.Service
         {
             try
             {
+                if (content == null || string.IsNullOrEmpty(content.ModuleName) || string.IsNullOrEmpty(content.ContactName) || string.IsNullOrEmpty(content.Description))
+                {
+                    return new JsonResult("Element set is invalid", HttpStatusCode.BadRequest);
+                }
+
                 var elementSets = await radElementDbContext.ElementSet.ToListAsync();
                 var elementSet = elementSets.Find(x => x.Id == setId);
 

@@ -61,7 +61,7 @@
             <param name="searchKeyword">The search keyword.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.Int32,RadElement.Core.Domain.DataElementType,RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.Int32,RadElement.Core.DTO.ElementType,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Creates the element.
             </summary>
@@ -70,7 +70,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.Int32,System.Int32,RadElement.Core.Domain.DataElementType,RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.Int32,System.Int32,RadElement.Core.DTO.ElementType,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Updates the element.
             </summary>

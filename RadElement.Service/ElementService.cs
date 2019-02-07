@@ -155,6 +155,24 @@ namespace RadElement.Service
         {
             try
             {
+                if (dataElement == null)
+                {
+                    return new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest);
+                }
+
+                if (string.IsNullOrEmpty(dataElement.Label))
+                {
+                    return new JsonResult("'Label' field is missing in request ", HttpStatusCode.BadRequest);
+                }
+
+                if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+                {
+                    if (dataElement.Options == null)
+                    {
+                        return new JsonResult("'Options' field is missing for Choice type elements in request ", HttpStatusCode.BadRequest);
+                    }
+                }
+
                 int elementId = 0;
                 var elementSets = await radElementDbContext.ElementSet.ToListAsync();
                 var elementSet = elementSets.Find(x => x.Id == setId);
@@ -269,6 +287,24 @@ namespace RadElement.Service
         {
             try
             {
+                if (dataElement == null)
+                {
+                    return new JsonResult("DataElement is invalid", HttpStatusCode.BadRequest);
+                }
+
+                if (string.IsNullOrEmpty(dataElement.Label))
+                {
+                    return new JsonResult("'Label' field in request is missing", HttpStatusCode.BadRequest);
+                }
+
+                if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+                {
+                    if (dataElement.Options == null)
+                    {
+                        return new JsonResult("'Options' field in request is missing for Choice type elements", HttpStatusCode.BadRequest);
+                    }
+                }
+
                 var elementSets = await radElementDbContext.ElementSet.ToListAsync();
                 var elementSet = elementSets.Find(x => x.Id == setId);
 

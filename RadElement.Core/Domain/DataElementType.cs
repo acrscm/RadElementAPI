@@ -10,11 +10,6 @@ namespace RadElement.Core.Domain
     public enum DataElementType
     {
         /// <summary>
-        /// Data Element Type is Global
-        /// </summary>
-        Global,
-
-        /// <summary>
         /// Data Element Type is Integer
         /// </summary>
         Integer,
@@ -32,6 +27,11 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Data Element Type is MultiChoice
         /// </summary>
-        MultiChoice
+        MultiChoice,
+
+        /// <summary>
+        /// Data Element Type is Global
+        /// </summary>
+        Global,
     }
 }

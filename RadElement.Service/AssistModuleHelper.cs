@@ -194,19 +194,8 @@ namespace RadElement.Service
             });
             elements = elements.OrderBy(o => o.DisplaySequence).ToList();
             return elements;
-        }
-        
-        private string GetLabel(string key)
-        {
-            if (dataElementKeyValues.ContainsKey(key))
-            {
-                return dataElementKeyValues[key];
-            }
-            else
-            {
-                throw new KeyNotFoundException($"The Key '{key}' used in testcases is not located in XML");
-            }
-        }
+        }       
+     
 
         private List<Core.DTO.GlobalValue> ReturnGlobalValues()
         {
