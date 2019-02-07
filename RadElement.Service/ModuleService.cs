@@ -11,93 +11,128 @@ using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Net;
 
 namespace RadElement.Service
 {
     public class ModuleService : IModuleService
     {
         private IRadElementDbContext radElementDbContext;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleService"/> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        public ModuleService(IRadElementDbContext radElementDbContext)
+        public ModuleService(IRadElementDbContext radElementDbContext, ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
+            this.logger = logger;
         }
 
-        public async Task<SetIdDetails> CreateModule(XmlElement xmlContent)
+        public async Task<JsonResult> CreateModule(XmlElement xmlContent)
         {
-            SetIdDetails idDetails = new SetIdDetails(); ;
-            var assistModule = await GetDeserializedDataFromXml(xmlContent.OuterXml);
-            if (assistModule != null)
+            try
             {
-                List<int> elementIds = AddElements(assistModule.DataElements);
-                idDetails.SetId = AddElementSet(assistModule);
-                AddSetRef(Int16.Parse(idDetails.SetId), elementIds);
-            }
-
-            return idDetails;
-        }
-
-        public async Task<bool> UpdateModule(XmlElement xmlContent, int setId)
-        {
-            var module = await GetDeserializedDataFromXml(xmlContent.OuterXml);
-            if (module != null)
-            {
-                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
-                var elementSet = elementSets.Find(x => x.Id == setId);
-
-                if (elementSet != null)
+                SetIdDetails idDetails = new SetIdDetails(); ;
+                var assistModule = await GetDeserializedDataFromXml(xmlContent.OuterXml);
+                if (assistModule != null)
                 {
-                    string desc = string.Empty;
-                    string contact = string.Empty;
+                    List<int> elementIds = AddElements(assistModule.DataElements);
+                    idDetails.SetId = AddElementSet(assistModule);
+                    AddSetRef(Int16.Parse(idDetails.SetId), elementIds);
 
-                    if (module.MetaData.Info != null && !string.IsNullOrEmpty(module.MetaData.Info.Description))
+                    if (string.IsNullOrEmpty(idDetails.SetId))
                     {
-                        desc = module.MetaData.Info.Description;
+                        return new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.Created);
                     }
-                    if (module.MetaData.Info.Contact != null && !string.IsNullOrEmpty(module.MetaData.Info.Contact.Name))
+                    else
                     {
-                        contact = module.MetaData.Info.Contact.Name;
+                        return new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.BadRequest);
                     }
-
-                    elementSet.Name = module.ModuleName.Replace("_", " ");
-                    elementSet.Description = desc;
-                    elementSet.ContactName = contact;
-                    radElementDbContext.SaveChanges();
-
-                    var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == setId);
-                    if (elementSetRefs != null && elementSetRefs.Any())
-                    {
-                        foreach (var eleref in elementSetRefs.ToList())
-                        {
-                            var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == eleref.ElementId);
-                            var element = radElementDbContext.Element.ToList().Find(x => x.Id == eleref.ElementId);
-
-                            if (elementValues != null && elementValues.Any())
-                            {
-                                radElementDbContext.ElementValue.RemoveRange(elementValues);
-                            }
-
-                            if (element != null)
-                            {
-                                radElementDbContext.Element.Remove(element);
-                            }
-
-                            radElementDbContext.ElementSetRef.Remove(eleref);
-                        }
-                        radElementDbContext.SaveChanges();
-                    }
-
-                    List<int> elementIds = AddElements(module.DataElements);
-                    AddSetRef(setId, elementIds);
-                    return true;
+                }
+                else
+                {
+                    return new JsonResult("Xml content provided is invalid", HttpStatusCode.BadRequest);
                 }
             }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'CreateModule(XmlElement xmlContent)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
+        }
 
-            return false;
+        public async Task<JsonResult> UpdateModule(XmlElement xmlContent, int setId)
+        {
+            try
+            {
+                var module = await GetDeserializedDataFromXml(xmlContent.OuterXml);
+                if (module != null)
+                {
+                    var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                    var elementSet = elementSets.Find(x => x.Id == setId);
+
+                    if (elementSet != null)
+                    {
+                        string desc = string.Empty;
+                        string contact = string.Empty;
+
+                        if (module.MetaData.Info != null && !string.IsNullOrEmpty(module.MetaData.Info.Description))
+                        {
+                            desc = module.MetaData.Info.Description;
+                        }
+                        if (module.MetaData.Info.Contact != null && !string.IsNullOrEmpty(module.MetaData.Info.Contact.Name))
+                        {
+                            contact = module.MetaData.Info.Contact.Name;
+                        }
+
+                        elementSet.Name = module.ModuleName.Replace("_", " ");
+                        elementSet.Description = desc;
+                        elementSet.ContactName = contact;
+                        radElementDbContext.SaveChanges();
+
+                        var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == setId);
+                        if (elementSetRefs != null && elementSetRefs.Any())
+                        {
+                            foreach (var eleref in elementSetRefs.ToList())
+                            {
+                                var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == eleref.ElementId);
+                                var element = radElementDbContext.Element.ToList().Find(x => x.Id == eleref.ElementId);
+
+                                if (elementValues != null && elementValues.Any())
+                                {
+                                    radElementDbContext.ElementValue.RemoveRange(elementValues);
+                                }
+
+                                if (element != null)
+                                {
+                                    radElementDbContext.Element.Remove(element);
+                                }
+
+                                radElementDbContext.ElementSetRef.Remove(eleref);
+                            }
+                            radElementDbContext.SaveChanges();
+                        }
+
+                        List<int> elementIds = AddElements(module.DataElements);
+                        AddSetRef(setId, elementIds);
+                        return new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK);
+                    }
+
+                    return new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound);
+                }
+                else
+                {
+                    return new JsonResult("Xml content provided is invalid", HttpStatusCode.BadRequest);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'UpdateModule(XmlElement xmlContent, int setId)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         private List<int> AddElements(List<DataElement> dataElements)
@@ -307,24 +342,32 @@ namespace RadElement.Service
         {
             return Task.Run(() =>
             {
-                ModuleDetails details = null;
-                XmlSerializer serializer = null;
-                XmlDocument xmldoc = new XmlDocument();
-                xmldoc.LoadXml(content);
-                StringBuilder xmlStringBuilder = new StringBuilder();
-                using (XmlWriter writer = XmlWriter.Create(xmlStringBuilder))
+                try
                 {
-                    xmldoc.Save(writer);
-                }
-                using (StringReader reader = new StringReader(xmlStringBuilder.ToString()))
-                {
-                    details = new ModuleDetails();
-                    serializer = new XmlSerializer(typeof(ReportingModule));
-                    details.Module = serializer.Deserialize(reader) as ReportingModule;
-                }
+                    ModuleDetails details = null;
+                    XmlSerializer serializer = null;
+                    XmlDocument xmldoc = new XmlDocument();
+                    xmldoc.LoadXml(content);
+                    StringBuilder xmlStringBuilder = new StringBuilder();
+                    using (XmlWriter writer = XmlWriter.Create(xmlStringBuilder))
+                    {
+                        xmldoc.Save(writer);
+                    }
+                    using (StringReader reader = new StringReader(xmlStringBuilder.ToString()))
+                    {
+                        details = new ModuleDetails();
+                        serializer = new XmlSerializer(typeof(ReportingModule));
+                        details.Module = serializer.Deserialize(reader) as ReportingModule;
+                    }
 
-                var assistModule = new AssistModuleHelper(details).ConvertToAssistModule();
-                return assistModule;
+                    var assistModule = new AssistModuleHelper(details).ConvertToAssistModule();
+                    return assistModule;
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Exception in method 'GetDeserializedDataFromXml(string content))'");
+                    return null;
+                }
             });
         }
     }

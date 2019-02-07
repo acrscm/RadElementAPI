@@ -1,6 +1,5 @@
 ﻿using RadElement.Core.Domain;
 using RadElement.Core.DTO;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RadElement.Core.Services
@@ -11,28 +10,28 @@ namespace RadElement.Core.Services
         /// Gets the set.
         /// </summary>
         /// <returns></returns>
-        Task<List<ElementSet>> GetSets();
+        Task<JsonResult> GetSets();
 
         /// <summary>
         /// Gets the set.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<ElementSet> GetSet(int setId);
+        Task<JsonResult> GetSet(int setId);
 
         /// <summary>
         /// Searches the cde set.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        Task<List<ElementSet>> SearchSet(string searchKeyword);
+        Task<JsonResult> SearchSet(string searchKeyword);
 
         /// <summary>
         /// Creates the cde set.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        Task<SetIdDetails> CreateSet(CreateUpdateSet content);
+        Task<JsonResult> CreateSet(CreateUpdateSet content);
 
         /// <summary>
         /// Updates the set.
@@ -40,13 +39,13 @@ namespace RadElement.Core.Services
         /// <param name="setId">The set identifier.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        Task<bool> UpdateSet(int setId, CreateUpdateSet content);
+        Task<JsonResult> UpdateSet(int setId, CreateUpdateSet content);
 
         /// <summary>
         /// Deletes the set.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<bool> DeleteSet(int setId);
+        Task<JsonResult> DeleteSet(int setId);
     }
 }

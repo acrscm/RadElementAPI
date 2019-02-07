@@ -1,4 +1,4 @@
-﻿using RadElement.Core.DTO;
+﻿using RadElement.Core.Domain;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -11,7 +11,7 @@ namespace RadElement.Core.Services
         /// </summary>
         /// <param name="xmlContent">Content of the XML.</param>
         /// <returns></returns>
-        Task<SetIdDetails> CreateModule(XmlElement xmlContent);
+        Task<JsonResult> CreateModule(XmlElement xmlContent);
 
         /// <summary>
         /// Updates the module.
@@ -19,6 +19,6 @@ namespace RadElement.Core.Services
         /// <param name="xmlContent">Content of the XML.</param>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<bool> UpdateModule(XmlElement xmlContent, int setId);
+        Task<JsonResult> UpdateModule(XmlElement xmlContent, int setId);
     }
 }

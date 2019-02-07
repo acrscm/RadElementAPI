@@ -15,10 +15,9 @@ namespace RadElement.API.Controllers
     [Produces("application/json")]
     [Route("radelement/api/v1")]
     [Authorize]
-    public class ModuleController : Controller
+    public class ModuleController : BaseController
     {
         private readonly IModuleService moduleService;
-        private readonly ILogger<ModuleController> logger;
 
         /// <summary>
         /// Intializes Rad element service and logger.
@@ -28,7 +27,7 @@ namespace RadElement.API.Controllers
         public ModuleController(IModuleService radElementService, ILogger<ModuleController> logger)
         {
             this.moduleService = radElementService;
-            this.logger = logger;
+            LoggerInstance = logger;
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> CreateModule([FromBody]XmlElement xmlContent)
         {
             var result = await moduleService.CreateModule(xmlContent);
-            return Ok(result);
+            return SendResult(result);
         }
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> UpdateModule([FromBody]XmlElement xmlContent, int setId)
         {
             var result = await moduleService.UpdateModule(xmlContent, setId);
-            return Ok(result); ;
+            return SendResult(result);
         }
     }
 }

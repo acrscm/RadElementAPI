@@ -6,30 +6,44 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
+using System.Net;
+using System;
 
 namespace RadElement.Service
 {
     public class ElementSetService : IElementSetService
     {
         private IRadElementDbContext radElementDbContext;
+        private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementSetService"/> class.
+        /// Initializes a new instance of the <see cref="ElementSetService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        public ElementSetService(IRadElementDbContext radElementDbContext)
+        /// <param name="logger">The logger.</param>
+        public ElementSetService(IRadElementDbContext radElementDbContext, ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
+            this.logger = logger;
         }
 
         /// <summary>
         /// Gets the set.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<ElementSet>> GetSets()
+        public async Task<JsonResult> GetSets()
         {
-            var cdeSets = await radElementDbContext.ElementSet.ToListAsync();
-            return cdeSets;
+            try
+            {
+                var sets = await radElementDbContext.ElementSet.ToListAsync();
+                return new JsonResult(sets, HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'GetSets()'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -37,10 +51,27 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        public async Task<ElementSet> GetSet(int setId)
+        public async Task<JsonResult> GetSet(int setId)
         {
-            var cdeSets = await radElementDbContext.ElementSet.ToListAsync();
-            return cdeSets.Find(x => x.Id == setId);
+            try
+            {
+                var sets = await radElementDbContext.ElementSet.ToListAsync();
+                var set = sets.Find(x => x.Id == setId);
+
+                if (set != null)
+                {
+                    return new JsonResult(set, HttpStatusCode.OK);
+                }
+                else
+                {
+                    return new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'GetSet(int setId)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -48,16 +79,34 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<List<ElementSet>> SearchSet(string searchKeyword)
+        public async Task<JsonResult> SearchSet(string searchKeyword)
         {
-            if (!string.IsNullOrEmpty(searchKeyword))
+            try
             {
-                var cdeSets = await radElementDbContext.ElementSet.ToListAsync();
-                return cdeSets.FindAll(x => x.Name.ToLower().Contains(searchKeyword.ToLower()) || x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
-                                            x.ContactName.ToLower().Contains(searchKeyword.ToLower()));
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    var sets = await radElementDbContext.ElementSet.ToListAsync();
+                    var filteredSets = sets.FindAll(x => x.Name.ToLower().Contains(searchKeyword.ToLower()) || x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                x.ContactName.ToLower().Contains(searchKeyword.ToLower())); ;
+                    if (filteredSets != null && filteredSets.Any())
+                    {
+                        return new JsonResult(filteredSets, HttpStatusCode.OK);
+                    }
+                    else
+                    {
+                        return new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound);
+                    }
+                }
+                else
+                {
+                    return new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest);
+                }
             }
-
-            return new List<ElementSet>();
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'SearchSet(string searchKeyword)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -65,19 +114,34 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        public async Task<SetIdDetails> CreateSet(CreateUpdateSet content)
+        public async Task<JsonResult> CreateSet(CreateUpdateSet content)
         {
-            ElementSet set = new ElementSet()
+            try
             {
-                Name = content.ModuleName.Replace("_", " "),
-                Description = content.Description,
-                ContactName = content.ContactName,
-            };
+                ElementSet set = new ElementSet()
+                {
+                    Name = content.ModuleName.Replace("_", " "),
+                    Description = content.Description,
+                    ContactName = content.ContactName,
+                };
 
-            await radElementDbContext.ElementSet.AddAsync(set);
-            radElementDbContext.SaveChanges();
+                await radElementDbContext.ElementSet.AddAsync(set);
+                radElementDbContext.SaveChanges();
 
-            return new SetIdDetails() { SetId = set.Id.ToString() };
+                if (set.Id != 0)
+                {
+                    return new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.Created);
+                }
+                else
+                {
+                    return new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.BadRequest);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'CreateSet(CreateUpdateSet content)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -86,20 +150,29 @@ namespace RadElement.Service
         /// <param name="setId">The set identifier.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        public async Task<bool> UpdateSet(int setId, CreateUpdateSet content)
+        public async Task<JsonResult> UpdateSet(int setId, CreateUpdateSet content)
         {
-            var elementSets = await radElementDbContext.ElementSet.ToListAsync();
-            var elementSet = elementSets.Find(x => x.Id == setId);
-
-            if (elementSet != null)
+            try
             {
-                elementSet.Name = content.ModuleName.Replace("_", " ");
-                elementSet.Description = content.Description;
-                elementSet.ContactName = content.ContactName;
-                return radElementDbContext.SaveChanges() > 0;
-            }
+                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSet = elementSets.Find(x => x.Id == setId);
 
-            return false;
+                if (elementSet != null)
+                {
+                    elementSet.Name = content.ModuleName.Replace("_", " ");
+                    elementSet.Description = content.Description;
+                    elementSet.ContactName = content.ContactName;
+                    radElementDbContext.SaveChanges();
+                    return new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK);
+                }
+
+                return new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'CreateSet(CreateUpdaUpdateSet(int setId, CreateUpdateSet content)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -107,40 +180,49 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        public async Task<bool> DeleteSet(int setId)
+        public async Task<JsonResult> DeleteSet(int setId)
         {
-            var elementSets = await radElementDbContext.ElementSet.ToListAsync();
-            var elementSet = elementSets.Find(x => x.Id == setId);
-
-            if (elementSet != null)
+            try
             {
-                var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == elementSet.Id);
-                if (elementSetRefs != null && elementSetRefs.Any())
+                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSet = elementSets.Find(x => x.Id == setId);
+
+                if (elementSet != null)
                 {
-                    foreach (var setref in elementSetRefs)
+                    var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == elementSet.Id);
+                    if (elementSetRefs != null && elementSetRefs.Any())
                     {
-                        var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == setref.ElementId);
-                        var elements = radElementDbContext.Element.ToList().FindAll(x => x.Id == setref.ElementId);
-
-                        if (elementValues != null && elementValues.Any())
+                        foreach (var setref in elementSetRefs)
                         {
-                            radElementDbContext.ElementValue.RemoveRange(elementValues);
+                            var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == setref.ElementId);
+                            var elements = radElementDbContext.Element.ToList().FindAll(x => x.Id == setref.ElementId);
+
+                            if (elementValues != null && elementValues.Any())
+                            {
+                                radElementDbContext.ElementValue.RemoveRange(elementValues);
+                            }
+
+                            if (elements != null && elements.Any())
+                            {
+                                radElementDbContext.Element.RemoveRange(elements);
+                            }
                         }
 
-                        if (elements != null && elements.Any())
-                        {
-                            radElementDbContext.Element.RemoveRange(elements);
-                        }
+                        radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
                     }
 
-                    radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
+                    radElementDbContext.ElementSet.Remove(elementSet);
+                    radElementDbContext.SaveChanges();
+                    return new JsonResult(string.Format("Set with id {0} is deleted.", setId), HttpStatusCode.OK);
                 }
 
-                radElementDbContext.ElementSet.Remove(elementSet);
-                return radElementDbContext.SaveChanges() > 0;
+                return new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound);
             }
-
-            return false;
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'DeleteSet(int setId)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

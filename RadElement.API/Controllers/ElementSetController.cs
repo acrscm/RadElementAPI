@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +18,6 @@ namespace RadElement.API.Controllers
     public class ElementSetController : BaseController
     {
         private readonly IElementSetService elementSetService;
-        private readonly ILogger<ElementSetController> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementSetController"/> class.
@@ -29,7 +27,7 @@ namespace RadElement.API.Controllers
         public ElementSetController(IElementSetService elementSetService, ILogger<ElementSetController> logger)
         {
             this.elementSetService = elementSetService;
-            this.logger = logger;
+            LoggerInstance = logger;
         }
         
         /// <summary>
@@ -41,7 +39,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetSets()
         {
             var result = await elementSetService.GetSets();
-            return Ok(result); ;
+            return SendResult(result);
         }
 
         /// <summary>
@@ -54,7 +52,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetSetBySetId(int setId)
         {
             var result = await elementSetService.GetSet(setId);
-            return Ok(result);
+            return SendResult(result);
         }
 
         /// <summary>
@@ -67,7 +65,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> SearchSet(string searchKeyword)
         {
             var result = await elementSetService.SearchSet(searchKeyword);
-            return Ok(result); ;
+            return SendResult(result);
         }
 
         /// <summary>
@@ -80,7 +78,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> CreateSet([FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.CreateSet(content);
-            return Ok(result); ;
+            return SendResult(result);
         }
 
         /// <summary>
@@ -94,7 +92,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> UpdateSet(int setId, [FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.UpdateSet(setId, content);
-            return Ok(result); ;
+            return SendResult(result);
         }
 
         /// <summary>
@@ -107,7 +105,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> DeleteSet(int setId)
         {
             var result = await elementSetService.DeleteSet(setId);
-            return Ok(result); ;
+            return SendResult(result);
         }
     }
 }

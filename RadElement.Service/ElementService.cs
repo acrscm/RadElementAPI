@@ -1,40 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using Serilog;
 
 namespace RadElement.Service
 {
     public class ElementService : IElementService
     {
         private IRadElementDbContext radElementDbContext;
+        private readonly ILogger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementService"/> class.
+        /// Initializes a new instance of the <see cref="ElementService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        public ElementService(IRadElementDbContext radElementDbContext)
+        /// <param name="logger">The logger.</param>
+        public ElementService(IRadElementDbContext radElementDbContext, ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
+            this.logger = logger;
         }
 
         /// <summary>
         /// Gets the element.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Element>> GetElements()
+        public async Task<JsonResult> GetElements()
         {
-            var elements = await radElementDbContext.Element.ToListAsync();
-            return elements;
+            try
+            {
+                var elements = await radElementDbContext.Element.ToListAsync();
+                return new JsonResult(elements, HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'GetElements()'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -42,10 +51,27 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
-        public async Task<Element> GetElement(int elementId)
+        public async Task<JsonResult> GetElement(int elementId)
         {
-            var elements = await radElementDbContext.Element.ToListAsync();
-            return elements.Find(x => x.Id == elementId);
+            try
+            {
+                var elements = await radElementDbContext.Element.ToListAsync();
+                var element = elements.Find(x => x.Id == elementId);
+
+                if (element != null)
+                {
+                    return new JsonResult(element, HttpStatusCode.OK);
+                }
+                else
+                {
+                    return new JsonResult(string.Format("No such element with id '{0}'", elementId), HttpStatusCode.NotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'GetElement(int elementId)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -53,17 +79,32 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        public async Task<List<Element>> GetElementsBySetId(int setId)
+        public async Task<JsonResult> GetElementsBySetId(int setId)
         {
-            var setRefs = await radElementDbContext.ElementSetRef.ToListAsync();
-            var elementIds = setRefs.FindAll(x => x.ElementSetId == setId);
-            var elements = await radElementDbContext.Element.ToListAsync();
+            try
+            {
+                var setRefs = await radElementDbContext.ElementSetRef.ToListAsync();
+                var elementIds = setRefs.FindAll(x => x.ElementSetId == setId);
+                var elements = await radElementDbContext.Element.ToListAsync();
 
-            var selectedElements = from elemetId in elementIds
-                                   join element in elements on elemetId.Id equals (int)element.Id
-                                   select element;
+                var selectedElements = from elemetId in elementIds
+                                       join element in elements on elemetId.Id equals (int)element.Id
+                                       select element;
 
-            return selectedElements.ToList();
+                if (selectedElements != null && selectedElements.Any())
+                {
+                    return new JsonResult(selectedElements, HttpStatusCode.OK);
+                }
+                else
+                {
+                    return new JsonResult(string.Format("No such elements with set id '{0}'.", setId), HttpStatusCode.NotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'GetElementsBySetId(int setId)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -71,19 +112,37 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<List<Element>> SearchElement(string searchKeyword)
+        public async Task<JsonResult> SearchElement(string searchKeyword)
         {
-            if(!string.IsNullOrEmpty(searchKeyword))
+            try
             {
-                var elements = await radElementDbContext.Element.ToListAsync();
-                return elements.FindAll(x => x.Definition.ToLower().Contains(searchKeyword.ToLower()) || x.Editor.ToLower().Contains(searchKeyword.ToLower()) ||
-                                             x.Instructions.ToLower().Contains(searchKeyword.ToLower()) || x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
-                                             x.Question.ToLower().Contains(searchKeyword.ToLower()) || x.References.ToLower().Contains(searchKeyword.ToLower()) ||
-                                             x.ShortName.ToLower().Contains(searchKeyword.ToLower()) || x.Source.ToLower().Contains(searchKeyword.ToLower()) ||
-                                             x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    var elements = await radElementDbContext.Element.ToListAsync();
+                    var filteredElements = elements.FindAll(x => x.Definition.ToLower().Contains(searchKeyword.ToLower()) || x.Editor.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                 x.Instructions.ToLower().Contains(searchKeyword.ToLower()) || x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                 x.Question.ToLower().Contains(searchKeyword.ToLower()) || x.References.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                 x.ShortName.ToLower().Contains(searchKeyword.ToLower()) || x.Source.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                 x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
+                    if (filteredElements != null && filteredElements.Any())
+                    {
+                        return new JsonResult(filteredElements, HttpStatusCode.OK);
+                    }
+                    else
+                    {
+                        return new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound);
+                    }
+                }
+                else
+                {
+                    return new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest);
+                }
             }
-
-            return new List<Element>();
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'SearchElement(string searchKeyword)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -92,96 +151,111 @@ namespace RadElement.Service
         /// <param name="setId">The set identifier.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        public async Task<ElementIdDetails> CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)
+        public async Task<JsonResult> CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)
         {
-            int elementId = 0;
-            var elementSets = await radElementDbContext.ElementSet.ToListAsync();
-            var elementSet = elementSets.Find(x => x.Id == setId);
-
-            if (elementSet != null)
+            try
             {
-                if (elementType != DataElementType.Global)
+                int elementId = 0;
+                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSet = elementSets.Find(x => x.Id == setId);
+
+                if (elementSet != null)
                 {
-                    Element element = new Element()
+                    if (elementType != DataElementType.Global)
                     {
-                        Name = dataElement.Label,
-                        ShortName = "",
-                        Definition = dataElement.Definition ?? "",
-                        MaxCardinality = 1,
-                        MinCardinality = 1,
-                        Source = "DSI TOUCH-AI",
-                        Status = "Proposed",
-                        StatusDate = DateTime.Now,
-                        Editor = "",
-                        Instructions = "",
-                        Question = dataElement.Label ?? "",
-                        References = "",
-                        Synonyms = "",
-                        VersionDate = DateTime.Now,
-                        Version = "1",
-                        ValueSize = 0,
-                        Unit = ""
+                        Element element = new Element()
+                        {
+                            Name = dataElement.Label,
+                            ShortName = "",
+                            Definition = dataElement.Definition ?? "",
+                            MaxCardinality = 1,
+                            MinCardinality = 1,
+                            Source = "DSI TOUCH-AI",
+                            Status = "Proposed",
+                            StatusDate = DateTime.Now,
+                            Editor = "",
+                            Instructions = "",
+                            Question = dataElement.Label ?? "",
+                            References = "",
+                            Synonyms = "",
+                            VersionDate = DateTime.Now,
+                            Version = "1",
+                            ValueSize = 0,
+                            Unit = ""
+                        };
+
+                        if (elementType == DataElementType.Integer)
+                        {
+                            element.ValueType = "integer";
+                            element.ValueMin = dataElement.ValueMin;
+                            element.ValueMax = dataElement.ValueMax;
+                            element.StepValue = 1;
+                        }
+
+                        if (elementType == DataElementType.Choice)
+                        {
+                            element.ValueType = "valueSet";
+                        }
+
+                        if (elementType == DataElementType.MultiChoice)
+                        {
+                            element.ValueType = "valueSet";
+                            element.MaxCardinality = (short)dataElement.Options.Count;
+                        }
+
+                        if (elementType == DataElementType.Numeric)
+                        {
+                            float? minValue = null;
+                            if (dataElement.ValueMin.HasValue)
+                            {
+                                minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                            }
+                            float? maxValue = null;
+                            if (dataElement.ValueMax.HasValue)
+                            {
+                                maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
+                            }
+                            element.ValueType = "float";
+                            element.ValueMin = minValue;
+                            element.ValueMax = maxValue;
+                            element.StepValue = 0.1f;
+                        }
+
+                        radElementDbContext.Element.Add(element);
+                        radElementDbContext.SaveChanges();
+
+                        elementId = (int)element.Id;
+
+                        if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
+                        {
+                            AddElementValues(dataElement.Options, element.Id);
+                        }
+                    }
+
+                    ElementSetRef setRef = new ElementSetRef()
+                    {
+                        ElementSetId = setId,
+                        ElementId = (short)elementId
                     };
 
-                    if (elementType == DataElementType.Integer)
-                    {
-                        element.ValueType = "integer";
-                        element.ValueMin = dataElement.ValueMin;
-                        element.ValueMax = dataElement.ValueMax;
-                        element.StepValue = 1;
-                    }
-
-                    if (elementType == DataElementType.Choice)
-                    {
-                        element.ValueType = "valueSet";
-                    }
-
-                    if (elementType == DataElementType.MultiChoice)
-                    {
-                        element.ValueType = "valueSet";
-                        element.MaxCardinality = (short)dataElement.Options.Count;
-                    }
-
-                    if (elementType == DataElementType.Numeric)
-                    {
-                        float? minValue = null;
-                        if (dataElement.ValueMin.HasValue)
-                        {
-                            minValue = Convert.ToSingle(dataElement.ValueMin.Value);
-                        }
-                        float? maxValue = null;
-                        if (dataElement.ValueMax.HasValue)
-                        {
-                            maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                        }
-                        element.ValueType = "float";
-                        element.ValueMin = minValue;
-                        element.ValueMax = maxValue;
-                        element.StepValue = 0.1f;
-                    }
-
-                    radElementDbContext.Element.Add(element);
+                    radElementDbContext.ElementSetRef.Add(setRef);
                     radElementDbContext.SaveChanges();
-
-                    elementId = (int)element.Id;
-
-                    if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
-                    {
-                        AddElementValues(dataElement.Options, element.Id);
-                    }
                 }
 
-                ElementSetRef setRef = new ElementSetRef()
+                if (elementId != 0)
                 {
-                    ElementSetId = setId,
-                    ElementId = (short)elementId
-                };
-
-                radElementDbContext.ElementSetRef.Add(setRef);
-                radElementDbContext.SaveChanges();
+                    return new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.Created);
+                }
+                else
+                {
+                    return new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.BadRequest);
+                }
             }
-
-            return new ElementIdDetails() { ElementId = elementId == 0 ? string.Empty : elementId.ToString() };
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -191,83 +265,92 @@ namespace RadElement.Service
         /// <param name="elementId">The element identifier.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        public async Task<bool> UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)
+        public async Task<JsonResult> UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)
         {
-            var elementSets = await radElementDbContext.ElementSet.ToListAsync();
-            var elementSet = elementSets.Find(x => x.Id == setId);
-
-            if (elementSet != null)
+            try
             {
-                var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementId);
-                if (element != null)
+                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSet = elementSets.Find(x => x.Id == setId);
+
+                if (elementSet != null)
                 {
-                    var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id);
-                    if (elementValues != null && elementValues.Any())
+                    var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementId);
+                    if (element != null)
                     {
-                        radElementDbContext.ElementValue.RemoveRange(elementValues);
-                        AddElementValues(dataElement.Options, element.Id);
-                    }
-
-                    element.Name = dataElement.Label;
-                    element.ShortName = "";
-                    element.Definition = dataElement.Definition ?? "";
-                    element.MaxCardinality = 1;
-                    element.MinCardinality = 1;
-                    element.Source = "DSI TOUCH-AI";
-                    element.Status = "Proposed";
-                    element.StatusDate = DateTime.Now;
-                    element.Editor = "";
-                    element.Instructions = "";
-                    element.Question = dataElement.Label ?? "";
-                    element.References = "";
-                    element.Synonyms = "";
-                    element.VersionDate = DateTime.Now;
-                    element.Version = "1";
-                    element.ValueSize = 0;
-                    element.Unit = "";
-
-                    if (elementType == DataElementType.Integer)
-                    {
-                        element.ValueType = "integer";
-                        element.ValueMin = dataElement.ValueMin;
-                        element.ValueMax = dataElement.ValueMax;
-                        element.StepValue = 1;
-                    }
-
-                    if (elementType == DataElementType.Choice)
-                    {
-                        element.ValueType = "valueSet";
-                    }
-
-                    if (elementType == DataElementType.MultiChoice)
-                    {
-                        element.ValueType = "valueSet";
-                        element.MaxCardinality = (short)dataElement.Options.Count;
-                    }
-
-                    if (elementType == DataElementType.Numeric)
-                    {
-                        float? minValue = null;
-                        if (dataElement.ValueMin.HasValue)
+                        var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id);
+                        if (elementValues != null && elementValues.Any())
                         {
-                            minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                            radElementDbContext.ElementValue.RemoveRange(elementValues);
+                            AddElementValues(dataElement.Options, element.Id);
                         }
-                        float? maxValue = null;
-                        if (dataElement.ValueMax.HasValue)
-                        {
-                            maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                        }
-                        element.ValueType = "float";
-                        element.ValueMin = minValue;
-                        element.ValueMax = maxValue;
-                        element.StepValue = 0.1f;
-                    }
 
-                    return radElementDbContext.SaveChanges() > 0;
+                        element.Name = dataElement.Label;
+                        element.ShortName = "";
+                        element.Definition = dataElement.Definition ?? "";
+                        element.MaxCardinality = 1;
+                        element.MinCardinality = 1;
+                        element.Source = "DSI TOUCH-AI";
+                        element.Status = "Proposed";
+                        element.StatusDate = DateTime.Now;
+                        element.Editor = "";
+                        element.Instructions = "";
+                        element.Question = dataElement.Label ?? "";
+                        element.References = "";
+                        element.Synonyms = "";
+                        element.VersionDate = DateTime.Now;
+                        element.Version = "1";
+                        element.ValueSize = 0;
+                        element.Unit = "";
+
+                        if (elementType == DataElementType.Integer)
+                        {
+                            element.ValueType = "integer";
+                            element.ValueMin = dataElement.ValueMin;
+                            element.ValueMax = dataElement.ValueMax;
+                            element.StepValue = 1;
+                        }
+
+                        if (elementType == DataElementType.Choice)
+                        {
+                            element.ValueType = "valueSet";
+                        }
+
+                        if (elementType == DataElementType.MultiChoice)
+                        {
+                            element.ValueType = "valueSet";
+                            element.MaxCardinality = (short)dataElement.Options.Count;
+                        }
+
+                        if (elementType == DataElementType.Numeric)
+                        {
+                            float? minValue = null;
+                            if (dataElement.ValueMin.HasValue)
+                            {
+                                minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                            }
+                            float? maxValue = null;
+                            if (dataElement.ValueMax.HasValue)
+                            {
+                                maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
+                            }
+                            element.ValueType = "float";
+                            element.ValueMin = minValue;
+                            element.ValueMax = maxValue;
+                            element.StepValue = 0.1f;
+                        }
+
+                        radElementDbContext.SaveChanges();
+                        return new JsonResult(string.Format("Element with set id {0} and element id {1} is updated.", setId, elementId), HttpStatusCode.OK);
+                    }
                 }
-            }
 
-            return false;
+                return new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -276,33 +359,43 @@ namespace RadElement.Service
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
-        public async Task<bool> DeleteElement(int setId, int elementId)
+        public async Task<JsonResult> DeleteElement(int setId, int elementId)
         {
-            var elementSetRefs = await radElementDbContext.ElementSetRef.ToListAsync();
-            var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == setId && x.ElementId == elementId);
-
-            if (elementSetRef != null)
+            try
             {
-                var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == elementSetRef.ElementId);
-                var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
+                var elementSetRefs = await radElementDbContext.ElementSetRef.ToListAsync();
+                var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == setId && x.ElementId == elementId);
 
-                if (elementValues != null && elementValues.Any())
+                if (elementSetRef != null)
                 {
-                    radElementDbContext.ElementValue.RemoveRange(elementValues);
+                    var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == elementSetRef.ElementId);
+                    var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
+
+                    if (elementValues != null && elementValues.Any())
+                    {
+                        radElementDbContext.ElementValue.RemoveRange(elementValues);
+                    }
+
+                    if (element != null)
+                    {
+                        radElementDbContext.Element.Remove(element);
+                    }
+
+                    radElementDbContext.ElementSetRef.Remove(elementSetRef);
+                    radElementDbContext.SaveChanges();
+                    return new JsonResult(string.Format("Element with set id {0} and element id {1} is deleted.", setId, elementId), HttpStatusCode.OK);
+
                 }
 
-                if (element != null)
-                {
-                    radElementDbContext.Element.Remove(element);
-                }
-
-                radElementDbContext.ElementSetRef.Remove(elementSetRef);
-                return radElementDbContext.SaveChanges() > 0;
+                return new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound);
             }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
+                return new JsonResult("", HttpStatusCode.InternalServerError);
+            }
+        }
 
-            return false;
-        }     
-             
         private void AddElementValues(List<Core.DTO.Option> options, uint elementId)
         {
             foreach (Core.DTO.Option option in options)

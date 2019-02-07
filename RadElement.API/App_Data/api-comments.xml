@@ -14,6 +14,13 @@
             Instance of the Logger
             </summary>
         </member>
+        <member name="M:RadElement.API.Controllers.BaseController.SendResult(RadElement.Core.Domain.JsonResult)">
+            <summary>
+            Sends the result.
+            </summary>
+            <param name="result">The result.</param>
+            <returns></returns>
+        </member>
         <member name="T:RadElement.API.Controllers.ElementController">
             <summary>
             Endpoint for elements controller
@@ -40,9 +47,9 @@
             <param name="elementId">The element identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.GetElementBySetId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.GetElementsBySetId(System.Int32)">
             <summary>
-            Gets the cde element by set identifier.
+            Gets the element by set identifier.
             </summary>
             <param name="setId">The set identifier.</param>
             <returns></returns>
