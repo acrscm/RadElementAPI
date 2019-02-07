@@ -31,7 +31,7 @@ namespace RadElement.API.Controllers
         }
         
         /// <summary>
-        /// Gets the cde sets.
+        /// Fetches all the sets.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -43,7 +43,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Gets the cde set by set identifier.
+        /// Fetches the set by set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
@@ -56,7 +56,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Searches the cde set.
+        /// Searches the set with provided keyword.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
@@ -69,7 +69,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Creates the set.
+        /// Creates a set.
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
@@ -82,7 +82,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Updates the set.
+        /// Updates a set by set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="content">The content.</param>
@@ -96,7 +96,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Updates the set.
+        /// Removes a set by set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>

@@ -32,7 +32,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Gets the elements.
+        /// Fetches all the elements.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -44,7 +44,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Gets the element by element identifier.
+        /// Fetch a element by element identifier.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
@@ -57,7 +57,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Gets the element by set identifier.
+        /// Fetch the elements by set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
@@ -70,7 +70,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Searches the cde element.
+        /// Searches the element with provided keyword.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
@@ -83,7 +83,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Creates the element.
+        /// Creates a element under specific set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementType">Type of the element.</param>
@@ -98,7 +98,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Updates the element.
+        /// Updates the element based on set identifier and element identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>
@@ -114,7 +114,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Deletes the element.
+        /// Deletes the element based on set identifier and element identifier..
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>

@@ -31,7 +31,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Inserts the content of the data by XML.
+        /// Inserts the elements and sets with the provided XML.
         /// </summary>
         /// <param name="xmlContent">Content of the XML.</param>
         /// <returns></returns>
@@ -44,7 +44,7 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Updates the module.
+        /// Updated the elements and sets with the provided Xml
         /// </summary>
         /// <param name="xmlContent">Content of the XML.</param>
         /// <param name="setId">The set identifier.</param>
