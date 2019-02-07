@@ -40,7 +40,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> CreateModule([FromBody]XmlElement xmlContent)
         {
             var result = await moduleService.CreateModule(xmlContent);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> UpdateModule([FromBody]XmlElement xmlContent, int setId)
         {
             var result = await moduleService.UpdateModule(xmlContent, setId);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
     }
 }

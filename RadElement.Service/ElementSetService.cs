@@ -42,7 +42,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetSets()'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -70,7 +70,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetSet(int setId)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -105,7 +105,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'SearchSet(string searchKeyword)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -145,7 +145,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateSet(CreateUpdateSet content)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -181,7 +181,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateSet(CreateUpdaUpdateSet(int setId, CreateUpdateSet content)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -231,7 +231,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'DeleteSet(int setId)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
     }

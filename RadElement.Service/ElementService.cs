@@ -42,7 +42,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElements()'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -70,7 +70,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElement(int elementId)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -103,7 +103,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElementsBySetId(int setId)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -141,7 +141,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'SearchElement(string searchKeyword)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -272,7 +272,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -385,7 +385,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -428,7 +428,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 

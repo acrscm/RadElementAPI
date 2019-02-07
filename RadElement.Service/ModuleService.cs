@@ -60,7 +60,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateModule(XmlElement xmlContent)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -131,7 +131,7 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'UpdateModule(XmlElement xmlContent, int setId)'");
-                return new JsonResult("", HttpStatusCode.InternalServerError);
+                return new JsonResult(ex, HttpStatusCode.InternalServerError);
             }
         }
 

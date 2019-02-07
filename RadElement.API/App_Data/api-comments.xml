@@ -14,13 +14,6 @@
             Instance of the Logger
             </summary>
         </member>
-        <member name="M:RadElement.API.Controllers.BaseController.SendResult(RadElement.Core.Domain.JsonResult)">
-            <summary>
-            Sends the result.
-            </summary>
-            <param name="result">The result.</param>
-            <returns></returns>
-        </member>
         <member name="T:RadElement.API.Controllers.ElementController">
             <summary>
             Endpoint for elements controller

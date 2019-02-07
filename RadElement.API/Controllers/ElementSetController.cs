@@ -39,7 +39,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetSets()
         {
             var result = await elementSetService.GetSets();
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetSetBySetId(int setId)
         {
             var result = await elementSetService.GetSet(setId);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> SearchSet(string searchKeyword)
         {
             var result = await elementSetService.SearchSet(searchKeyword);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> CreateSet([FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.CreateSet(content);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> UpdateSet(int setId, [FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.UpdateSet(setId, content);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> DeleteSet(int setId)
         {
             var result = await elementSetService.DeleteSet(setId);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
     }
 }

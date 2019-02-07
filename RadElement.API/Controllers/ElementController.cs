@@ -40,7 +40,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetElements()
         {
             var result = await radElementService.GetElements();
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetElementByElementId(int elementId)
         {
             var result = await radElementService.GetElement(elementId);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> GetElementsBySetId(int setId)
         {
             var result = await radElementService.GetElementsBySetId(setId);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> SearchElement(string searchKeyword)
         {
             var result = await radElementService.SearchElement(searchKeyword);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> CreateElement(int setId, ElementType elementType, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.CreateElement(setId, (DataElementType)elementType, content);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> UpdateElement(int setId, int elementId, ElementType elementType, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.UpdateElement(setId, elementId, (DataElementType)elementType, content);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> DeleteElement(int setId, int elementId)
         {
             var result = await radElementService.DeleteElement(setId, elementId);
-            return SendResult(result);
+            return StatusCode((int)result.Code, result.Value);
         }
     }
 }
