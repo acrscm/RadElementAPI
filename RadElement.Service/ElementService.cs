@@ -88,7 +88,7 @@ namespace RadElement.Service
                 var elements = await radElementDbContext.Element.ToListAsync();
 
                 var selectedElements = from elemetId in elementIds
-                                       join element in elements on elemetId.Id equals (int)element.Id
+                                       join element in elements on elemetId.ElementId equals (int)element.Id
                                        select element;
 
                 if (selectedElements != null && selectedElements.Any())
