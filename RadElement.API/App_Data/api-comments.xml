@@ -240,6 +240,51 @@
             </summary>
             <param name="context"></param>
         </member>
+        <member name="T:RadElement.API.Hash.SecurePasswordHasher">
+            <summary>
+            Performing the hshing of password
+            </summary>
+        </member>
+        <member name="F:RadElement.API.Hash.SecurePasswordHasher.SaltSize">
+            <summary>
+            Size of salt.
+            </summary>
+        </member>
+        <member name="F:RadElement.API.Hash.SecurePasswordHasher.HashSize">
+            <summary>
+            Size of hash.
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Hash.SecurePasswordHasher.Hash(System.String,System.Int32)">
+            <summary>
+            Creates a hash from a password.
+            </summary>
+            <param name="password">The password.</param>
+            <param name="iterations">Number of iterations.</param>
+            <returns>The hash.</returns>
+        </member>
+        <member name="M:RadElement.API.Hash.SecurePasswordHasher.Hash(System.String)">
+            <summary>
+            Creates a hash from a password with 10000 iterations
+            </summary>
+            <param name="password">The password.</param>
+            <returns>The hash.</returns>
+        </member>
+        <member name="M:RadElement.API.Hash.SecurePasswordHasher.IsHashSupported(System.String)">
+            <summary>
+            Checks if hash is supported.
+            </summary>
+            <param name="hashString">The hash.</param>
+            <returns>Is supported?</returns>
+        </member>
+        <member name="M:RadElement.API.Hash.SecurePasswordHasher.Verify(System.String,System.String)">
+            <summary>
+            Verifies a password against a hash.
+            </summary>
+            <param name="password">The password.</param>
+            <param name="hashedPassword">The hash.</param>
+            <returns>Could be verified?</returns>
+        </member>
         <member name="T:RadElement.API.Models.ErrorResponse">
             <summary>
             Contains the details of the error
@@ -279,51 +324,6 @@
             </summary>
             <param name="args">The arguments.</param>
             <returns></returns>
-        </member>
-        <member name="T:RadElement.API.SecurePasswordHasher">
-            <summary>
-            Performing the hshing of password
-            </summary>
-        </member>
-        <member name="F:RadElement.API.SecurePasswordHasher.SaltSize">
-            <summary>
-            Size of salt.
-            </summary>
-        </member>
-        <member name="F:RadElement.API.SecurePasswordHasher.HashSize">
-            <summary>
-            Size of hash.
-            </summary>
-        </member>
-        <member name="M:RadElement.API.SecurePasswordHasher.Hash(System.String,System.Int32)">
-            <summary>
-            Creates a hash from a password.
-            </summary>
-            <param name="password">The password.</param>
-            <param name="iterations">Number of iterations.</param>
-            <returns>The hash.</returns>
-        </member>
-        <member name="M:RadElement.API.SecurePasswordHasher.Hash(System.String)">
-            <summary>
-            Creates a hash from a password with 10000 iterations
-            </summary>
-            <param name="password">The password.</param>
-            <returns>The hash.</returns>
-        </member>
-        <member name="M:RadElement.API.SecurePasswordHasher.IsHashSupported(System.String)">
-            <summary>
-            Checks if hash is supported.
-            </summary>
-            <param name="hashString">The hash.</param>
-            <returns>Is supported?</returns>
-        </member>
-        <member name="M:RadElement.API.SecurePasswordHasher.Verify(System.String,System.String)">
-            <summary>
-            Verifies a password against a hash.
-            </summary>
-            <param name="password">The password.</param>
-            <param name="hashedPassword">The hash.</param>
-            <returns>Could be verified?</returns>
         </member>
         <member name="T:RadElement.API.Startup">
             <summary>

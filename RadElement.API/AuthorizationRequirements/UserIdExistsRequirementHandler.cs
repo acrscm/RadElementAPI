@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using RadElement.API.Hash;
 using RadElement.Core.Infrastructure;
 using RadElement.Service;
 using System;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace RadElement.API.AuthorizationRequirements
