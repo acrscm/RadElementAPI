@@ -17,6 +17,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
+using RadElement.API.AuthorizationRequirements;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RadElement.API
 {
@@ -63,6 +67,8 @@ namespace RadElement.API
         public void ConfigureServices(IServiceCollection services)
         {
             var authConfig = Configuration.GetSection("AuthorizationConfig").Get<AuthorizationConfig>();
+            var accountsConfig = Configuration.GetSection("AccountsConfig").Get<UserAccounts>();
+
             authConfig.SetKeyFilePassword(Configuration.GetSection("AuthorizationConfig")["KeyFilePassword"]);
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -80,15 +86,36 @@ namespace RadElement.API
                     };
                 });
 
-            services.AddMvc().AddXmlSerializerFormatters();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserIdExists",
+                    policy => policy.Requirements.Add(new UserIdRequirement("UserId")));
+            });
+
+            services.AddMvc(
+                 config =>
+                 {
+                     config.Filters.Add(typeof(GlobalExceptionFilter));
+                     config.Filters.Add(new RequireHttpsAttribute());
+                 }
+            );
+
             services.AddDbContext<RadElementDbContext>(options => options.UseMySql(Configuration.GetConnectionString("Database")));
+
             services.AddHsts(options =>
             {
                 options.Preload = true;
                 options.IncludeSubDomains = true;
                 options.MaxAge = TimeSpan.FromDays(60);
             });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+            });
+
             services.AddMvcCore().AddApiExplorer();
+
             services.AddCors(o => o.AddPolicy("AllowAllOrigins", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -100,12 +127,14 @@ namespace RadElement.API
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
             services.AddSingleton<AuthorizationConfig>(authConfig);
+            services.AddSingleton<UserAccounts>(accountsConfig);
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<IConfigurationManager, ConfigurationManager>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementSetService, ElementSetService>();
             services.AddTransient<IModuleService, ModuleService>();
             services.AddTransient<IRadElementDbContext, RadElementDbContext>();
+            services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();
             services.AddSingleton<ILogger>(Log.Logger);
             
             services.AddSwaggerGen(c =>

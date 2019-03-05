@@ -15,7 +15,7 @@ namespace RadElement.API.Controllers
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
-    [Authorize]
+    [Authorize(Policy = "UserIdExists")]
     public class ElementController : BaseController
     {
         private readonly IElementService radElementService;
