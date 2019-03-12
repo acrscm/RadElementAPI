@@ -128,6 +128,7 @@ namespace RadElement.Service
                     Name = content.ModuleName.Replace("_", " "),
                     Description = content.Description,
                     ContactName = content.ContactName,
+                    Status = "Proposed"
                 };
 
                 await radElementDbContext.ElementSet.AddAsync(set);

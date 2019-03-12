@@ -93,7 +93,7 @@ namespace RadElement.Service
 
                 if (selectedElements != null && selectedElements.Any())
                 {
-                    return new JsonResult(selectedElements, HttpStatusCode.OK);
+                    return new JsonResult(selectedElements.ToList(), HttpStatusCode.OK);
                 }
                 else
                 {
@@ -126,7 +126,7 @@ namespace RadElement.Service
                                                  x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return new JsonResult(filteredElements, HttpStatusCode.OK);
+                        return new JsonResult(filteredElements.ToList(), HttpStatusCode.OK);
                     }
                     else
                     {
@@ -162,14 +162,14 @@ namespace RadElement.Service
 
                 if (string.IsNullOrEmpty(dataElement.Label))
                 {
-                    return new JsonResult("'Label' field is missing in request ", HttpStatusCode.BadRequest);
+                    return new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest);
                 }
 
                 if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
                 {
                     if (dataElement.Options == null)
                     {
-                        return new JsonResult("'Options' field is missing for Choice type elements in request ", HttpStatusCode.BadRequest);
+                        return new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest);
                     }
                 }
 
@@ -289,19 +289,19 @@ namespace RadElement.Service
             {
                 if (dataElement == null)
                 {
-                    return new JsonResult("DataElement is invalid", HttpStatusCode.BadRequest);
+                    return new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest);
                 }
 
                 if (string.IsNullOrEmpty(dataElement.Label))
                 {
-                    return new JsonResult("'Label' field in request is missing", HttpStatusCode.BadRequest);
+                    return new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest);
                 }
 
                 if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
                 {
                     if (dataElement.Options == null)
                     {
-                        return new JsonResult("'Options' field in request is missing for Choice type elements", HttpStatusCode.BadRequest);
+                        return new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest);
                     }
                 }
 
@@ -420,7 +420,6 @@ namespace RadElement.Service
                     radElementDbContext.ElementSetRef.Remove(elementSetRef);
                     radElementDbContext.SaveChanges();
                     return new JsonResult(string.Format("Element with set id {0} and element id {1} is deleted.", setId, elementId), HttpStatusCode.OK);
-
                 }
 
                 return new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound);

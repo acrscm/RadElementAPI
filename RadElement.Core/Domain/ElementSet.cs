@@ -26,5 +26,10 @@
         /// Gets or sets the parent identifier.
         /// </summary>
         public int? ParentId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status
+        /// </summary>
+        public string Status { get; set; }
     }
 }
