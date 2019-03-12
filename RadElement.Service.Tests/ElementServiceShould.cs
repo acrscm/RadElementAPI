@@ -1,9 +1,13 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore;
+using Moq;
+using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using RadElement.Service.Tests.Mocks.Data;
+using Serilog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Xunit;
 
@@ -11,8 +15,9 @@ namespace RadElement.Service.Tests
 {
     public class ElementServiceShould
     {
-        private readonly Mock<IElementService> mockElementService;
-        
+        private readonly Mock<IRadElementDbContext> mockRadElementContext;
+        private readonly Mock<ILogger> mockLogger;
+
         private const string elementNotFoundMessage = "No such element with id '{0}'";
         private const string elementSetIdNotFoundMessage = "No such elements with set id '{0}'.";
         private const string elementNotFoundMessageWithSearchMessage = "No such element with keyword '{0}'.";
@@ -26,7 +31,9 @@ namespace RadElement.Service.Tests
 
         public ElementServiceShould()
         {
-            mockElementService = new Mock<IElementService>();
+            mockRadElementContext = new Mock<IRadElementDbContext>();
+            mockLogger = new Mock<ILogger>();
+            IntializeMockData();
         }
 
         #region GetElements
@@ -34,8 +41,9 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetElementsShouldReturnAllElements()
         {
-            mockElementService.Setup(x => x.GetElements()).ReturnsAsync(MockElementDataContext.GetElements());            
-            var result = await mockElementService.Object.GetElements();
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.GetElements();
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<List<Element>>(result.Value);
@@ -51,8 +59,8 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void GetElementByIdShouldReturnNotFoundIfDoesnotExists(int elementId)
         {
-            mockElementService.Setup(x => x.GetElement(It.IsAny<int>())).ReturnsAsync(MockElementDataContext.GetElement(elementId));
-            var result = await mockElementService.Object.GetElement(elementId);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.GetElement(elementId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -65,8 +73,8 @@ namespace RadElement.Service.Tests
         [InlineData(340)]
         public async void GetElementByIdShouldReturnElementsBasedOnElementId(int elementId)
         {
-            mockElementService.Setup(x => x.GetElement(It.IsAny<int>())).ReturnsAsync(MockElementDataContext.GetElement(elementId));
-            var result = await mockElementService.Object.GetElement(elementId);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.GetElement(elementId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<Element>(result.Value);
@@ -82,8 +90,8 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void GetElementBySetIdShouldReturnNotFoundIfDoesnotExists(int setId)
         {
-            mockElementService.Setup(x => x.GetElementsBySetId(It.IsAny<int>())).ReturnsAsync(MockElementDataContext.GetElementsBySetId(setId));
-            var result = await mockElementService.Object.GetElementsBySetId(setId);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.GetElementsBySetId(setId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -96,8 +104,8 @@ namespace RadElement.Service.Tests
         [InlineData(66)]
         public async void GetElementBySetIdShouldReturnElementsBasedOnElementId(int setId)
         {
-            mockElementService.Setup(x => x.GetElementsBySetId(It.IsAny<int>())).ReturnsAsync(MockElementDataContext.GetElementsBySetId(setId));
-            var result = await mockElementService.Object.GetElementsBySetId(setId);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.GetElementsBySetId(setId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<List<Element>>(result.Value);
@@ -113,8 +121,8 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void SearchElementShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
-            mockElementService.Setup(x => x.SearchElement(It.IsAny<string>())).ReturnsAsync(MockElementDataContext.SearchElement(searchKeyword));
-            var result = await mockElementService.Object.SearchElement(searchKeyword);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.SearchElement(searchKeyword);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -127,8 +135,8 @@ namespace RadElement.Service.Tests
         [InlineData("test1")]
         public async void SearchElementShouldReturnEmpyElementsIfSearchKeywordDoesnotExists(string searchKeyword)
         {
-            mockElementService.Setup(x => x.SearchElement(It.IsAny<string>())).ReturnsAsync(MockElementDataContext.SearchElement(searchKeyword));
-            var result = await mockElementService.Object.SearchElement(searchKeyword);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.SearchElement(searchKeyword);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -140,8 +148,8 @@ namespace RadElement.Service.Tests
         [InlineData("Tumuor")]
         public async void GetElementShouldReturnElementsIfSearchedElementExists(string searchKeyword)
         {
-            mockElementService.Setup(x => x.SearchElement(It.IsAny<string>())).ReturnsAsync(MockElementDataContext.SearchElement(searchKeyword));
-            var result = await mockElementService.Object.SearchElement(searchKeyword);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.SearchElement(searchKeyword);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<List<Element>>(result.Value);
@@ -151,15 +159,14 @@ namespace RadElement.Service.Tests
         #endregion
 
         #region CreateElement
- 
+
         [Theory]
         [InlineData(1, DataElementType.Choice, null)]
         [InlineData(2, DataElementType.Integer, null)]
         public async void CreateElementShouldReturnBadRequestIfDataElementIsInvalid(int setId, DataElementType elementType, CreateUpdateElement dataElement)
         {
-            mockElementService.Setup(x => x.CreateElement(It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.CreateElement(setId, elementType, dataElement));
-            var result = await mockElementService.Object.CreateElement(setId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -173,9 +180,8 @@ namespace RadElement.Service.Tests
         public async void CreateElementShouldReturnBadRequestIfDataElementLabelIsInvalid(int setId, DataElementType elementType)
         {
             var dataElement = new CreateUpdateElement();
-            mockElementService.Setup(x => x.CreateElement(It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.CreateElement(setId, elementType, dataElement));
-            var result = await mockElementService.Object.CreateElement(setId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -191,9 +197,8 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            mockElementService.Setup(x => x.CreateElement(It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.CreateElement(setId, elementType, dataElement));
-            var result = await mockElementService.Object.CreateElement(setId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -208,9 +213,8 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            mockElementService.Setup(x => x.CreateElement(It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.CreateElement(setId, elementType, dataElement));
-            var result = await mockElementService.Object.CreateElement(setId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<ElementIdDetails>(result.Value);
@@ -251,9 +255,8 @@ namespace RadElement.Service.Tests
                 );
             }
 
-            mockElementService.Setup(x => x.CreateElement(It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.CreateElement(setId, elementType, dataElement));
-            var result = await mockElementService.Object.CreateElement(setId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<ElementIdDetails>(result.Value);
@@ -270,9 +273,8 @@ namespace RadElement.Service.Tests
         [InlineData(2, 2, DataElementType.Integer, null)]
         public async void UpdateElementShouldReturnBadRequestIfDataElementIsInvalid(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)
         {
-            mockElementService.Setup(x => x.UpdateElement(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.UpdateElement(setId, elementId, elementType, dataElement));
-            var result = await mockElementService.Object.UpdateElement(setId, elementId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -286,9 +288,8 @@ namespace RadElement.Service.Tests
         public async void UpdateElementShouldReturnBadRequestIfDataElementLabelIsInvalid(int setId, int elementId, DataElementType elementType)
         {
             var dataElement = new CreateUpdateElement();
-            mockElementService.Setup(x => x.UpdateElement(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.UpdateElement(setId, elementId, elementType, dataElement));
-            var result = await mockElementService.Object.UpdateElement(setId, elementId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -304,9 +305,8 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            mockElementService.Setup(x => x.UpdateElement(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.UpdateElement(setId, elementId, elementType, dataElement));
-            var result = await mockElementService.Object.UpdateElement(setId, elementId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -322,9 +322,8 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            mockElementService.Setup(x => x.UpdateElement(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.UpdateElement(setId, elementId, elementType, dataElement));
-            var result = await mockElementService.Object.UpdateElement(setId, elementId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -366,9 +365,8 @@ namespace RadElement.Service.Tests
                 );
             }
 
-            mockElementService.Setup(x => x.UpdateElement(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DataElementType>(), It.IsAny<CreateUpdateElement>()))
-                              .ReturnsAsync(MockElementDataContext.UpdateElement(setId, elementId, elementType, dataElement));
-            var result = await mockElementService.Object.UpdateElement(setId, elementId, elementType, dataElement);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -390,9 +388,8 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            mockElementService.Setup(x => x.DeleteElement(It.IsAny<int>(), It.IsAny<int>()))
-                              .ReturnsAsync(MockElementDataContext.DeleteElement(setId, elementId));
-            var result = await mockElementService.Object.DeleteElement(setId, elementId);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.DeleteElement(setId, elementId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -404,14 +401,49 @@ namespace RadElement.Service.Tests
         [InlineData(74, 340)]
         public async void DeleteElementShouldReturnDeleteElementIfElementIdIsInvalid(int setId, int elementId)
         {
-            mockElementService.Setup(x => x.DeleteElement(It.IsAny<int>(), It.IsAny<int>()))
-                              .ReturnsAsync(MockElementDataContext.DeleteElement(setId, elementId));
-            var result = await mockElementService.Object.DeleteElement(setId, elementId);
+            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var result = await sut.DeleteElement(setId, elementId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
             Assert.Equal(string.Format(elemenIdDeletedMessage, setId, elementId), result.Value);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void IntializeMockData()
+        {
+            var mockElement = new Mock<DbSet<Element>>();
+            mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
+            mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
+            mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
+            mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
+
+            var mockSet = new Mock<DbSet<ElementSet>>();
+            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
+            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
+            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
+            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
+
+            var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
+            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
+            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
+            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
+            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
+
+            var mockElementValue = new Mock<DbSet<ElementValue>>();
+            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
+            mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
+            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
+            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
+
+            mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
+            mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
+            mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
+            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
         }
 
         #endregion

@@ -36,13 +36,13 @@ namespace RadElement.Service
         {
             try
             {
-                var elements = await radElementDbContext.Element.ToListAsync();
-                return new JsonResult(elements, HttpStatusCode.OK);
+                var elements = radElementDbContext.Element.ToList();
+                return await Task.FromResult(new JsonResult(elements, HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElements()'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -55,22 +55,22 @@ namespace RadElement.Service
         {
             try
             {
-                var elements = await radElementDbContext.Element.ToListAsync();
+                var elements = radElementDbContext.Element.ToList();
                 var element = elements.Find(x => x.Id == elementId);
 
                 if (element != null)
                 {
-                    return new JsonResult(element, HttpStatusCode.OK);
+                    return await Task.FromResult(new JsonResult(element, HttpStatusCode.OK));
                 }
                 else
                 {
-                    return new JsonResult(string.Format("No such element with id '{0}'", elementId), HttpStatusCode.NotFound);
+                    return await Task.FromResult(new JsonResult(string.Format("No such element with id '{0}'", elementId), HttpStatusCode.NotFound));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElement(int elementId)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -83,9 +83,9 @@ namespace RadElement.Service
         {
             try
             {
-                var setRefs = await radElementDbContext.ElementSetRef.ToListAsync();
+                var setRefs = radElementDbContext.ElementSetRef.ToList();
                 var elementIds = setRefs.FindAll(x => x.ElementSetId == setId);
-                var elements = await radElementDbContext.Element.ToListAsync();
+                var elements = radElementDbContext.Element.ToList();
 
                 var selectedElements = from elemetId in elementIds
                                        join element in elements on elemetId.ElementId equals (int)element.Id
@@ -93,17 +93,17 @@ namespace RadElement.Service
 
                 if (selectedElements != null && selectedElements.Any())
                 {
-                    return new JsonResult(selectedElements.ToList(), HttpStatusCode.OK);
+                    return await Task.FromResult(new JsonResult(selectedElements.ToList(), HttpStatusCode.OK));
                 }
                 else
                 {
-                    return new JsonResult(string.Format("No such elements with set id '{0}'.", setId), HttpStatusCode.NotFound);
+                    return await Task.FromResult(new JsonResult(string.Format("No such elements with set id '{0}'.", setId), HttpStatusCode.NotFound));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElementsBySetId(int setId)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -118,7 +118,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var elements = await radElementDbContext.Element.ToListAsync();
+                    var elements = radElementDbContext.Element.ToList();
                     var filteredElements = elements.FindAll(x => x.Definition.ToLower().Contains(searchKeyword.ToLower()) || x.Editor.ToLower().Contains(searchKeyword.ToLower()) ||
                                                  x.Instructions.ToLower().Contains(searchKeyword.ToLower()) || x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
                                                  x.Question.ToLower().Contains(searchKeyword.ToLower()) || x.References.ToLower().Contains(searchKeyword.ToLower()) ||
@@ -126,22 +126,22 @@ namespace RadElement.Service
                                                  x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return new JsonResult(filteredElements.ToList(), HttpStatusCode.OK);
+                        return await Task.FromResult(new JsonResult(filteredElements.ToList(), HttpStatusCode.OK));
                     }
                     else
                     {
-                        return new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound);
+                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                     }
                 }
                 else
                 {
-                    return new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'SearchElement(string searchKeyword)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -157,24 +157,24 @@ namespace RadElement.Service
             {
                 if (dataElement == null)
                 {
-                    return new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
                 }
 
                 if (string.IsNullOrEmpty(dataElement.Label))
                 {
-                    return new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest));
                 }
 
                 if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
                 {
                     if (dataElement.Options == null)
                     {
-                        return new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest);
+                        return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
                     }
                 }
 
                 int elementId = 0;
-                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSets = radElementDbContext.ElementSet.ToList();
                 var elementSet = elementSets.Find(x => x.Id == setId);
 
                 if (elementSet != null)
@@ -262,17 +262,17 @@ namespace RadElement.Service
 
                 if (elementId != 0)
                 {
-                    return new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.Created);
+                    return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.Created));
                 }
                 else
                 {
-                    return new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.BadRequest));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -289,23 +289,23 @@ namespace RadElement.Service
             {
                 if (dataElement == null)
                 {
-                    return new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
                 }
 
                 if (string.IsNullOrEmpty(dataElement.Label))
                 {
-                    return new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest));
                 }
 
                 if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
                 {
                     if (dataElement.Options == null)
                     {
-                        return new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest);
+                        return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
                     }
                 }
 
-                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSets = radElementDbContext.ElementSet.ToList();
                 var elementSet = elementSets.Find(x => x.Id == setId);
 
                 if (elementSet != null)
@@ -376,16 +376,16 @@ namespace RadElement.Service
                         }
 
                         radElementDbContext.SaveChanges();
-                        return new JsonResult(string.Format("Element with set id {0} and element id {1} is updated.", setId, elementId), HttpStatusCode.OK);
+                        return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is updated.", setId, elementId), HttpStatusCode.OK));
                     }
                 }
 
-                return new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound);
+                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -399,7 +399,7 @@ namespace RadElement.Service
         {
             try
             {
-                var elementSetRefs = await radElementDbContext.ElementSetRef.ToListAsync();
+                var elementSetRefs = radElementDbContext.ElementSetRef.ToList();
                 var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == setId && x.ElementId == elementId);
 
                 if (elementSetRef != null)
@@ -419,15 +419,15 @@ namespace RadElement.Service
 
                     radElementDbContext.ElementSetRef.Remove(elementSetRef);
                     radElementDbContext.SaveChanges();
-                    return new JsonResult(string.Format("Element with set id {0} and element id {1} is deleted.", setId, elementId), HttpStatusCode.OK);
+                    return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is deleted.", setId, elementId), HttpStatusCode.OK));
                 }
 
-                return new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound);
+                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 

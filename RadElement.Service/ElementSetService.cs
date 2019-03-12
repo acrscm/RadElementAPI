@@ -36,13 +36,13 @@ namespace RadElement.Service
         {
             try
             {
-                var sets = await radElementDbContext.ElementSet.ToListAsync();
-                return new JsonResult(sets, HttpStatusCode.OK);
+                var sets = radElementDbContext.ElementSet.ToList();
+                return await Task.FromResult(new JsonResult(sets, HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetSets()'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -55,22 +55,22 @@ namespace RadElement.Service
         {
             try
             {
-                var sets = await radElementDbContext.ElementSet.ToListAsync();
+                var sets = radElementDbContext.ElementSet.ToList();
                 var set = sets.Find(x => x.Id == setId);
 
                 if (set != null)
                 {
-                    return new JsonResult(set, HttpStatusCode.OK);
+                    return await Task.FromResult(new JsonResult(set, HttpStatusCode.OK));
                 }
                 else
                 {
-                    return new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound);
+                    return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetSet(int setId)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -85,27 +85,27 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = await radElementDbContext.ElementSet.ToListAsync();
+                    var sets = radElementDbContext.ElementSet.ToList();
                     var filteredSets = sets.FindAll(x => x.Name.ToLower().Contains(searchKeyword.ToLower()) || x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
                                                 x.ContactName.ToLower().Contains(searchKeyword.ToLower())); ;
                     if (filteredSets != null && filteredSets.Any())
                     {
-                        return new JsonResult(filteredSets, HttpStatusCode.OK);
+                        return await Task.FromResult(new JsonResult(filteredSets, HttpStatusCode.OK));
                     }
                     else
                     {
-                        return new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound);
+                        return await Task.FromResult(new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                     }
                 }
                 else
                 {
-                    return new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'SearchSet(string searchKeyword)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -120,7 +120,7 @@ namespace RadElement.Service
             {
                 if (content == null || string.IsNullOrEmpty(content.ModuleName) || string.IsNullOrEmpty(content.ContactName) || string.IsNullOrEmpty(content.Description))
                 {
-                    return new JsonResult("Element set is invalid", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("Element set is invalid", HttpStatusCode.BadRequest));
                 }
 
                 ElementSet set = new ElementSet()
@@ -131,22 +131,22 @@ namespace RadElement.Service
                     Status = "Proposed"
                 };
 
-                await radElementDbContext.ElementSet.AddAsync(set);
+                radElementDbContext.ElementSet.Add(set);
                 radElementDbContext.SaveChanges();
 
                 if (set.Id != 0)
                 {
-                    return new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.Created);
+                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.Created));
                 }
                 else
                 {
-                    return new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.BadRequest));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateSet(CreateUpdateSet content)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -165,7 +165,7 @@ namespace RadElement.Service
                     return new JsonResult("Element set is invalid", HttpStatusCode.BadRequest);
                 }
 
-                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSets = radElementDbContext.ElementSet.ToList();
                 var elementSet = elementSets.Find(x => x.Id == setId);
 
                 if (elementSet != null)
@@ -174,15 +174,15 @@ namespace RadElement.Service
                     elementSet.Description = content.Description;
                     elementSet.ContactName = content.ContactName;
                     radElementDbContext.SaveChanges();
-                    return new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK);
+                    return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
                 }
 
-                return new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound);
+                return await Task.FromResult(new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateSet(CreateUpdaUpdateSet(int setId, CreateUpdateSet content)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -195,7 +195,7 @@ namespace RadElement.Service
         {
             try
             {
-                var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                var elementSets = radElementDbContext.ElementSet.ToList();
                 var elementSet = elementSets.Find(x => x.Id == setId);
 
                 if (elementSet != null)
@@ -224,15 +224,15 @@ namespace RadElement.Service
 
                     radElementDbContext.ElementSet.Remove(elementSet);
                     radElementDbContext.SaveChanges();
-                    return new JsonResult(string.Format("Set with id {0} is deleted.", setId), HttpStatusCode.OK);
+                    return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is deleted.", setId), HttpStatusCode.OK));
                 }
 
-                return new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound);
+                return await Task.FromResult(new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'DeleteSet(int setId)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
     }

@@ -45,22 +45,22 @@ namespace RadElement.Service
 
                     if (string.IsNullOrEmpty(idDetails.SetId))
                     {
-                        return new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.Created);
+                        return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.Created));
                     }
                     else
                     {
-                        return new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.BadRequest);
+                        return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.BadRequest));
                     }
                 }
                 else
                 {
-                    return new JsonResult("Xml content provided is invalid", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("Xml content provided is invalid", HttpStatusCode.BadRequest));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateModule(XmlElement xmlContent)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -71,7 +71,7 @@ namespace RadElement.Service
                 var module = await GetDeserializedDataFromXml(xmlContent.OuterXml);
                 if (module != null)
                 {
-                    var elementSets = await radElementDbContext.ElementSet.ToListAsync();
+                    var elementSets = radElementDbContext.ElementSet.ToList();
                     var elementSet = elementSets.Find(x => x.Id == setId);
 
                     if (elementSet != null)
@@ -118,20 +118,20 @@ namespace RadElement.Service
 
                         List<int> elementIds = AddElements(module.DataElements);
                         AddSetRef(setId, elementIds);
-                        return new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK);
+                        return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
                     }
 
-                    return new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound);
+                    return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound));
                 }
                 else
                 {
-                    return new JsonResult("Xml content provided is invalid", HttpStatusCode.BadRequest);
+                    return await Task.FromResult(new JsonResult("Xml content provided is invalid", HttpStatusCode.BadRequest));
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'UpdateModule(XmlElement xmlContent, int setId)'");
-                return new JsonResult(ex, HttpStatusCode.InternalServerError);
+                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
             }
         }
 
