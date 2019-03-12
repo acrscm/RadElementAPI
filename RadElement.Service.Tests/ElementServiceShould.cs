@@ -26,6 +26,7 @@ namespace RadElement.Service.Tests
         private const string labelInvalidMessage = "'Label' field is missing in request";
         private const string choiceInvalidMessage = "'Options' field is missing for Choice type elements in request";
         private const string elemenIdandSetIdInvalidMessage = "No such element with set id {0} and element id {1}.";
+        private const string setIdInvalidMessage = "No such element with set id {0}.";
         private const string elementUpdateMessage = "Element with set id {0} and element id {1} is updated.";
         private const string elemenIdDeletedMessage = "Element with set id {0} and element id {1} is deleted.";
 
@@ -217,8 +218,9 @@ namespace RadElement.Service.Tests
             var result = await sut.CreateElement(setId, elementType, dataElement);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ElementIdDetails>(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(setIdInvalidMessage, setId), result.Value);
         }
 
         [Theory]

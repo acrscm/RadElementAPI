@@ -258,16 +258,10 @@ namespace RadElement.Service
 
                     radElementDbContext.ElementSetRef.Add(setRef);
                     radElementDbContext.SaveChanges();
-                }
-
-                if (elementId != 0)
-                {
                     return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.Created));
                 }
-                else
-                {
-                    return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = elementId.ToString() }, HttpStatusCode.BadRequest));
-                }
+
+                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0}.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
