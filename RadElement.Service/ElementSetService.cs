@@ -64,7 +64,7 @@ namespace RadElement.Service
                 }
                 else
                 {
-                    return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound));
+                    return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
                 }
             }
             catch (Exception ex)
@@ -133,15 +133,7 @@ namespace RadElement.Service
 
                 radElementDbContext.ElementSet.Add(set);
                 radElementDbContext.SaveChanges();
-
-                if (set.Id != 0)
-                {
-                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.Created));
-                }
-                else
-                {
-                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.BadRequest));
-                }
+                return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = set.Id.ToString() }, HttpStatusCode.Created));
             }
             catch (Exception ex)
             {
@@ -177,7 +169,7 @@ namespace RadElement.Service
                     return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound));
+                return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
@@ -227,7 +219,7 @@ namespace RadElement.Service
                     return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is deleted.", setId), HttpStatusCode.OK));
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such set with id {0}.", setId), HttpStatusCode.NotFound));
+                return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {

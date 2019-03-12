@@ -3,7 +3,6 @@ using Moq;
 using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
-using RadElement.Core.Services;
 using RadElement.Service.Tests.Mocks.Data;
 using Serilog;
 using System.Collections.Generic;
