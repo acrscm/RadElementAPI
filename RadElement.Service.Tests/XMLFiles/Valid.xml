@@ -21,14 +21,23 @@
 				<UserSelected Value="false"></UserSelected>
 			</Coding>
 		</CodableConcept>	
-		<Info>
-			<Diagrams>
-				<Diagram DisplaySequence="1" IsKeyDiagram="true">
-					<Location>keyimage.PNG</Location>
-					<Label>Adrenal CT</Label>
-				</Diagram>
-			</Diagrams>
-		</Info>
+	        <Info>
+            <Description>Lung-RADS-based cancer screening on CT</Description>
+            <References>
+                <Citation PubmedId="24992501" Url="http://journals.lww.com/thoracicimaging/Citation/2014/09000/ACR_STR_Practice_Parameter_for_the_Performance_and.12.aspx">Kazerooni EA, Austin J, Black WC, Dyer DS, Hazelton T, Leung AN, McNitt-Gray MF, Munden RF, Pipavath S. ACR-STR Practice Parameter for the Performance and Reporting of Lung Cancer Screening Thoracic Computed Tomography (Resolution 4). Journal of Thoracic Imaging 2014;29(5):310-316</Citation>
+            </References>
+            <Diagrams>
+                <Diagram>
+                    <Location>LungRADSCategorization.png</Location>
+                    <Label>ACR Lung Imaging Reporting and Data System (Lung-RADS) Assessment Categories</Label>
+                </Diagram>
+            </Diagrams>
+            <Contact>
+                <Name>Tarik Alkasab, MD, PhD</Name>
+                <Email>talkasab@mgh.harvard.edu</Email>
+                <Institution>Massachusetts General Hospital, Harvard Medical School</Institution>
+            </Contact>
+        </Info>
 		<ReportCitationText>Adrenal CT</ReportCitationText>
 		<ApplicableSexes Value="Both"></ApplicableSexes>
 
@@ -37,6 +46,12 @@
 		<NumericDataElement Id="adrenalmass" DisplaySequence="2" IsRequired="true">
 			<Label>Size(cm)</Label>
 			<Hint>Enter the nodule size in cm</Hint>
+			<Diagrams>
+    			<Diagram>
+    				<Location>observation.png</Location>
+    				<Label>observation</Label>
+    			</Diagram>
+    		</Diagrams>
 			<CodableConcept Name="adrenalmass">
             <Coding>
             <System Value="RadElement"></System>
@@ -123,6 +138,13 @@
 					<Label>New or Enlarging</Label>
 				</Choice>
 			</ChoiceInfo>
+			     <ImageMap>
+            	<Location>washoutImages.png</Location>
+                <Map>
+                     <Area Shape="rect" Coords="0,462,800,623" ChoiceValue="no"/>
+                    <Area Shape="rect" Coords="0,0,799,463" ChoiceValue="yes"/>
+                </Map>
+            </ImageMap>
 			<ConditionalProperties>
 				<ConditionalProperty>
 					<NotEqualCondition DataElementId="diagimagfeatures" ComparisonValue="none"/>

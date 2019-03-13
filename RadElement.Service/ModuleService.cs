@@ -271,49 +271,6 @@ namespace RadElement.Service
             return set.Id.ToString();
         }
 
-        private bool UpdateElementSet(int setId, CreateUpdateSet content)
-        {
-            var elementSet = radElementDbContext.ElementSet.ToList().Find(x => x.Id == setId);
-
-            if (elementSet != null)
-            {
-                elementSet.Name = content.ModuleName.Replace("_", " ");
-                elementSet.Description = content.Description;
-                elementSet.ContactName = content.ContactName;
-                return radElementDbContext.SaveChanges() > 0;
-            }
-
-            return false;
-        }
-
-        private bool DeleteElementSet(ElementSet elementSet)
-        {
-            var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == elementSet.Id);
-            if (elementSetRefs != null && elementSetRefs.Any())
-            {
-                foreach (var setref in elementSetRefs)
-                {
-                    var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == setref.ElementId);
-                    var elements = radElementDbContext.Element.ToList().FindAll(x => x.Id == setref.ElementId);
-
-                    if (elementValues != null && elementValues.Any())
-                    {
-                        radElementDbContext.ElementValue.RemoveRange(elementValues);
-                    }
-
-                    if (elements != null && elements.Any())
-                    {
-                        radElementDbContext.Element.RemoveRange(elements);
-                    }
-                }
-
-                radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
-            }
-
-            radElementDbContext.ElementSet.Remove(elementSet);
-            return radElementDbContext.SaveChanges() > 0;
-        }
-
         private void AddSetRef(int setId, List<int> elementIds)
         {
             foreach (short elementid in elementIds)
