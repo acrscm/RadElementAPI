@@ -19,6 +19,6 @@ namespace RadElement.Core.Services
         /// <param name="xmlContent">Content of the XML.</param>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<JsonResult> UpdateModule(XmlElement xmlContent, int setId);
+        Task<JsonResult> UpdateModule(XmlElement xmlContent, string setId);
     }
 }

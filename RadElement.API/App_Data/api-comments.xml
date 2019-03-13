@@ -67,14 +67,14 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.GetElementByElementId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.GetElementByElementId(System.String)">
             <summary>
             Fetch a element by element identifier.
             </summary>
             <param name="elementId">The element identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.GetElementsBySetId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.GetElementsBySetId(System.String)">
             <summary>
             Fetch the elements by set identifier.
             </summary>
@@ -88,7 +88,7 @@
             <param name="searchKeyword">The search keyword.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.Int32,RadElement.Core.DTO.ElementType,RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,RadElement.Core.DTO.ElementType,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Creates a element under specific set identifier.
             </summary>
@@ -97,7 +97,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.Int32,System.Int32,RadElement.Core.DTO.ElementType,RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.String,System.String,RadElement.Core.DTO.ElementType,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Updates the element based on set identifier and element identifier.
             </summary>
@@ -107,7 +107,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.DeleteElement(System.Int32,System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementController.DeleteElement(System.String,System.String)">
             <summary>
             Deletes the element based on set identifier and element identifier..
             </summary>
@@ -134,7 +134,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementSetController.GetSetBySetId(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.GetSetBySetId(System.String)">
             <summary>
             Fetches the set by set identifier.
             </summary>
@@ -155,7 +155,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementSetController.UpdateSet(System.Int32,RadElement.Core.DTO.CreateUpdateSet)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.UpdateSet(System.String,RadElement.Core.DTO.CreateUpdateSet)">
             <summary>
             Updates a set by set identifier.
             </summary>
@@ -163,7 +163,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementSetController.DeleteSet(System.Int32)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.DeleteSet(System.String)">
             <summary>
             Removes a set by set identifier.
             </summary>
@@ -202,7 +202,7 @@
             <param name="xmlContent">Content of the XML.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ModuleController.UpdateModule(System.Xml.XmlElement,System.Int32)">
+        <member name="M:RadElement.API.Controllers.ModuleController.UpdateModule(System.Xml.XmlElement,System.String)">
             <summary>
             Updated the elements and sets with the provided Xml
             </summary>

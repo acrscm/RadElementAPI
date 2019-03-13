@@ -48,8 +48,8 @@ namespace RadElement.API.Controllers
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("set/{setId:int}")]
-        public async Task<IActionResult> GetSetBySetId(int setId)
+        [Route("set/{setId}")]
+        public async Task<IActionResult> GetSetBySetId(string setId)
         {
             var result = await elementSetService.GetSet(setId);
             return StatusCode((int)result.Code, result.Value);
@@ -88,8 +88,8 @@ namespace RadElement.API.Controllers
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("set/{setId:int}")]
-        public async Task<IActionResult> UpdateSet(int setId, [FromBody]CreateUpdateSet content)
+        [Route("set/{setId}")]
+        public async Task<IActionResult> UpdateSet(string setId, [FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.UpdateSet(setId, content);
             return StatusCode((int)result.Code, result.Value);
@@ -101,8 +101,8 @@ namespace RadElement.API.Controllers
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("set/{setId:int}")]
-        public async Task<IActionResult> DeleteSet(int setId)
+        [Route("set/{setId}")]
+        public async Task<IActionResult> DeleteSet(string setId)
         {
             var result = await elementSetService.DeleteSet(setId);
             return StatusCode((int)result.Code, result.Value);

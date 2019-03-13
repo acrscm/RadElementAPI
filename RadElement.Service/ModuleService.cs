@@ -55,63 +55,66 @@ namespace RadElement.Service
             }
         }
 
-        public async Task<JsonResult> UpdateModule(XmlElement xmlContent, int setId)
+        public async Task<JsonResult> UpdateModule(XmlElement xmlContent, string setId)
         {
             try
             {
                 var module = await GetDeserializedDataFromXml(xmlContent.OuterXml);
                 if (module != null)
                 {
-                    var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == setId);
-
-                    if (elementSet != null)
+                    if (IsValidSetId(setId))
                     {
-                        string desc = string.Empty;
-                        string contact = string.Empty;
+                        int id = Convert.ToInt32(setId.Remove(0, 4));
+                        var elementSets = radElementDbContext.ElementSet.ToList();
+                        var elementSet = elementSets.Find(x => x.Id == id);
 
-                        if (module.MetaData.Info != null && !string.IsNullOrEmpty(module.MetaData.Info.Description))
+                        if (elementSet != null)
                         {
-                            desc = module.MetaData.Info.Description;
-                        }
-                        if (module.MetaData.Info.Contact != null && !string.IsNullOrEmpty(module.MetaData.Info.Contact.Name))
-                        {
-                            contact = module.MetaData.Info.Contact.Name;
-                        }
+                            string desc = string.Empty;
+                            string contact = string.Empty;
 
-                        elementSet.Name = module.ModuleName.Replace("_", " ");
-                        elementSet.Description = desc;
-                        elementSet.ContactName = contact;
-                        radElementDbContext.SaveChanges();
-
-                        var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == setId);
-                        if (elementSetRefs != null && elementSetRefs.Any())
-                        {
-                            foreach (var eleref in elementSetRefs.ToList())
+                            if (module.MetaData.Info != null && !string.IsNullOrEmpty(module.MetaData.Info.Description))
                             {
-                                var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == eleref.ElementId);
-                                var element = radElementDbContext.Element.ToList().Find(x => x.Id == eleref.ElementId);
-
-                                if (elementValues != null && elementValues.Any())
-                                {
-                                    radElementDbContext.ElementValue.RemoveRange(elementValues);
-                                }
-
-                                if (element != null)
-                                {
-                                    radElementDbContext.Element.Remove(element);
-                                }
-
-                                radElementDbContext.ElementSetRef.Remove(eleref);
+                                desc = module.MetaData.Info.Description;
                             }
+                            if (module.MetaData.Info.Contact != null && !string.IsNullOrEmpty(module.MetaData.Info.Contact.Name))
+                            {
+                                contact = module.MetaData.Info.Contact.Name;
+                            }
+
+                            elementSet.Name = module.ModuleName.Replace("_", " ");
+                            elementSet.Description = desc;
+                            elementSet.ContactName = contact;
                             radElementDbContext.SaveChanges();
+
+                            var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == id);
+                            if (elementSetRefs != null && elementSetRefs.Any())
+                            {
+                                foreach (var eleref in elementSetRefs.ToList())
+                                {
+                                    var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == eleref.ElementId);
+                                    var element = radElementDbContext.Element.ToList().Find(x => x.Id == eleref.ElementId);
+
+                                    if (elementValues != null && elementValues.Any())
+                                    {
+                                        radElementDbContext.ElementValue.RemoveRange(elementValues);
+                                    }
+
+                                    if (element != null)
+                                    {
+                                        radElementDbContext.Element.Remove(element);
+                                    }
+
+                                    radElementDbContext.ElementSetRef.Remove(eleref);
+                                }
+                                radElementDbContext.SaveChanges();
+                            }
+
+                            List<int> elementIds = AddElements(module.DataElements);
+                            AddSetRef(id, elementIds);
+                            return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
                         }
-
-                        List<int> elementIds = AddElements(module.DataElements);
-                        AddSetRef(setId, elementIds);
-                        return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
                     }
-
                     return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'", setId), HttpStatusCode.NotFound));
                 }
                 else
@@ -317,6 +320,18 @@ namespace RadElement.Service
                     return null;
                 }
             });
+        }
+
+        private bool IsValidSetId(string setId)
+        {
+            if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
+            {
+                int id;
+                bool result = Int32.TryParse(setId.Remove(0, 4), out id);
+                return result;
+            }
+
+            return false;
         }
     }
 }

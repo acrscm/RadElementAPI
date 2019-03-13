@@ -18,14 +18,14 @@ namespace RadElement.Core.Services
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
-        Task<JsonResult> GetElement(int elementId);
+        Task<JsonResult> GetElement(string elementId);
 
         /// <summary>
         /// Gets the elements by set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<JsonResult> GetElementsBySetId(int setId);
+        Task<JsonResult> GetElementsBySetId(string setId);
 
         /// <summary>
         /// Searches the element.
@@ -41,7 +41,7 @@ namespace RadElement.Core.Services
         /// <param name="elementType">Type of the element.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        Task<JsonResult> CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement);
+        Task<JsonResult> CreateElement(string setId, DataElementType elementType, CreateUpdateElement dataElement);
 
         /// <summary>
         /// Updates the set.
@@ -51,7 +51,7 @@ namespace RadElement.Core.Services
         /// <param name="elementType">Type of the element.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        Task<JsonResult> UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement);
+        Task<JsonResult> UpdateElement(string setId, string elementId, DataElementType elementType, CreateUpdateElement dataElement);
 
         /// <summary>
         /// Deletes the set.
@@ -59,6 +59,6 @@ namespace RadElement.Core.Services
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
-        Task<JsonResult> DeleteElement(int setId, int elementId);
+        Task<JsonResult> DeleteElement(string setId, string elementId);
     }
 }

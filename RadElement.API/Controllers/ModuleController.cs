@@ -51,7 +51,7 @@ namespace RadElement.API.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("module/{setId}")]
-        public async Task<IActionResult> UpdateModule([FromBody]XmlElement xmlContent, int setId)
+        public async Task<IActionResult> UpdateModule([FromBody]XmlElement xmlContent, string setId)
         {
             var result = await moduleService.UpdateModule(xmlContent, setId);
             return StatusCode((int)result.Code, result.Value);
