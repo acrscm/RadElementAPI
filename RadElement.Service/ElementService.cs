@@ -6,7 +6,6 @@ using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Serilog;
 

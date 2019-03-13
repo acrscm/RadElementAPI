@@ -43,6 +43,7 @@
 
 	</Metadata>
 	<DataElements>
+	<GlobalValue Id="conditionConst">10</GlobalValue>
 		<NumericDataElement Id="adrenalmass" DisplaySequence="2" IsRequired="true">
 			<Label>Size(cm)</Label>
 			<Hint>Enter the nodule size in cm</Hint>

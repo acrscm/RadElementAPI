@@ -236,12 +236,12 @@ namespace RadElement.Service.Tests
             if (elementType == DataElementType.Integer)
             {
                 dataElement.ValueMin = 1;
-                dataElement.ValueMin = 3;
+                dataElement.ValueMax = 3;
             }
             else if (elementType == DataElementType.Numeric)
             {
                 dataElement.ValueMin = 1f;
-                dataElement.ValueMin = 3f;
+                dataElement.ValueMax = 3f;
             }
             else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
             {
@@ -345,12 +345,12 @@ namespace RadElement.Service.Tests
             if (elementType == DataElementType.Integer)
             {
                 dataElement.ValueMin = 1;
-                dataElement.ValueMin = 3;
+                dataElement.ValueMax = 3;
             }
             else if (elementType == DataElementType.Numeric)
             {
                 dataElement.ValueMin = 1f;
-                dataElement.ValueMin = 3f;
+                dataElement.ValueMax = 3f;
             }
             else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
             {

@@ -2,15 +2,15 @@
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
-using System.Linq;
-using System.Threading.Tasks;
 using Serilog;
-using System.Net;
 using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace RadElement.Service
 {
-    public class ElementSetService : IElementSetService
+    public class ElementSetService: IElementSetService
     {
         private IRadElementDbContext radElementDbContext;
         private readonly ILogger logger;

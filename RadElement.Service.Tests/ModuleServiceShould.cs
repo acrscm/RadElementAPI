@@ -6,7 +6,6 @@ using RadElement.Core.DTO;
 using RadElement.Service.Tests.Mocks.Data;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Xml;
