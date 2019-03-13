@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using RadElement.Core.DTO;
 using RadElement.Infrastructure;
 using System;
 using System.Net;
@@ -51,7 +52,7 @@ namespace RadElement.API.IntegrationTests
 
         [Theory]
         [InlineData("//XMLFiles//Valid.xml")]
-        public async void ReturnsSetIdInCreateIfAccessTokenIsValid(string xmlPath)
+        public async void ReturnsSetIdInCreateModuleIfAccessTokenIsValid(string xmlPath)
         {
             string apiURL = $"radelement/api/v1/module";
 
@@ -60,13 +61,12 @@ namespace RadElement.API.IntegrationTests
             XmlElement data = doc.DocumentElement;
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var testURL = testClientProvider.ReturnTestURL(apiURL);
-            var param = JsonConvert.SerializeObject(data);
-            HttpContent contentPost = new StringContent(param, Encoding.UTF8, "application/xml");
+            var testURL = testClientProvider.ReturnTestURL(apiURL);            
+            HttpContent contentPost = new StringContent(data.OuterXml, Encoding.UTF8, "application/xml");
 
             var response = await client.PostAsync(testURL, contentPost);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            var setId = JsonConvert.DeserializeObject<string>(await response.Content.ReadAsStringAsync());
+            var setId = JsonConvert.DeserializeObject<SetIdDetails>(await response.Content.ReadAsStringAsync()).SetId;
 
             // Delete temporarily created module
             string deleteApiUrl = $"radelement/api/v1/set/{setId}";
@@ -81,51 +81,59 @@ namespace RadElement.API.IntegrationTests
 
         #region UpdateModule
 
-        //[Theory]
-        //[InlineData(61, "//XMLFiles//Invalid.xml")]
-        //public async void Return401InUpdateModuleIfAccessTokenIsNotProvided(int setId, string xmlPath)
-        //{
-        //    string apiURL = $"radelement/api/v1/module";
+        [Theory]
+        [InlineData(66, "//XMLFiles//Invalid.xml")]
+        public async void Return401InUpdateModuleIfAccessTokenIsNotProvided(int setId, string xmlPath)
+        {
+            string apiURL = $"radelement/api/v1/module/{setId}";
 
-        //    XmlDocument doc = new XmlDocument();
-        //    doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
-        //    XmlElement data = doc.DocumentElement;
+            XmlDocument doc = new XmlDocument();
+            doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
+            XmlElement data = doc.DocumentElement;
 
-        //    var testURL = testClientProvider.ReturnTestURL(apiURL);
-        //    var param = JsonConvert.SerializeObject(data);
-        //    HttpContent contentPost = new StringContent(param, Encoding.UTF8, "application/json");
+            var testURL = testClientProvider.ReturnTestURL(apiURL);
+            HttpContent contentPost = new StringContent(data.OuterXml, Encoding.UTF8, "application/xml");
 
-        //    var response = await client.PutAsync(testURL, contentPost);
-        //    Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        //}
+            var response = await client.PutAsync(testURL, contentPost);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
 
-        //[Theory]
-        //[InlineData(61, "//XMLFiles//Valid.xml")]
-        //public async void ReturnsSetIdInUpdateIfAccessTokenIsValid(int setId, string xmlPath)
-        //{
-        //    string apiURL = $"radelement/api/v1/module";
+        [Theory]
+        [InlineData("//XMLFiles//Valid.xml")]
+        public async void ReturnsSetIdInUpdateModuleIfAccessTokenIsValid(string xmlPath)
+        {
+            //Creates temporary module
+            string apiURL = $"radelement/api/v1/module";
 
-        //    XmlDocument doc = new XmlDocument();
-        //    doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
-        //    XmlElement data = doc.DocumentElement;
+            XmlDocument doc = new XmlDocument();
+            doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
+            XmlElement data = doc.DocumentElement;
 
-        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        //    var testURL = testClientProvider.ReturnTestURL(apiURL);
-        //    var param = JsonConvert.SerializeObject(data);
-        //    HttpContent contentPost = new StringContent(param, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var testURL = testClientProvider.ReturnTestURL(apiURL);
+            HttpContent contentPost = new StringContent(data.OuterXml, Encoding.UTF8, "application/xml");
 
-        //    var response = await client.PutAsync(testURL, contentPost);
-        //    Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        //    var setId = JsonConvert.DeserializeObject<string>(await response.Content.ReadAsStringAsync());
+            var response = await client.PostAsync(testURL, contentPost);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            var setId = JsonConvert.DeserializeObject<SetIdDetails>(await response.Content.ReadAsStringAsync()).SetId;
 
-        //    // Delete temporarily created module
-        //    string deleteApiUrl = $"radelement/api/v1/set/{setId}";
-        //    testURL = testClientProvider.ReturnTestURL(deleteApiUrl);
-        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            // Updates module
+            apiURL = $"radelement/api/v1/module/{setId}";
 
-        //    response = await client.DeleteAsync(testURL);
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        //}
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            testURL = testClientProvider.ReturnTestURL(apiURL);
+            contentPost = new StringContent(data.OuterXml, Encoding.UTF8, "application/xml");
+            response = await client.PutAsync(testURL, contentPost);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // Delete temporarily created module
+            string deleteApiUrl = $"radelement/api/v1/set/{setId}";
+            testURL = testClientProvider.ReturnTestURL(deleteApiUrl);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            response = await client.DeleteAsync(testURL);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
 
         #endregion
 
@@ -144,12 +152,6 @@ namespace RadElement.API.IntegrationTests
                 disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~ModulesControllerShould() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         // This code added to correctly implement the disposable pattern.
         internal void Dispose()
