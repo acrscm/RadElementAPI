@@ -174,7 +174,6 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result.Value);
             Assert.IsType<SetIdDetails>(result.Value);
             Assert.Equal(HttpStatusCode.Created, result.Code);
-            Assert.NotEqual(0, result.Value);
         }
 
         #endregion

@@ -25,4 +25,13 @@
     <ProjectReference Include="..\RadElement.Service\RadElement.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="XMLFiles\Valid.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="XMLFiles\Invalid.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

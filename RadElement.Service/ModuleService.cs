@@ -10,7 +10,6 @@ using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Net;
 
@@ -35,22 +34,14 @@ namespace RadElement.Service
         {
             try
             {
-                SetIdDetails idDetails = new SetIdDetails(); ;
+                SetIdDetails idDetails = new SetIdDetails();
                 var assistModule = await GetDeserializedDataFromXml(xmlContent.OuterXml);
                 if (assistModule != null)
                 {
                     List<int> elementIds = AddElements(assistModule.DataElements);
                     idDetails.SetId = AddElementSet(assistModule);
                     AddSetRef(Int16.Parse(idDetails.SetId), elementIds);
-
-                    if (string.IsNullOrEmpty(idDetails.SetId))
-                    {
-                        return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.Created));
-                    }
-                    else
-                    {
-                        return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.BadRequest));
-                    }
+                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.Created));
                 }
                 else
                 {

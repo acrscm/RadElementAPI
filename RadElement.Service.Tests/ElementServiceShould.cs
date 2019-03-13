@@ -262,7 +262,6 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result.Value);
             Assert.IsType<ElementIdDetails>(result.Value);
             Assert.Equal(HttpStatusCode.Created, result.Code);
-            Assert.NotEqual(0, result.Value);
         }
 
         #endregion
@@ -422,6 +421,7 @@ namespace RadElement.Service.Tests
             mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
             mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
             mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
+            mockElement.Setup(d => d.Add(It.IsAny<Element>())).Callback<Element>((s) => MockDataContext.elementsDB.ToList().Add(s));
 
             var mockSet = new Mock<DbSet<ElementSet>>();
             mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
@@ -444,7 +444,7 @@ namespace RadElement.Service.Tests
             mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
             mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
             mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
-            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);           
         }
 
         #endregion
