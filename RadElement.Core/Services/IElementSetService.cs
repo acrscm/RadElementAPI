@@ -17,7 +17,7 @@ namespace RadElement.Core.Services
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<JsonResult> GetSet(int setId);
+        Task<JsonResult> GetSet(string setId);
 
         /// <summary>
         /// Searches the cde set.
@@ -39,13 +39,13 @@ namespace RadElement.Core.Services
         /// <param name="setId">The set identifier.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        Task<JsonResult> UpdateSet(int setId, CreateUpdateSet content);
+        Task<JsonResult> UpdateSet(string setId, CreateUpdateSet content);
 
         /// <summary>
         /// Deletes the set.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        Task<JsonResult> DeleteSet(int setId);
+        Task<JsonResult> DeleteSet(string setId);
     }
 }

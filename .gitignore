@@ -9,6 +9,11 @@ RadElement.Infrastructure/obj
 RadElement.Infrastructure/bin/
 RadElement.Service/obj
 RadElement.Service/bin/
+RadElement.Service.Tests/obj
+RadElement.Service.Tests/bin/
+RadElement.API.IntegrationTests/obj
+RadElement.API.IntegrationTests/bin/
+
 .vs
 /RadElement.API/bin
 /RadElement.API/Logs
@@ -21,3 +26,9 @@ RadElement.Service/bin/
 /RadElement.Infrastructure/bin/
 /RadElement.Service/obj
 /RadElement.Service/bin/
+/RadElement.Service.Tests/obj
+/RadElement.Service.Tests/bin/
+/RadElement.API.IntegrationTests/obj
+/RadElement.API.IntegrationTests/bin/
+
+

@@ -49,8 +49,8 @@ namespace RadElement.API.Controllers
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("element/{elementId:int}")]
-        public async Task<IActionResult> GetElementByElementId(int elementId)
+        [Route("element/{elementId}")]
+        public async Task<IActionResult> GetElementByElementId(string elementId)
         {
             var result = await radElementService.GetElement(elementId);
             return StatusCode((int)result.Code, result.Value);
@@ -62,8 +62,8 @@ namespace RadElement.API.Controllers
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("set/{setId:int}/element")]
-        public async Task<IActionResult> GetElementsBySetId(int setId)
+        [Route("set/{setId}/element")]
+        public async Task<IActionResult> GetElementsBySetId(string setId)
         {
             var result = await radElementService.GetElementsBySetId(setId);
             return StatusCode((int)result.Code, result.Value);
@@ -90,8 +90,8 @@ namespace RadElement.API.Controllers
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("set/{setId:int}/element/{elementType}")]
-        public async Task<IActionResult> CreateElement(int setId, ElementType elementType, [FromBody]CreateUpdateElement content)
+        [Route("set/{setId}/element/{elementType}")]
+        public async Task<IActionResult> CreateElement(string setId, ElementType elementType, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.CreateElement(setId, (DataElementType)elementType, content);
             return StatusCode((int)result.Code, result.Value);
@@ -106,8 +106,8 @@ namespace RadElement.API.Controllers
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("set/{setId:int}/element/{elementId:int}/{elementType}")]
-        public async Task<IActionResult> UpdateElement(int setId, int elementId, ElementType elementType, [FromBody]CreateUpdateElement content)
+        [Route("set/{setId}/element/{elementId}/{elementType}")]
+        public async Task<IActionResult> UpdateElement(string setId, string elementId, ElementType elementType, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.UpdateElement(setId, elementId, (DataElementType)elementType, content);
             return StatusCode((int)result.Code, result.Value);
@@ -120,8 +120,8 @@ namespace RadElement.API.Controllers
         /// <param name="elementId">The element identifier.</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("set/{setId:int}/element/{elementId:int}")]
-        public async Task<IActionResult> DeleteElement(int setId, int elementId)
+        [Route("set/{setId}/element/{elementId}")]
+        public async Task<IActionResult> DeleteElement(string setId, string elementId)
         {
             var result = await radElementService.DeleteElement(setId, elementId);
             return StatusCode((int)result.Code, result.Value);

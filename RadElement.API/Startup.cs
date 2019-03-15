@@ -91,7 +91,7 @@ namespace RadElement.API
                 options.AddPolicy("UserIdExists",
                     policy => policy.Requirements.Add(new UserIdRequirement("UserId")));
             });
-
+            services.AddMvc().AddXmlSerializerFormatters();
             services.AddMvc(
                  config =>
                  {
