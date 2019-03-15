@@ -54,7 +54,7 @@ namespace RadElement.API
         {
             X509Certificate2 certificate;
             var certificatePath = HostingEnvironment.WebRootPath + keyFilePath;
-            certificate = new X509Certificate2(certificatePath, password);
+            certificate = new X509Certificate2(certificatePath, password, X509KeyStorageFlags.EphemeralKeySet);
            
             return new X509SecurityKey(certificate);
         }
