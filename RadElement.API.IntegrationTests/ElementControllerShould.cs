@@ -58,9 +58,9 @@ namespace RadElement.API.IntegrationTests
         #region GetElementByElementId
 
         [Theory]
-        [InlineData(61)]
-        [InlineData(62)]
-        public async void Return401InGetGetElementByElementIdIfAccessTokenIsNotProvided(int elementId)
+        [InlineData("RDE61")]
+        [InlineData("RDE62")]
+        public async void Return401InGetGetElementByElementIdIfAccessTokenIsNotProvided(string elementId)
         {
             string apiURL = $"radelement/api/v1/element/{elementId}";
 
@@ -70,9 +70,9 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData(61)]
-        [InlineData(62)]
-        public async void ReturnsElementInGetElementByElementIdIfAccessTokenIsValid(int elementId)
+        [InlineData("RDE61")]
+        [InlineData("RDE62")]
+        public async void ReturnsElementInGetElementByElementIdIfAccessTokenIsValid(string elementId)
         {
             string apiURL = $"radelement/api/v1/element/{elementId}";
 
@@ -87,9 +87,9 @@ namespace RadElement.API.IntegrationTests
         #region GetElementBySetId
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(3)]
-        public async void Return401InGetGetElementsBySetIdIfAccessTokenIsNotProvided(int setId)
+        [InlineData("RDES1")]
+        [InlineData("RDES3")]
+        public async void Return401InGetGetElementsBySetIdIfAccessTokenIsNotProvided(string setId)
         {
             string apiURL = $"radelement/api/v1/set/{setId}/element";
 
@@ -99,9 +99,9 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(3)]
-        public async void ReturnsElemenstInGetElementsBySetIdIfAccessTokenIsValid(int setId)
+        [InlineData("RDES1")]
+        [InlineData("RDES3")]
+        public async void ReturnsElemenstInGetElementsBySetIdIfAccessTokenIsValid(string setId)
         {
             string apiURL = $"radelement/api/v1/set/{setId}/element";
 
@@ -145,11 +145,11 @@ namespace RadElement.API.IntegrationTests
         #region CreateElement
 
         [Theory]
-        [InlineData(1, ElementType.Choice)]
-        [InlineData(1, ElementType.Numeric)]
-        [InlineData(1, ElementType.MultiChoice)]
-        [InlineData(1, ElementType.Integer)]
-        public async void Return401InCreateElementIfAccessTokenIsNotProvided(int setId, ElementType elementType)
+        [InlineData("RDES1", ElementType.Choice)]
+        [InlineData("RDES1", ElementType.Numeric)]
+        [InlineData("RDES1", ElementType.MultiChoice)]
+        [InlineData("RDES1", ElementType.Integer)]
+        public async void Return401InCreateElementIfAccessTokenIsNotProvided(string setId, ElementType elementType)
         {
             string apiURL = $"radelement/api/v1/set/{setId}/element/{elementType}";
             var createUpdateEleemnt = new CreateUpdateElement();
@@ -163,11 +163,11 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData(1, ElementType.Choice)]
-        [InlineData(1, ElementType.Numeric)]
-        [InlineData(1, ElementType.MultiChoice)]
-        [InlineData(1, ElementType.Integer)]
-        public async void ReturnsElementIdInCreateElementIfAccessTokenIsValid(int setId, ElementType elementType)
+        [InlineData("RDES1", ElementType.Choice)]
+        [InlineData("RDES1", ElementType.Numeric)]
+        [InlineData("RDES1", ElementType.MultiChoice)]
+        [InlineData("RDES1", ElementType.Integer)]
+        public async void ReturnsElementIdInCreateElementIfAccessTokenIsValid(string setId, ElementType elementType)
         {
             // Creates temporary element
             string apiURL = $"radelement/api/v1/set/{setId}/element/{elementType}";
@@ -221,8 +221,8 @@ namespace RadElement.API.IntegrationTests
         #region UpdateElement
 
         [Theory]
-        [InlineData(1, 100, ElementType.Choice)]
-        public async void Return401InUpdateElementIfAccessTokenIsNotProvided(int setId, int elementId, ElementType elementType)
+        [InlineData("RDES1", "RDE100", ElementType.Choice)]
+        public async void Return401InUpdateElementIfAccessTokenIsNotProvided(string setId, string elementId, ElementType elementType)
         {
             string apiURL = $"radelement/api/v1/set/{setId}/element/{elementId}/{elementType}";
             var createUpdateElement = new CreateUpdateElement();
@@ -236,11 +236,11 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData(1, ElementType.Choice)]
-        [InlineData(1, ElementType.Numeric)]
-        [InlineData(1, ElementType.MultiChoice)]
-        [InlineData(1, ElementType.Integer)]
-        public async void ReturnsSuccessInUpdateElementIfAccessTokenIsValid(int setId, ElementType elementType)
+        [InlineData("RDES1", ElementType.Choice)]
+        [InlineData("RDES1", ElementType.Numeric)]
+        [InlineData("RDES1", ElementType.MultiChoice)]
+        [InlineData("RDES1", ElementType.Integer)]
+        public async void ReturnsSuccessInUpdateElementIfAccessTokenIsValid(string setId, ElementType elementType)
         {
             // Creates temporary element
             string apiURL = $"radelement/api/v1/set/{setId}/element/{elementType}";
@@ -307,8 +307,8 @@ namespace RadElement.API.IntegrationTests
         #region DeleteElement
 
         [Theory]
-        [InlineData(1, 100)]
-        public async void Return401InDeleteElementIfAccessTokenIsNotProvided(int setId, int elementId)
+        [InlineData("RDES1", "RDE100")]
+        public async void Return401InDeleteElementIfAccessTokenIsNotProvided(string setId, string elementId)
         {
             string apiURL = $"radelement/api/v1/set/{setId}/element/{elementId}";
 
@@ -318,9 +318,9 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(3)]
-        public async void ReturnsSuccessInDeleteElementIfAccessTokenIsValid(int setId)
+        [InlineData("RDES1")]
+        [InlineData("RDES3")]
+        public async void ReturnsSuccessInDeleteElementIfAccessTokenIsValid(string setId)
         {
             // Creates temporary element
             var elementType = ElementType.Integer;

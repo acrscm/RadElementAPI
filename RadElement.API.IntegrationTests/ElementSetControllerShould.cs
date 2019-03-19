@@ -56,9 +56,9 @@ namespace RadElement.API.IntegrationTests
         #region GetSetBySetId
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        public async void Return401InGetSetBySetIdIfAccessTokenIsNotProvided(int setId)
+        [InlineData("RDES1")]
+        [InlineData("RDES2")]
+        public async void Return401InGetSetBySetIdIfAccessTokenIsNotProvided(string setId)
         {
             string apiURL = $"radelement/api/v1/set/{setId}";
 
@@ -68,9 +68,9 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        public async void ReturnsSetInGetSetBySetIdIfAccessTokenIsValid(int setId)
+        [InlineData("RDES1")]
+        [InlineData("RDES2")]
+        public async void ReturnsSetInGetSetBySetIdIfAccessTokenIsValid(string setId)
         {
             string apiURL = $"radelement/api/v1/set/{setId}";
 
@@ -169,8 +169,8 @@ namespace RadElement.API.IntegrationTests
         #region UpdateSet
 
         [Theory]
-        [InlineData(1, "Hello Assist", "Hello Assist", "ACR Assist")]
-        public async void Return401InUpdateSetIfAccessTokenIsNotProvided(int setId, string moduleName, string description, string contactName)
+        [InlineData("RDES1", "Hello Assist", "Hello Assist", "ACR Assist")]
+        public async void Return401InUpdateSetIfAccessTokenIsNotProvided(string setId, string moduleName, string description, string contactName)
         {
             string apiURL = $"radelement/api/v1/set/{setId}";
             var createUpdateSet = new CreateUpdateSet()
@@ -239,8 +239,8 @@ namespace RadElement.API.IntegrationTests
         #region DeleteSet
 
         [Theory]
-        [InlineData(1)]
-        public async void Return401InDeleteSetIfAccessTokenIsNotProvided(int setId)
+        [InlineData("RDES1")]
+        public async void Return401InDeleteSetIfAccessTokenIsNotProvided(string setId)
         {
             string apiURL = $"radelement/api/v1/set/{setId}";
 

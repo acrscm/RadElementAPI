@@ -1,21 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moq;
+using Microsoft.Extensions.Configuration;
 using RadElement.Core.Data;
-using RadElement.Core.Domain;
 using RadElement.Core.DTO;
-using RadElement.Service.Tests.Mocks.Data;
+using RadElement.Core.Infrastructure;
+using RadElement.Data;
+using RadElement.Infrastructure;
+using RadElement.Service;
 using Serilog;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using Xunit;
 
-namespace RadElement.Service.Tests
+namespace RadElement.API.IntegrationTests
 {
     public class ElementSetServiceShould
     {
-        private readonly Mock<IRadElementDbContext> mockRadElementContext;
-        private readonly Mock<ILogger> mockLogger;
+        private readonly IRadElementDbContext radElementContext;
+        private readonly IConfigurationManager configurationManager;
+        private readonly ILogger logger;
 
         private const string setNotFoundMessage = "No such set with id '{0}'.";
         private const string setNotFoundMessageWithSearchMessage = "No such set with keyword '{0}'.";
@@ -27,9 +29,15 @@ namespace RadElement.Service.Tests
 
         public ElementSetServiceShould()
         {
-            mockRadElementContext = new Mock<IRadElementDbContext>();
-            mockLogger = new Mock<ILogger>();
-            IntializeMockData();
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("AppSettings.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            configurationManager = new ConfigurationManager(configuration);
+            var optionsBuilder = new DbContextOptionsBuilder<RadElementDbContext>();
+            radElementContext = new RadElementDbContext(optionsBuilder.Options, configurationManager);
+            logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
         }
 
         #region GetElements
@@ -37,7 +45,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetSetssShouldReturnAllSets()
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.GetSets();
 
             Assert.NotNull(result);
@@ -51,11 +59,11 @@ namespace RadElement.Service.Tests
         #region GetSet By SetId
 
         [Theory]
-        [InlineData("RDES1")]
-        [InlineData("RDES2")]
+        [InlineData("RDESF1")]
+        [InlineData("RDESF2")]
         public async void GetSetByIdShouldReturnNotFoundIfDoesnotExists(string setId)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.GetSet(setId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -65,11 +73,11 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
+        [InlineData("RDES55")]
+        [InlineData("RDES56")]
         public async void GetSetByIdShouldReturnSetsBasedOnSetId(string setId)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.GetSet(setId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -79,6 +87,7 @@ namespace RadElement.Service.Tests
 
         #endregion
 
+
         #region SearchSet
 
         [Theory]
@@ -86,7 +95,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.SearchSet(searchKeyword);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -100,7 +109,7 @@ namespace RadElement.Service.Tests
         [InlineData("test1")]
         public async void SearchSetShouldReturnEmpySetIfSearchKeywordDoesnotExists(string searchKeyword)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.SearchSet(searchKeyword);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -114,7 +123,7 @@ namespace RadElement.Service.Tests
         [InlineData("Kimberly")]
         public async void GetSetShouldReturnSetIfSearchedElementExists(string searchKeyword)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.SearchSet(searchKeyword);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -130,7 +139,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void CreateSetShouldReturnBadRequestIfSetIsInvalid(CreateUpdateSet set)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.CreateSet(set);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -149,7 +158,7 @@ namespace RadElement.Service.Tests
             set.ContactName = contactName;
             set.Description = description;
 
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.CreateSet(set);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -157,23 +166,31 @@ namespace RadElement.Service.Tests
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(setInvalidMessage, result.Value);
         }
-        
+
         [Theory]
         [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
         [InlineData("Sinus1", "Sinus2", "Sinus3")]
         public async void CreateSetShouldReturnSetIdIfSetIsValid(string moduleName, string contactName, string description)
         {
+            // Creates temporary set
             var set = new CreateUpdateSet();
             set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.CreateSet(set);
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<SetIdDetails>(result.Value);
-            Assert.Equal(HttpStatusCode.Created, result.Code);
+            var sut = new ElementSetService(radElementContext, logger);
+            var createdResult = await sut.CreateSet(set);
+            Assert.NotNull(createdResult);
+            Assert.NotNull(createdResult.Value);
+            Assert.IsType<SetIdDetails>(createdResult.Value);
+            Assert.Equal(HttpStatusCode.Created, createdResult.Code);
+
+            var setDetails = createdResult.Value as SetIdDetails;
+
+            // Deletes temporary set
+            var deleteResult = await sut.DeleteSet(setDetails.SetId);
+            Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
+            Assert.Equal(string.Format(setDeletedMessage, setDetails.SetId), deleteResult.Value);
         }
 
         #endregion
@@ -184,7 +201,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", null)]
         public async void UpdateSetShouldReturnBadRequestIfSetIsInvalid(string setId, CreateUpdateSet set)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.UpdateSet(setId, set);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -194,8 +211,8 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES1", "Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("RDES2", "Sinus1", "Sinus2", "Sinus3")]
+        [InlineData("RDESF1", "Tumuor1", "Tumuor2", "Tumuor3")]
+        [InlineData("RDESF2", "Sinus1", "Sinus2", "Sinus3")]
         public async void UpdateSetShouldReturnBadRequestIfSetContentsAreInvalid(string setId, string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
@@ -203,7 +220,7 @@ namespace RadElement.Service.Tests
             set.ContactName = contactName;
             set.Description = description;
 
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.UpdateSet(setId, set);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -213,22 +230,42 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES53", "Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("RDES66", "Sinus1", "Sinus2", "Sinus3")]
-        public async void UpdateSetShouldReturnSetIdIfSetIsValid(string setId, string moduleName, string contactName, string description)
+        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
+        [InlineData("Sinus1", "Sinus2", "Sinus3")]
+        public async void UpdateSetShouldReturnSetIdIfSetIsValid(string moduleName, string contactName, string description)
         {
-            var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
+            // Creates temporary set
+            var createset = new CreateUpdateSet();
+            createset.ModuleName = moduleName;
+            createset.ContactName = contactName;
+            createset.Description = description;
 
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.UpdateSet(setId, set);
+            var sut = new ElementSetService(radElementContext, logger);
+            var createdResult = await sut.CreateSet(createset);
+            Assert.NotNull(createdResult);
+            Assert.NotNull(createdResult.Value);
+            Assert.IsType<SetIdDetails>(createdResult.Value);
+            Assert.Equal(HttpStatusCode.Created, createdResult.Code);
+
+            var setDetails = createdResult.Value as SetIdDetails;
+
+            // Updates temporary set
+            var updateSet = new CreateUpdateSet();
+            updateSet.ModuleName = moduleName;
+            updateSet.ContactName = contactName;
+            updateSet.Description = description;
+
+            var result = await sut.UpdateSet(setDetails.SetId, updateSet);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Equal(string.Format(setUpdatedMessage, setId), result.Value);
+            Assert.Equal(string.Format(setUpdatedMessage, setDetails.SetId), result.Value);
+
+            // Removes the temporarily inserted module
+            var deleteResult = await sut.DeleteSet(setDetails.SetId);
+            Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
+            Assert.Equal(string.Format(setDeletedMessage, setDetails.SetId), deleteResult.Value);
         }
 
         #endregion
@@ -240,7 +277,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES200")]
         public async void DeleteSetShouldReturnNotFoundIfSetIdDoesNotExists(string setId)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.DeleteSet(setId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -250,53 +287,32 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void DeleteSetShouldDeleteSetIfSetIdIsValid(string setId)
+        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
+        [InlineData("Sinus1", "Sinus2", "Sinus3")]
+        public async void DeleteSetShouldDeleteSetIfSetIdIsValid(string moduleName, string contactName, string description)
         {
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.DeleteSet(setId);
+            // Creates temporary set
+            var createset = new CreateUpdateSet();
+            createset.ModuleName = moduleName;
+            createset.ContactName = contactName;
+            createset.Description = description;
+
+            var sut = new ElementSetService(radElementContext, logger);
+            var createdResult = await sut.CreateSet(createset);
+            Assert.NotNull(createdResult);
+            Assert.NotNull(createdResult.Value);
+            Assert.IsType<SetIdDetails>(createdResult.Value);
+            Assert.Equal(HttpStatusCode.Created, createdResult.Code);
+
+            var setDetails = createdResult.Value as SetIdDetails;
+
+            // Removes temporary set
+            var result = await sut.DeleteSet(setDetails.SetId);
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Equal(string.Format(setDeletedMessage, setId), result.Value);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private void IntializeMockData()
-        {
-            var mockElement = new Mock<DbSet<Element>>();
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
-
-            var mockSet = new Mock<DbSet<ElementSet>>();
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
-
-            var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
-
-            var mockElementValue = new Mock<DbSet<ElementValue>>();
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
-            mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
-
-            mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
-            mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
-            mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
-            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+            Assert.Equal(string.Format(setDeletedMessage, setDetails.SetId), result.Value);
         }
 
         #endregion

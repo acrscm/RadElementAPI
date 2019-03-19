@@ -18,7 +18,7 @@ namespace RadElement.Service.Tests
         private readonly Mock<IRadElementDbContext> mockRadElementContext;
         private readonly Mock<ILogger> mockLogger;
 
-        private const string xmlContetnInvalidMessage = "Xml content provided is invalid";
+        private const string xmlContentInvalidMessage = "Xml content provided is invalid";
         private const string setIdNotFoundMessage = "No such set with id '{0}'";
         private const string setIdUpdatedMessage = "Set with id {0} is updated.";
 
@@ -45,7 +45,7 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(xmlContetnInvalidMessage, result.Value);
+            Assert.Equal(xmlContentInvalidMessage, result.Value);
         }
 
         [Theory]
@@ -69,9 +69,9 @@ namespace RadElement.Service.Tests
         #region UpdateModule
 
         [Theory]
-        [InlineData(1, "//XMLFiles//Invalid.xml")]
-        [InlineData(2, "//XMLFiles//Invalid.xml")]
-        public async void UpdateModuleReturnBadRequestIfXmlContentIsInvalid(int setId, string xmlPath)
+        [InlineData("RDES1", "//XMLFiles//Invalid.xml")]
+        [InlineData("RDES2", "//XMLFiles//Invalid.xml")]
+        public async void UpdateModuleReturnBadRequestIfXmlContentIsInvalid(string setId, string xmlPath)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
@@ -83,13 +83,13 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(xmlContetnInvalidMessage, result.Value);
+            Assert.Equal(xmlContentInvalidMessage, result.Value);
         }
 
         [Theory]
-        [InlineData(1, "//XMLFiles//Valid.xml")]
-        [InlineData(2, "//XMLFiles//Valid.xml")]
-        public async void UpdateModuleReturnBadRequestIfSetIdIsInvalid(int setId, string xmlPath)
+        [InlineData("RDES1", "//XMLFiles//Valid.xml")]
+        [InlineData("RDES2", "//XMLFiles//Valid.xml")]
+        public async void UpdateModuleReturnBadRequestIfSetIdIsInvalid(string setId, string xmlPath)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
@@ -105,9 +105,9 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(53, "//XMLFiles//Valid.xml")]
-        [InlineData(66, "//XMLFiles//Valid.xml")]
-        public async void UpdateModuleReturnSetIdIfXmlContentAndSetIdIsValid(int setId, string xmlPath)
+        [InlineData("RDES53", "//XMLFiles//Valid.xml")]
+        [InlineData("RDES66", "//XMLFiles//Valid.xml")]
+        public async void UpdateModuleReturnSetIdIfXmlContentAndSetIdIsValid(string setId, string xmlPath)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);

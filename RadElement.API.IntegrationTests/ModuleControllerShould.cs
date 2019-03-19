@@ -82,8 +82,8 @@ namespace RadElement.API.IntegrationTests
         #region UpdateModule
 
         [Theory]
-        [InlineData(66, "//XMLFiles//Invalid.xml")]
-        public async void Return401InUpdateModuleIfAccessTokenIsNotProvided(int setId, string xmlPath)
+        [InlineData("RDES66", "//XMLFiles//Invalid.xml")]
+        public async void Return401InUpdateModuleIfAccessTokenIsNotProvided(string setId, string xmlPath)
         {
             string apiURL = $"radelement/api/v1/module/{setId}";
 
