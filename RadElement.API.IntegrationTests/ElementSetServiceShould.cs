@@ -15,8 +15,8 @@ namespace RadElement.API.IntegrationTests
 {
     public class ElementSetServiceShould
     {
-        private readonly IRadElementDbContext radElementContext;
-        private readonly IConfigurationManager configurationManager;
+        private IRadElementDbContext radElementContext;
+        private IConfigurationManager configurationManager;
         private readonly ILogger logger;
 
         private const string setNotFoundMessage = "No such set with id '{0}'.";
@@ -43,6 +43,18 @@ namespace RadElement.API.IntegrationTests
         #region GetElements
 
         [Fact]
+        public async void GetSetssShouldThrowInternalServerErrorForExceptions()
+        {
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementSetService(radElementContext, logger);
+            var result = await sut.GetSets();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+        [Fact]
         public async void GetSetssShouldReturnAllSets()
         {
             var sut = new ElementSetService(radElementContext, logger);
@@ -59,12 +71,13 @@ namespace RadElement.API.IntegrationTests
         #region GetSet By SetId
 
         [Theory]
-        [InlineData("RDESF1")]
-        [InlineData("RDESF2")]
+        [InlineData("RD1")]
+        [InlineData("RD2")]
         public async void GetSetByIdShouldReturnNotFoundIfDoesnotExists(string setId)
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.GetSet(setId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -75,10 +88,25 @@ namespace RadElement.API.IntegrationTests
         [Theory]
         [InlineData("RDES55")]
         [InlineData("RDES56")]
+        public async void GetSetByIdShouldThrowInternalServerErrorForExceptions(string setId)
+        {
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementSetService(radElementContext, logger);
+            var result = await sut.GetSet(setId);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+        [Theory]
+        [InlineData("RDES55")]
+        [InlineData("RDES56")]
         public async void GetSetByIdShouldReturnSetsBasedOnSetId(string setId)
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.GetSet(setId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<ElementSetDetails>(result.Value);
@@ -86,8 +114,7 @@ namespace RadElement.API.IntegrationTests
         }
 
         #endregion
-
-
+        
         #region SearchSet
 
         [Theory]
@@ -97,6 +124,7 @@ namespace RadElement.API.IntegrationTests
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.SearchSet(searchKeyword);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -111,6 +139,7 @@ namespace RadElement.API.IntegrationTests
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.SearchSet(searchKeyword);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -121,10 +150,25 @@ namespace RadElement.API.IntegrationTests
         [Theory]
         [InlineData("Pulmonary")]
         [InlineData("Kimberly")]
+        public async void GetSetShouldThrowInternalServerErrorForExceptions(string searchKeyword)
+        {
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementSetService(radElementContext, logger);
+            var result = await sut.SearchSet(searchKeyword);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+        [Theory]
+        [InlineData("Pulmonary")]
+        [InlineData("Kimberly")]
         public async void GetSetShouldReturnSetIfSearchedElementExists(string searchKeyword)
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.SearchSet(searchKeyword);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<List<ElementSetDetails>>(result.Value);
@@ -141,6 +185,7 @@ namespace RadElement.API.IntegrationTests
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.CreateSet(set);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -160,11 +205,31 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.CreateSet(set);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(setInvalidMessage, result.Value);
+        }
+
+        [Theory]
+        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
+        [InlineData("Sinus1", "Sinus2", "Sinus3")]
+        public async void CreateSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
+        {
+            SetInvalidAppSettingsConfig();
+            var set = new CreateUpdateSet();
+            set.ModuleName = moduleName;
+            set.ContactName = contactName;
+            set.Description = description;
+
+            var sut = new ElementSetService(radElementContext, logger);
+            var result = await sut.CreateSet(set);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
@@ -180,6 +245,7 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ElementSetService(radElementContext, logger);
             var createdResult = await sut.CreateSet(set);
+
             Assert.NotNull(createdResult);
             Assert.NotNull(createdResult.Value);
             Assert.IsType<SetIdDetails>(createdResult.Value);
@@ -189,6 +255,7 @@ namespace RadElement.API.IntegrationTests
 
             // Deletes temporary set
             var deleteResult = await sut.DeleteSet(setDetails.SetId);
+
             Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
             Assert.Equal(string.Format(setDeletedMessage, setDetails.SetId), deleteResult.Value);
         }
@@ -203,6 +270,7 @@ namespace RadElement.API.IntegrationTests
         {
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.UpdateSet(setId, set);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -222,11 +290,31 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ElementSetService(radElementContext, logger);
             var result = await sut.UpdateSet(setId, set);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.NotFound, result.Code);
             Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
+        }
+
+        [Theory]
+        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
+        [InlineData("Sinus1", "Sinus2", "Sinus3")]
+        public async void UpdateSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
+        {
+            SetInvalidAppSettingsConfig();
+            var createset = new CreateUpdateSet();
+            createset.ModuleName = moduleName;
+            createset.ContactName = contactName;
+            createset.Description = description;
+
+            var sut = new ElementSetService(radElementContext, logger);
+            var result = await sut.CreateSet(createset);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
@@ -242,6 +330,7 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ElementSetService(radElementContext, logger);
             var createdResult = await sut.CreateSet(createset);
+
             Assert.NotNull(createdResult);
             Assert.NotNull(createdResult.Value);
             Assert.IsType<SetIdDetails>(createdResult.Value);
@@ -256,6 +345,7 @@ namespace RadElement.API.IntegrationTests
             updateSet.Description = description;
 
             var result = await sut.UpdateSet(setDetails.SetId, updateSet);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -264,6 +354,7 @@ namespace RadElement.API.IntegrationTests
 
             // Removes the temporarily inserted module
             var deleteResult = await sut.DeleteSet(setDetails.SetId);
+
             Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
             Assert.Equal(string.Format(setDeletedMessage, setDetails.SetId), deleteResult.Value);
         }
@@ -289,6 +380,25 @@ namespace RadElement.API.IntegrationTests
         [Theory]
         [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
         [InlineData("Sinus1", "Sinus2", "Sinus3")]
+        public async void DeleteSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
+        {
+            SetInvalidAppSettingsConfig();
+            var createset = new CreateUpdateSet();
+            createset.ModuleName = moduleName;
+            createset.ContactName = contactName;
+            createset.Description = description;
+
+            var sut = new ElementSetService(radElementContext, logger);
+            var result = await sut.CreateSet(createset);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+        [Theory]
+        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
+        [InlineData("Sinus1", "Sinus2", "Sinus3")]
         public async void DeleteSetShouldDeleteSetIfSetIdIsValid(string moduleName, string contactName, string description)
         {
             // Creates temporary set
@@ -299,6 +409,7 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ElementSetService(radElementContext, logger);
             var createdResult = await sut.CreateSet(createset);
+
             Assert.NotNull(createdResult);
             Assert.NotNull(createdResult.Value);
             Assert.IsType<SetIdDetails>(createdResult.Value);
@@ -308,11 +419,26 @@ namespace RadElement.API.IntegrationTests
 
             // Removes temporary set
             var result = await sut.DeleteSet(setDetails.SetId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
             Assert.Equal(string.Format(setDeletedMessage, setDetails.SetId), result.Value);
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private void SetInvalidAppSettingsConfig()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings_invalid.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            configurationManager = new ConfigurationManager(configuration);
+            var optionsBuilder = new DbContextOptionsBuilder<RadElementDbContext>();
+            radElementContext = new RadElementDbContext(optionsBuilder.Options, configurationManager);
         }
 
         #endregion

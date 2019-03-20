@@ -16,8 +16,8 @@ namespace RadElement.API.IntegrationTests
 {
     public class ModuleServiceShould
     {
-        private readonly IRadElementDbContext radElementContext;
-        private readonly IConfigurationManager configurationManager;
+        private IRadElementDbContext radElementContext;
+        private IConfigurationManager configurationManager;
         private readonly ILogger logger;
 
         private const string xmlContentInvalidMessage = "Xml content provided is invalid";
@@ -50,11 +50,29 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ModuleService(radElementContext, logger);
             var result = await sut.CreateModule(root);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(xmlContentInvalidMessage, result.Value);
+        }
+
+        [Theory]
+        [InlineData("//XMLFiles//Valid.xml")]
+        public async void CreateModuleShouldThrowInternalServerErrorForExceptions(string xmlPath)
+        {
+            SetInvalidAppSettingsConfig();
+            XmlDocument doc = new XmlDocument();
+            doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
+            XmlElement root = doc.DocumentElement;
+
+            var sut = new ModuleService(radElementContext, logger);
+            var result = await sut.CreateModule(root);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
@@ -68,6 +86,7 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ModuleService(radElementContext, logger);
             var addResult = await sut.CreateModule(root);
+
             Assert.NotNull(addResult);
             Assert.NotNull(addResult.Value);
             Assert.IsType<SetIdDetails>(addResult.Value);
@@ -78,6 +97,7 @@ namespace RadElement.API.IntegrationTests
             // Removes the temporarily inserted module
             var setService = new ElementSetService(radElementContext, logger);
             var deleteResult = await setService.DeleteSet(setDetails.SetId);
+
             Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
             Assert.Equal(string.Format(setIdDeletedMessage, setDetails.SetId), deleteResult.Value);
         }
@@ -97,6 +117,7 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ModuleService(radElementContext, logger);
             var result = await sut.UpdateModule(root, setId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -105,8 +126,8 @@ namespace RadElement.API.IntegrationTests
         }
 
         [Theory]
-        [InlineData("RDESF1", "//XMLFiles//Valid.xml")]
-        [InlineData("RDESF2", "//XMLFiles//Valid.xml")]
+        [InlineData("RD1", "//XMLFiles//Valid.xml")]
+        [InlineData("RD2", "//XMLFiles//Valid.xml")]
         public async void UpdateModuleReturnBadRequestIfSetIdIsInvalid(string setId, string xmlPath)
         {
             XmlDocument doc = new XmlDocument();
@@ -115,11 +136,29 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ModuleService(radElementContext, logger);
             var result = await sut.UpdateModule(root, setId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.NotFound, result.Code);
             Assert.Equal(string.Format(setIdNotFoundMessage, setId), result.Value);
+        }
+
+        [Theory]
+        [InlineData("//XMLFiles//Valid.xml")]
+        public async void UpdateModuleShouldThrowInternalServerErrorForExceptions(string xmlPath)
+        {
+            SetInvalidAppSettingsConfig();
+            XmlDocument doc = new XmlDocument();
+            doc.Load(AppDomain.CurrentDomain.BaseDirectory + xmlPath);
+            XmlElement root = doc.DocumentElement;
+
+            var sut = new ModuleService(radElementContext, logger);
+            var result = await sut.CreateModule(root);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
@@ -133,6 +172,7 @@ namespace RadElement.API.IntegrationTests
 
             var sut = new ModuleService(radElementContext, logger);
             var createdResult = await sut.CreateModule(root);
+
             Assert.NotNull(createdResult);
             Assert.NotNull(createdResult.Value);
             Assert.IsType<SetIdDetails>(createdResult.Value);
@@ -143,6 +183,7 @@ namespace RadElement.API.IntegrationTests
             // Updates temporarily module 
 
             var updatedResult = await sut.UpdateModule(root, setDetails.SetId);
+
             Assert.NotNull(updatedResult);
             Assert.NotNull(updatedResult.Value);
             Assert.IsType<string>(updatedResult.Value);
@@ -152,11 +193,25 @@ namespace RadElement.API.IntegrationTests
             // Removes the temporarily inserted module
             var setService = new ElementSetService(radElementContext, logger);
             var deleteResult = await setService.DeleteSet(setDetails.SetId);
+
             Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
             Assert.Equal(string.Format(setIdDeletedMessage, setDetails.SetId), deleteResult.Value);
         }
 
         #endregion
 
+        #region Private methods
+
+        private void SetInvalidAppSettingsConfig()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings_invalid.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            configurationManager = new ConfigurationManager(configuration);
+            var optionsBuilder = new DbContextOptionsBuilder<RadElementDbContext>();
+            radElementContext = new RadElementDbContext(optionsBuilder.Options, configurationManager);
+        }
+
+        #endregion
     }
 }
