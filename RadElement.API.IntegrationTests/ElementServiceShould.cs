@@ -1,22 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moq;
+using Microsoft.Extensions.Configuration;
 using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
-using RadElement.Service.Tests.Mocks.Data;
+using RadElement.Core.Infrastructure;
+using RadElement.Data;
+using RadElement.Infrastructure;
+using RadElement.Service;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using Xunit;
 
-namespace RadElement.Service.Tests
+namespace RadElement.API.IntegrationTests
 {
     public class ElementServiceShould
     {
-        private readonly Mock<IRadElementDbContext> mockRadElementContext;
-        private readonly Mock<ILogger> mockLogger;
+        private IRadElementDbContext radElementContext;
+        private IConfigurationManager configurationManager;
+        private readonly ILogger logger;
 
         private const string elementNotFoundMessage = "No such element with id '{0}'";
         private const string elementSetIdNotFoundMessage = "No such elements with set id '{0}'.";
@@ -32,8 +35,15 @@ namespace RadElement.Service.Tests
 
         public ElementServiceShould()
         {
-            mockRadElementContext = new Mock<IRadElementDbContext>();
-            mockLogger = new Mock<ILogger>();
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("AppSettings.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            configurationManager = new ConfigurationManager(configuration);
+            var optionsBuilder = new DbContextOptionsBuilder<RadElementDbContext>();
+            radElementContext = new RadElementDbContext(optionsBuilder.Options, configurationManager);
+            logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
         }
 
         #region GetElements
@@ -41,20 +51,19 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetElementsShouldThrowInternalServerErrorForExceptions()
         {
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElements();
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Fact]
         public async void GetElementsShouldReturnAllElements()
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElements();
 
             Assert.NotNull(result);
@@ -72,12 +81,12 @@ namespace RadElement.Service.Tests
         [InlineData("RDE2")]
         public async void GetElementByIdShouldThrowInternalServerErrorForExceptions(string elementId)
         {
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElement(elementId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
@@ -86,8 +95,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetElementByIdShouldReturnNotFoundIfDoesnotExists(string elementId)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElement(elementId);
 
             Assert.NotNull(result);
@@ -102,8 +110,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDE340")]
         public async void GetElementByIdShouldReturnElementsBasedOnElementId(string elementId)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElement(elementId);
 
             Assert.NotNull(result);
@@ -121,12 +128,12 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2")]
         public async void GetElementBySetIdShouldThrowInternalServerErrorForExceptions(string setId)
         {
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElementsBySetId(setId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
@@ -135,8 +142,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetElementBySetIdShouldReturnNotFoundIfDoesnotExists(string setId)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElementsBySetId(setId);
 
             Assert.NotNull(result);
@@ -151,8 +157,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void GetElementBySetIdShouldReturnElementsBasedOnElementId(string setId)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.GetElementsBySetId(setId);
 
             Assert.NotNull(result);
@@ -170,8 +175,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void SearchElementShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.SearchElement(searchKeyword);
 
             Assert.NotNull(result);
@@ -182,12 +186,11 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("test")]
-        [InlineData("test1")]
+        [InlineData("InvalidModule")]
+        [InlineData("InvalidElement")]
         public async void SearchElementShouldReturnEmpyElementsIfSearchKeywordDoesnotExists(string searchKeyword)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.SearchElement(searchKeyword);
 
             Assert.NotNull(result);
@@ -198,24 +201,23 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("Tumuor")]
-        public async void SearchElementShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
+        [InlineData("Glasgow")]
+        public async void GetElementShouldThrowInternalServerErrorForExceptions(string searchKeyword)
         {
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            SetInvalidAppSettingsConfig();
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.SearchElement(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
-        [InlineData("Tumuor")]
+        [InlineData("Glasgow")]
         public async void GetElementShouldReturnElementsIfSearchedElementExists(string searchKeyword)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.SearchElement(searchKeyword);
 
             Assert.NotNull(result);
@@ -233,8 +235,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", DataElementType.Integer, null)]
         public async void CreateElementShouldReturnBadRequestIfDataElementIsInvalid(string setId, DataElementType elementType, CreateUpdateElement dataElement)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.CreateElement(setId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -249,9 +250,8 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", DataElementType.Integer)]
         public async void CreateElementShouldReturnBadRequestIfDataElementLabelIsInvalid(string setId, DataElementType elementType)
         {
-            IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.CreateElement(setId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -266,11 +266,10 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", DataElementType.Choice)]
         public async void CreateElementShouldReturnBadRequestIfDataElementChoiceIsInvalid(string setId, DataElementType elementType)
         {
-            IntializeMockData();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.CreateElement(setId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -282,14 +281,31 @@ namespace RadElement.Service.Tests
 
         [Theory]
         [InlineData("RDES100", DataElementType.Integer)]
-        public async void CreateElementShouldReturnBadRequestIfSetIdIsInvalid(string setId, DataElementType elementType)
+        public async void CreateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, DataElementType elementType)
         {
-            IntializeMockData();
+            SetInvalidAppSettingsConfig();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.CreateElement(setId, elementType, dataElement);
+            
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+
+        [Theory]
+        [InlineData("RDESF100", DataElementType.Integer)]
+        public async void CreateElementShouldReturnBadRequestIfSetIdIsInvalid(string setId, DataElementType elementType)
+        {
+            var dataElement = new CreateUpdateElement();
+            dataElement.Label = "Tumuor";
+
+            var sut = new ElementService(radElementContext, logger);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -302,52 +318,9 @@ namespace RadElement.Service.Tests
         [InlineData("RDES72", DataElementType.Numeric)]
         [InlineData("RDES66", DataElementType.Integer)]
         [InlineData("RDES53", DataElementType.MultiChoice)]
-        public async void CreateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, DataElementType elementType)
-        {
-            var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
-            dataElement.Definition = "Tumuor vein";
-
-            if (elementType == DataElementType.Integer)
-            {
-                dataElement.ValueMin = 1;
-                dataElement.ValueMax = 3;
-            }
-            else if (elementType == DataElementType.Numeric)
-            {
-                dataElement.ValueMin = 1f;
-                dataElement.ValueMax = 3f;
-            }
-            else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
-            {
-                dataElement.Options = new List<Core.DTO.Option>();
-                dataElement.Options.AddRange(
-                    new List<Core.DTO.Option>()
-                    {
-                        new Core.DTO.Option { Label = "value1", Value = "1" },
-                        new Core.DTO.Option { Label = "value2", Value = "2" },
-                        new Core.DTO.Option { Label = "value3", Value = "3" }
-                    }
-                );
-            }
-
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.CreateElement(setId, elementType, dataElement);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
-            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
-        }
-
-        [Theory]
-        [InlineData("RDES74", DataElementType.Choice)]
-        [InlineData("RDES72", DataElementType.Numeric)]
-        [InlineData("RDES66", DataElementType.Integer)]
-        [InlineData("RDES53", DataElementType.MultiChoice)]
         public async void CreateElementShouldReturnElementIdIfDataElementIsValid(string setId, DataElementType elementType)
         {
-            IntializeMockData();
+            // Creates temporary element
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
             dataElement.Definition = "Tumuor vein";
@@ -375,13 +348,21 @@ namespace RadElement.Service.Tests
                 );
             }
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.CreateElement(setId, elementType, dataElement);
+            var sut = new ElementService(radElementContext, logger);
+            var createdResult = await sut.CreateElement(setId, elementType, dataElement);
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<ElementIdDetails>(result.Value);
-            Assert.Equal(HttpStatusCode.Created, result.Code);
+            Assert.NotNull(createdResult);
+            Assert.NotNull(createdResult.Value);
+            Assert.IsType<ElementIdDetails>(createdResult.Value);
+            Assert.Equal(HttpStatusCode.Created, createdResult.Code);
+
+            var elementDetails = createdResult.Value as ElementIdDetails;
+
+            // Deletes temporary element
+            var deleteResult = await sut.DeleteElement(setId, elementDetails.ElementId);
+
+            Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
+            Assert.Equal(string.Format(elemenIdDeletedMessage, setId, elementDetails.ElementId), deleteResult.Value);
         }
 
         #endregion
@@ -393,8 +374,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", "RDE2", DataElementType.Integer, null)]
         public async void UpdateElementShouldReturnBadRequestIfDataElementIsInvalid(string setId, string elementId, DataElementType elementType, CreateUpdateElement dataElement)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -409,9 +389,8 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", "RDE2", DataElementType.Integer)]
         public async void UpdateElementShouldReturnBadRequestIfDataElementLabelIsInvalid(string setId, string elementId, DataElementType elementType)
         {
-            IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -426,11 +405,10 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", "RDE2", DataElementType.Choice)]
         public async void UpdateElementShouldReturnBadRequestIfDataElementChoiceIsInvalid(string setId, string elementId, DataElementType elementType)
         {
-            IntializeMockData();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -441,15 +419,14 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES100", "RDE100", DataElementType.Integer)]
-        [InlineData("RDES100", "RDE100", DataElementType.Numeric)]
+        [InlineData("RDESF100", "RDEF100", DataElementType.Integer)]
+        [InlineData("RDESF100", "RDEF100", DataElementType.Numeric)]
         public async void UpdateElementShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(string setId, string elementId, DataElementType elementType)
         {
-            IntializeMockData();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
 
             Assert.NotNull(result);
@@ -460,56 +437,30 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES74", "RDE340", DataElementType.Choice)]
-        [InlineData("RDES72", "RDE338", DataElementType.Numeric)]
-        [InlineData("RDES66", "RDE307", DataElementType.Integer)]
-        [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
+        [InlineData("RDES100", "RDE100", DataElementType.Integer)]
+        [InlineData("RDES100", "RDE100", DataElementType.Numeric)]
         public async void UpdateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, string elementId, DataElementType elementType)
         {
+            SetInvalidAppSettingsConfig();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
-            dataElement.Definition = "Tumuor vein";
 
-            if (elementType == DataElementType.Integer)
-            {
-                dataElement.ValueMin = 1;
-                dataElement.ValueMax = 3;
-            }
-            else if (elementType == DataElementType.Numeric)
-            {
-                dataElement.ValueMin = 1f;
-                dataElement.ValueMax = 3f;
-            }
-            else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
-            {
-                dataElement.Options = new List<Core.DTO.Option>();
-                dataElement.Options.AddRange(
-                    new List<Core.DTO.Option>()
-                    {
-                        new Core.DTO.Option { Label = "value1", Value = "1" },
-                        new Core.DTO.Option { Label = "value2", Value = "2" },
-                        new Core.DTO.Option { Label = "value3", Value = "3" }
-                    }
-                );
-            }
-
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
-        [InlineData("RDES74", "RDE340", DataElementType.Choice)]
-        [InlineData("RDES72", "RDE338", DataElementType.Numeric)]
-        [InlineData("RDES66", "RDE307", DataElementType.Integer)]
-        [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
-        public async void UpdateElementShouldReturnElementIdIfDataElementIsValid(string setId, string elementId, DataElementType elementType)
+        [InlineData("RDES74", DataElementType.Choice)]
+        [InlineData("RDES72", DataElementType.Numeric)]
+        [InlineData("RDES66", DataElementType.Integer)]
+        [InlineData("RDES53", DataElementType.MultiChoice)]
+        public async void UpdateElementShouldReturnElementIdIfDataElementIsValid(string setId, DataElementType elementType)
         {
-            IntializeMockData();
+            // Creates temporary element
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
             dataElement.Definition = "Tumuor vein";
@@ -537,16 +488,59 @@ namespace RadElement.Service.Tests
                 );
             }
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.UpdateElement(setId, elementId, elementType, dataElement);
+            var sut = new ElementService(radElementContext, logger);
+            var createdResult = await sut.CreateElement(setId, elementType, dataElement);
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.NotEqual(0, result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Equal(string.Format(elementUpdateMessage, setId, elementId), result.Value);
+            Assert.NotNull(createdResult);
+            Assert.NotNull(createdResult.Value);
+            Assert.IsType<ElementIdDetails>(createdResult.Value);
+            Assert.Equal(HttpStatusCode.Created, createdResult.Code);
+
+            var elementDetails = createdResult.Value as ElementIdDetails;
+
+            //Updates temporary element
+            dataElement = new CreateUpdateElement();
+            dataElement.Label = "Tumuoredit";
+            dataElement.Definition = "Tumuor vein edit";
+
+            if (elementType == DataElementType.Integer)
+            {
+                dataElement.ValueMin = 5;
+                dataElement.ValueMax = 6;
+            }
+            else if (elementType == DataElementType.Numeric)
+            {
+                dataElement.ValueMin = 5f;
+                dataElement.ValueMax = 6f;
+            }
+            else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+            {
+                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options.AddRange(
+                    new List<Core.DTO.Option>()
+                    {
+                        new Core.DTO.Option { Label = "value11", Value = "11" },
+                        new Core.DTO.Option { Label = "value22", Value = "22" },
+                        new Core.DTO.Option { Label = "value33", Value = "33" }
+                    }
+                );
+            }
+
+            var updatedResult = await sut.UpdateElement(setId, elementDetails.ElementId, elementType, dataElement);
+
+            Assert.NotNull(updatedResult);
+            Assert.NotNull(updatedResult.Value);
+            Assert.IsType<string>(updatedResult.Value);
+            Assert.Equal(HttpStatusCode.OK, updatedResult.Code);
+            Assert.NotEqual(0, updatedResult.Value);
+            Assert.Equal(HttpStatusCode.OK, updatedResult.Code);
+            Assert.Equal(string.Format(elementUpdateMessage, setId, elementDetails.ElementId), updatedResult.Value);
+
+            // Deletes temporary element
+            var deleteResult = await sut.DeleteElement(setId, elementDetails.ElementId);
+
+            Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
+            Assert.Equal(string.Format(elemenIdDeletedMessage, setId, elementDetails.ElementId), deleteResult.Value);
         }
 
         #endregion
@@ -558,12 +552,12 @@ namespace RadElement.Service.Tests
         [InlineData("RDES200", "RDE200")]
         public async void DeleteElementShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(string setId, string elementId)
         {
-            IntializeMockData();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
+            var sut = new ElementService(radElementContext, logger);
             var result = await sut.DeleteElement(setId, elementId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -572,71 +566,109 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES74", "RDE340")]
-        public async void DeleteElementShouldThrowInternalServerErrorForExceptions(string setId, string elementId)
+        [InlineData("RDES74", DataElementType.Choice)]
+        public async void DeleteElementShouldThrowInternalServerErrorForExceptions(string setId, DataElementType elementType)
         {
+            SetInvalidAppSettingsConfig();
             var dataElement = new CreateUpdateElement();
             dataElement.Label = "Tumuor";
+            dataElement.Definition = "Tumuor vein";
 
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.DeleteElement(setId, elementId);
+            if (elementType == DataElementType.Integer)
+            {
+                dataElement.ValueMin = 1;
+                dataElement.ValueMax = 3;
+            }
+            else if (elementType == DataElementType.Numeric)
+            {
+                dataElement.ValueMin = 1f;
+                dataElement.ValueMax = 3f;
+            }
+            else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+            {
+                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options.AddRange(
+                    new List<Core.DTO.Option>()
+                    {
+                        new Core.DTO.Option { Label = "value1", Value = "1" },
+                        new Core.DTO.Option { Label = "value2", Value = "2" },
+                        new Core.DTO.Option { Label = "value3", Value = "3" }
+                    }
+                );
+            }
 
+            var sut = new ElementService(radElementContext, logger);
+            var result = await sut.CreateElement(setId, elementType, dataElement);
+            
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]
-        [InlineData("RDES74", "RDE340")]
-        public async void DeleteElementShouldDeleteElementIfElementIdAndSetIdIsValid(string setId, string elementId)
+        [InlineData("RDES74", DataElementType.Choice)]
+        public async void DeleteElementShouldReturnDeleteElementIfElementIdIsInvalid(string setId, DataElementType elementType)
         {
-            IntializeMockData();
-            var sut = new ElementService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.DeleteElement(setId, elementId);
+            // Creates temporary element
+            var dataElement = new CreateUpdateElement();
+            dataElement.Label = "Tumuor";
+            dataElement.Definition = "Tumuor vein";
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Equal(string.Format(elemenIdDeletedMessage, setId, elementId), result.Value);
+            if (elementType == DataElementType.Integer)
+            {
+                dataElement.ValueMin = 1;
+                dataElement.ValueMax = 3;
+            }
+            else if (elementType == DataElementType.Numeric)
+            {
+                dataElement.ValueMin = 1f;
+                dataElement.ValueMax = 3f;
+            }
+            else if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+            {
+                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options.AddRange(
+                    new List<Core.DTO.Option>()
+                    {
+                        new Core.DTO.Option { Label = "value1", Value = "1" },
+                        new Core.DTO.Option { Label = "value2", Value = "2" },
+                        new Core.DTO.Option { Label = "value3", Value = "3" }
+                    }
+                );
+            }
+
+            var sut = new ElementService(radElementContext, logger);
+            var createdResult = await sut.CreateElement(setId, elementType, dataElement);
+
+            Assert.NotNull(createdResult);
+            Assert.NotNull(createdResult.Value);
+            Assert.IsType<ElementIdDetails>(createdResult.Value);
+            Assert.Equal(HttpStatusCode.Created, createdResult.Code);
+
+            var elementDetails = createdResult.Value as ElementIdDetails;
+
+            // Deletes temporary element
+            var deleteResult = await sut.DeleteElement(setId, elementDetails.ElementId);
+
+            Assert.NotNull(deleteResult);
+            Assert.NotNull(deleteResult.Value);
+            Assert.IsType<string>(deleteResult.Value);
+            Assert.Equal(HttpStatusCode.OK, deleteResult.Code);
+            Assert.Equal(string.Format(elemenIdDeletedMessage, setId, elementDetails.ElementId), deleteResult.Value);
         }
 
         #endregion
 
-        #region Private Methods
+        #region Private methods
 
-        private void IntializeMockData()
+        private void  SetInvalidAppSettingsConfig()
         {
-            var mockElement = new Mock<DbSet<Element>>();
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
-            mockElement.Setup(d => d.Add(It.IsAny<Element>())).Callback<Element>((s) => MockDataContext.elementsDB.ToList().Add(s));
-
-            var mockSet = new Mock<DbSet<ElementSet>>();
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
-
-            var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
-
-            var mockElementValue = new Mock<DbSet<ElementValue>>();
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
-            mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
-
-            mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
-            mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
-            mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
-            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);           
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings_invalid.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            configurationManager = new ConfigurationManager(configuration);
+            var optionsBuilder = new DbContextOptionsBuilder<RadElementDbContext>();
+            radElementContext = new RadElementDbContext(optionsBuilder.Options, configurationManager);
         }
 
         #endregion

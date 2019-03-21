@@ -62,7 +62,7 @@ namespace RadElement.Service
 
                     if (set != null)
                     {
-                        return await Task.FromResult(new JsonResult(set, HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(set), HttpStatusCode.OK));
                     }
                 }
                 return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));

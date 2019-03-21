@@ -41,7 +41,7 @@ namespace RadElement.Service
                     List<int> elementIds = AddElements(assistModule.DataElements);
                     idDetails.SetId = AddElementSet(assistModule);
                     AddSetRef(Int16.Parse(idDetails.SetId), elementIds);
-                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = idDetails.SetId }, HttpStatusCode.Created));
+                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = "RDES" + idDetails.SetId }, HttpStatusCode.Created));
                 }
                 else
                 {
