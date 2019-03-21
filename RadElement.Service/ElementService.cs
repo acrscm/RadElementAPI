@@ -322,7 +322,6 @@ namespace RadElement.Service
                             if (elementValues != null && elementValues.Any())
                             {
                                 radElementDbContext.ElementValue.RemoveRange(elementValues);
-                                AddElementValues(dataElement.Options, element.Id);
                             }
 
                             element.Name = dataElement.Label;
@@ -378,6 +377,11 @@ namespace RadElement.Service
                                 element.ValueMin = minValue;
                                 element.ValueMax = maxValue;
                                 element.StepValue = 0.1f;
+                            }
+
+                            if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
+                            {
+                                AddElementValues(dataElement.Options, element.Id);
                             }
 
                             radElementDbContext.SaveChanges();
