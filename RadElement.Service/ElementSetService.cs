@@ -263,7 +263,8 @@ namespace RadElement.Service
         {
             return new ElementSetDetails()
             {
-                Id = "RDES" + set.Id,
+                Id = set.Id,
+                SetId = "RDES" + set.Id,
                 ContactName = set.ContactName,
                 Description = set.Description,
                 Name = set.Name,

@@ -1,35 +1,12 @@
-﻿namespace RadElement.Core.DTO
+﻿using RadElement.Core.Domain;
+
+namespace RadElement.Core.DTO
 {
-    public class ElementSetDetails
+    public class ElementSetDetails: ElementSet
     {
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets or sets the set identifier.
         /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the description.
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the contact.
-        /// </summary>
-        public string ContactName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the parent identifier.
-        /// </summary>
-        public int? ParentId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the status
-        /// </summary>
-        public string Status { get; set; }
+        public string SetId { get; set; }
     }
 }

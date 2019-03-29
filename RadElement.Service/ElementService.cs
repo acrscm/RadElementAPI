@@ -501,9 +501,10 @@ namespace RadElement.Service
         {
             return new ElementDetails()
             {
+                Id = element.Id,
+                ElementId = "RDE" + element.Id,
                 Definition = element.Definition,
                 Editor = element.Editor,
-                Id = "RDE" + element.Id,
                 Instructions = element.Instructions,
                 MaxCardinality = element.MaxCardinality,
                 MinCardinality = element.MinCardinality,
@@ -523,6 +524,7 @@ namespace RadElement.Service
                 ValueType = element.ValueType,
                 Version = element.Version,
                 VersionDate = element.VersionDate,
+                ElementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id)
             };
         }
     }
