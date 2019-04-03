@@ -41,7 +41,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetSets()'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -70,7 +71,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetSet(int setId)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -105,7 +107,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'SearchSet(string searchKeyword)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -138,7 +141,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateSet(CreateUpdateSet content)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -179,7 +183,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateSet(CreateUpdaUpdateSet(int setId, CreateUpdateSet content)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -232,7 +237,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'DeleteSet(int setId)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 

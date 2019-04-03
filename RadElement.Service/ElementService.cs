@@ -41,7 +41,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElements()'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -71,7 +72,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElement(int elementId)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -105,7 +107,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'GetElementsBySetId(int setId)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -143,7 +146,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'SearchElement(string searchKeyword)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -272,7 +276,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -395,7 +400,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -441,7 +447,8 @@ namespace RadElement.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
-                return await Task.FromResult(new JsonResult(ex, HttpStatusCode.InternalServerError));
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -524,7 +531,7 @@ namespace RadElement.Service
                 ValueType = element.ValueType,
                 Version = element.Version,
                 VersionDate = element.VersionDate,
-                ElementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id)
+                ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id) : null
             };
         }
     }
