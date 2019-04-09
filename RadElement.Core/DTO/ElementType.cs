@@ -27,6 +27,16 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Data Element Type is MultiChoice
         /// </summary>
-        MultiChoice
+        MultiChoice,
+
+        /// <summary>
+        /// Data Element Type is DateTime
+        /// </summary>
+        DateTime,
+
+        ///// <summary>
+        ///// Data Element Type is Duration
+        ///// </summary>
+        //Duration,
     }
 }
