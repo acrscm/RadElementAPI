@@ -1,5 +1,6 @@
 ﻿namespace RadElement.Core.Domain
 {
+    using System.Collections.Generic;
     using System.Xml.Serialization;
 
     /// <remarks/>
@@ -11,7 +12,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ReportingModule
     {
-
         private Metadata metadataField;
 
         private object[] dataElementsField;
@@ -40,6 +40,8 @@
         [XmlArrayItem("ChoiceDataElement", typeof(ChoiceDataElement))]
         [XmlArrayItem("ComputedDataElement", typeof(ComputedDataElement))]
         [XmlArrayItem("MultiChoiceDataElement", typeof(MultiChoiceDataElement))]
+        [XmlArrayItem("DateTimeDataElement", typeof(DateTimeDataElement))]
+        [XmlArrayItem("TimeSpanDataElement", typeof(TimeSpanDataElement))]
         public object[] DataElements
         {
             get
@@ -96,6 +98,18 @@
 
         private string moduleVersionField;
 
+        private string createdDateField { get; set; }
+
+        private string lastModifiedDateField { get; set; }
+
+        private string approvedByField { get; set; }
+
+        private string reviewedByField { get; set; }
+
+        private string developedByField { get; set; }
+
+        private CodableConcept codableConcept;
+
         private Info infoField;
 
         private string reportCitationTextField;
@@ -113,6 +127,8 @@
         private string[] voiceActivationField;
 
         private KeyValue[] additionalInfoField;
+
+        private List<ApplicableExamFormatter> applicableExamFormatterField { get; set; }
 
         /// <remarks/>
         public string Label
@@ -163,6 +179,84 @@
             set
             {
                 this.moduleVersionField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string CreatedDate
+        {
+            get
+            {
+                return this.createdDateField;
+            }
+            set
+            {
+                this.createdDateField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string LastModifiedDate
+        {
+            get
+            {
+                return this.lastModifiedDateField;
+            }
+            set
+            {
+                this.lastModifiedDateField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string ApprovedBy
+        {
+            get
+            {
+                return this.approvedByField;
+            }
+            set
+            {
+                this.approvedByField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string ReviewedBy
+        {
+            get
+            {
+                return this.reviewedByField;
+            }
+            set
+            {
+                this.reviewedByField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string DevelopedBy
+        {
+            get
+            {
+                return this.developedByField;
+            }
+            set
+            {
+                this.developedByField = value;
+            }
+        }
+
+        /// <remarks/>
+        public CodableConcept CodableConcept
+        {
+            get
+            {
+                return this.codableConcept;
+            }
+            set
+            {
+                this.codableConcept = value;
             }
         }
 
@@ -285,6 +379,26 @@
                 this.additionalInfoField = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public List<ApplicableExamFormatter> ApplicableExamFormatter
+        {
+            get
+            {
+                return this.applicableExamFormatterField;
+            }
+            set
+            {
+                this.applicableExamFormatterField = value;
+            }
+        }
+    }
+
+    public class ApplicableExamFormatter
+    {
+        public string Modality { get; set; }
+        public string Anatomy { get; set; }
     }
 
     /// <remarks/>
@@ -296,7 +410,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Info
     {
-
         private string descriptionField;
 
         private Citation[] referencesField;
@@ -384,12 +497,11 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Citation
     {
-
         private string pubmedIdField;
 
         private string urlField;
 
-        private string[] textField;
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
@@ -421,7 +533,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -439,64 +551,15 @@
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class TextTemplateContent
-    {
-
-        private object[] textItems;
-
-        //  private string[] textField;
-
-        /// <remarks/>
-        //   [System.Xml.Serialization.XmlElementAttribute("templateTags")]
-        [XmlElement("InsertValue", typeof(InsertValue))]
-        [XmlElement("InsertPartial", typeof(InsertPartial))]
-        [XmlElement("SectionIf", typeof(SectionIf))]
-        [XmlElement("SectionIfValue", typeof(SectionIfValue))]
-        [XmlElement("SectionIfNot", typeof(SectionIfNot))]
-        [XmlElement("SectionIfValueNot", typeof(SectionIfValueNot))]
-        [XmlText(typeof(string))]
-        public object[] TextItem
-        {
-            get
-            {
-                return this.textItems;
-            }
-            set
-            {
-                this.textItems = value;
-            }
-        }
-
-        /// <remarks/>
-        //[System.Xml.Serialization.XmlTextAttribute()]
-        //public string[] Text
-        //{
-        //    get
-        //    {
-        //        return this.textField;
-        //    }
-        //    set
-        //    {
-        //        this.textField = value;
-        //    }
-        //}
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class valueBranches
     {
+        private ComputedElementBranch[] branchField;
 
-        private Branch[] branchField;
-
-        private DefaultBranch defaultBranchField;
+        private ComputedElementDefaultBranch defaultBranchField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Branch")]
-        public Branch[] Branch
+        public ComputedElementBranch[] Branch
         {
             get
             {
@@ -509,7 +572,7 @@
         }
 
         /// <remarks/>
-        public DefaultBranch DefaultBranch
+        public ComputedElementDefaultBranch DefaultBranch
         {
             get
             {
@@ -529,12 +592,25 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class Branch
+    public partial class ComputedElementBranch
     {
-
         private object conditionTypeField;
 
         private object itemField;
+
+        [XmlElement("AndCondition", typeof(AndCondition))]
+        [XmlElement("OrCondition", typeof(OrCondition))]
+        [XmlElement("NotCondition", typeof(NotCondition))]
+        [XmlElement("SectionIf", typeof(SectionIf))]
+        [XmlElement("SectionIfNot", typeof(SectionIfNot))]
+        [XmlElement("EqualCondition", typeof(EqualCondition))]
+        [XmlElement("GreaterThanCondition", typeof(GreaterThanCondition))]
+        [XmlElement("LessThanCondition", typeof(LessThanCondition))]
+        [XmlElement("NotEqualCondition", typeof(NotEqualCondition))]
+        [XmlElement("GreaterThanOrEqualsCondition", typeof(GreaterThanOrEqualsCondition))]
+        [XmlElement("LessThanOrEqualsCondition", typeof(LessThanOrEqualsCondition))]
+        [XmlElement("ContainsCondition", typeof(ContainsCondition))]
+        [XmlElement("HasAnyNChoicesCondition", typeof(HasAnyNChoicesCondition))]
 
         /// <remarks/>
         public object ConditionType
@@ -551,7 +627,8 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("DecisionPoint", typeof(valueBranches))]
-        [System.Xml.Serialization.XmlElementAttribute("computedValue", typeof(object))]
+        [System.Xml.Serialization.XmlElementAttribute("ArithmeticExpression", typeof(ArithmeticExpression))]
+        [System.Xml.Serialization.XmlElementAttribute("TextExpression", typeof(TextExpression))]
         public object Item
         {
             get
@@ -572,14 +649,14 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class DefaultBranch
+    public partial class ComputedElementDefaultBranch
     {
-
         private object itemField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("DecisionPoint", typeof(valueBranches))]
-        [System.Xml.Serialization.XmlElementAttribute("computedValue", typeof(object))]
+        [System.Xml.Serialization.XmlElementAttribute("ArithmeticExpression", typeof(ArithmeticExpression))]
+        [System.Xml.Serialization.XmlElementAttribute("TextExpression", typeof(TextExpression))]
         public object Item
         {
             get
@@ -598,8 +675,25 @@
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class baseElementContents
+    public partial class BaseElementContents
     {
+        private string idField;
+
+        private BaseElementContentsIsRepeatable isRepeatableField;
+
+        private bool isRepeatableFieldSpecified;
+
+        private string repeatGroupField;
+
+        private string repeatCountField;
+
+        private BaseElementContentsIsRequired isRequiredField;
+
+        private bool isRequiredFieldSpecified;
+
+        private string displaySequenceField;
+
+        private CodableConcept codableConceptField;
 
         private string labelField;
 
@@ -609,15 +703,144 @@
 
         private string voiceCommandField;
 
-        private string idField;
+        private BaseElementContentsIsEditable editableField;
 
-        private string cdeIdField;
+        private bool editableFieldSpecified;
 
-        private baseElementContentsIsRequired isRequiredField;
+        private BaseElementContentsHasPrefilled hasprefilledField;
 
-        private bool isRequiredFieldSpecified;
+        private bool hasprefilledFieldSpecified;
 
-        private string displaySequenceField;
+        private BaseElementContentsIsOutput outputField;
+
+        private bool outputFieldSpecified;
+
+        private string unitField;
+
+        private Source sourceField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
+        public string Id
+        {
+            get
+            {
+                return this.idField;
+            }
+            set
+            {
+                this.idField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseElementContentsIsRepeatable IsRepeatable
+        {
+            get
+            {
+                return this.isRepeatableField;
+            }
+            set
+            {
+                this.isRepeatableField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IsRepeatableSpecified
+        {
+            get
+            {
+                return this.isRepeatableFieldSpecified;
+            }
+            set
+            {
+                this.isRepeatableFieldSpecified = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string RepeatGroup
+        {
+            get
+            {
+                return this.repeatGroupField;
+            }
+            set
+            {
+                this.repeatGroupField = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string RepeatCountField
+        {
+            get
+            {
+                return this.repeatCountField;
+            }
+            set
+            {
+                this.repeatCountField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseElementContentsIsRequired IsRequired
+        {
+            get
+            {
+                return this.isRequiredField;
+            }
+            set
+            {
+                this.isRequiredField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IsRequiredSpecified
+        {
+            get
+            {
+                return this.isRequiredFieldSpecified;
+            }
+            set
+            {
+                this.isRequiredFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "integer")]
+        public string DisplaySequence
+        {
+            get
+            {
+                return this.displaySequenceField;
+            }
+            set
+            {
+                this.displaySequenceField = value;
+            }
+        }
+
+        /// <remarks/>
+        public CodableConcept CodableConcept
+        {
+            get
+            {
+                return this.codableConceptField;
+            }
+            set
+            {
+                this.codableConceptField = value;
+            }
+        }
 
         /// <remarks/>
         public string Label
@@ -672,8 +895,191 @@
             }
         }
 
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
+        public BaseElementContentsIsEditable Editable
+        {
+            get
+            {
+                return this.editableField;
+            }
+            set
+            {
+                this.editableField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool EditableSpecified
+        {
+            get
+            {
+                return this.editableFieldSpecified;
+            }
+            set
+            {
+                this.editableFieldSpecified = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        /// <remarks/>
+        public BaseElementContentsHasPrefilled Hasprefilled
+        {
+            get
+            {
+                return this.hasprefilledField;
+            }
+            set
+            {
+                this.hasprefilledField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool HasprefilledSpecified
+        {
+            get
+            {
+                return this.hasprefilledFieldSpecified;
+            }
+            set
+            {
+                this.hasprefilledFieldSpecified = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        /// <remarks/>
+        public BaseElementContentsIsOutput Output
+        {
+            get
+            {
+                return this.outputField;
+            }
+            set
+            {
+                this.outputField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool OutputSpecified
+        {
+            get
+            {
+                return this.outputFieldSpecified;
+            }
+            set
+            {
+                this.outputFieldSpecified = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        /// <remarks/>
+        public string Unit
+        {
+            get
+            {
+                return this.unitField;
+            }
+            set
+            {
+                this.unitField = value;
+            }
+        }
+
+        /// <remarks/>
+        public Source Source
+        {
+            get
+            {
+                return this.sourceField;
+            }
+            set
+            {
+                this.sourceField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class CodableConcept
+    {
+        [XmlAttribute]
+        public string Name { get; set; }
+
+        [XmlElement("Coding")]
+        public Coding[] Coding { get; set; }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class Coding
+    {
+        [XmlElement]
+        public CodingAttributes System { get; set; }
+
+        [XmlElement]
+        public CodingAttributes Version { get; set; }
+
+        [XmlElement]
+        public CodingAttributes Code { get; set; }
+
+        [XmlElement]
+        public CodingAttributes Display { get; set; }
+
+        [XmlElement]
+        public CodingAttributes UserSelected { get; set; }
+
+        [XmlElement]
+        public CodingAttributes Url { get; set; }
+    }
+
+    public partial class CodingAttributes
+    {
+        [XmlAttribute]
+        public string Value { get; set; }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class Diagram
+    {
+        private string idField;
+
+        private string locationField;
+
+        private string labelField;
+
+        private string valueField;
+
+        private string displaySequenceField;
+
+        private DiagramIsKeyDiagram isKeyDiagramField;
+
+        private bool isKeyDiagramFieldSpecified;
+
+        [System.Xml.Serialization.XmlAttributeAttribute()]
         public string Id
         {
             get
@@ -687,84 +1093,6 @@
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string CdeId
-        {
-            get
-            {
-                return this.cdeIdField;
-            }
-            set
-            {
-                this.cdeIdField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public baseElementContentsIsRequired IsRequired
-        {
-            get
-            {
-                return this.isRequiredField;
-            }
-            set
-            {
-                this.isRequiredField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool IsRequiredSpecified
-        {
-            get
-            {
-                return this.isRequiredFieldSpecified;
-            }
-            set
-            {
-                this.isRequiredFieldSpecified = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "integer")]
-        public string DisplaySequence
-        {
-            get
-            {
-                return this.displaySequenceField;
-            }
-            set
-            {
-                this.displaySequenceField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class Diagram
-    {
-        private string locationField;
-
-        private string valueField;
-
-        private string labelField;
-
-        private string displaySequenceField;
-
-        private DiagramIsKeyDiagram isKeyDiagramField;
-
-        private bool isKeyDiagramFieldSpecified;
-
-        /// <remarks/>
         public string Location
         {
             get
@@ -774,19 +1102,6 @@
             set
             {
                 this.locationField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
             }
         }
 
@@ -844,6 +1159,20 @@
                 this.isKeyDiagramFieldSpecified = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public string Value
+        {
+            get
+            {
+                return this.valueField;
+            }
+            set
+            {
+                this.valueField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -852,7 +1181,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public enum DiagramIsKeyDiagram
     {
-
         /// <remarks/>
         @true,
 
@@ -864,9 +1192,73 @@
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public enum baseElementContentsIsRequired
+    public enum BaseElementContentsIsRequired
     {
+        /// <remarks/>
+        @true,
 
+        /// <remarks/>
+        @false,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public enum BaseElementContentsHasPrefilled
+    {
+        /// <remarks/>
+        @true,
+
+        /// <remarks/>
+        @false,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public enum BaseElementContentsIsEditable
+    {
+        /// <remarks/>
+        @true,
+
+        /// <remarks/>
+        @false,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public enum BaseElementContentsIsOutput
+    {
+        /// <remarks/>
+        @true,
+
+        /// <remarks/>
+        @false,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public enum BaseShowDurationAttributes
+    {
+        /// <remarks/>
+        @true,
+
+        /// <remarks/>
+        @false,
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public enum BaseElementContentsIsRepeatable
+    {
         /// <remarks/>
         @true,
 
@@ -883,7 +1275,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Contact
     {
-
         private string nameField;
 
         private string emailField;
@@ -939,7 +1330,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Ontology
     {
-
         private AnatomicRegions[] anatomicRegionsField;
 
         private PossibleDiagnoses[] possibleDiagnosesField;
@@ -982,10 +1372,23 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class AnatomicRegions
     {
+        private string codingSystemField;
 
         private Region[] regionField;
 
-        private string codingSystemField;
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string CodingSystem
+        {
+            get
+            {
+                return this.codingSystemField;
+            }
+            set
+            {
+                this.codingSystemField = value;
+            }
+        }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Region")]
@@ -1000,20 +1403,6 @@
                 this.regionField = value;
             }
         }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string CodingSystem
-        {
-            get
-            {
-                return this.codingSystemField;
-            }
-            set
-            {
-                this.codingSystemField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -1025,10 +1414,11 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Region
     {
-
         private string codeField;
 
-        private string[] textField;
+        private string urlField;
+
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
@@ -1046,7 +1436,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -1055,6 +1445,20 @@
             set
             {
                 this.textField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Url
+        {
+            get
+            {
+                return this.urlField;
+            }
+            set
+            {
+                this.urlField = value;
             }
         }
     }
@@ -1068,10 +1472,23 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class PossibleDiagnoses
     {
+        private string codingSystemField;
 
         private Diagnosis[] diagnosisField;
 
-        private string codingSystemField;
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string CodingSystem
+        {
+            get
+            {
+                return this.codingSystemField;
+            }
+            set
+            {
+                this.codingSystemField = value;
+            }
+        }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Diagnosis")]
@@ -1086,20 +1503,6 @@
                 this.diagnosisField = value;
             }
         }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string CodingSystem
-        {
-            get
-            {
-                return this.codingSystemField;
-            }
-            set
-            {
-                this.codingSystemField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -1111,12 +1514,13 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Diagnosis
     {
-
         private string codingSystemField;
 
         private string codeField;
 
-        private string[] textField;
+        private string urlField;
+
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -1148,7 +1552,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -1157,6 +1561,20 @@
             set
             {
                 this.textField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Url
+        {
+            get
+            {
+                return this.urlField;
+            }
+            set
+            {
+                this.urlField = value;
             }
         }
     }
@@ -1170,10 +1588,9 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ApplicableExamCategory
     {
-
         private ApplicableExamCategoryAxis axisField;
 
-        private string[] textField;
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -1191,7 +1608,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -1210,7 +1627,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public enum ApplicableExamCategoryAxis
     {
-
         /// <remarks/>
         Modality,
 
@@ -1227,7 +1643,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ApplicableSexes
     {
-
         private ApplicableSexesValue valueField;
 
         /// <remarks/>
@@ -1251,7 +1666,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public enum ApplicableSexesValue
     {
-
         /// <remarks/>
         Male,
 
@@ -1271,7 +1685,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ApplicableAgeGroups
     {
-
         private string minimumAgeField;
 
         private string maximumAgeField;
@@ -1314,7 +1727,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class TextCues
     {
-
         private string[] contextPhrasesField;
 
         private string[] keyWordsField;
@@ -1528,7 +1940,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Rules
     {
-
         private RulesDecisionPoint decisionPointField;
 
         /// <remarks/>
@@ -1553,6 +1964,7 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class RulesDecisionPoint
     {
+        private string idField;
 
         private string labelField;
 
@@ -1562,7 +1974,19 @@
 
         private RulesDecisionPointDefaultBranch defaultBranchField;
 
-        private string idField;
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
+        public string Id
+        {
+            get
+            {
+                return this.idField;
+            }
+            set
+            {
+                this.idField = value;
+            }
+        }
 
         /// <remarks/>
         public string Label
@@ -1616,20 +2040,6 @@
                 this.defaultBranchField = value;
             }
         }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
-        public string Id
-        {
-            get
-            {
-                return this.idField;
-            }
-            set
-            {
-                this.idField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -1640,14 +2050,13 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class RulesDecisionPointBranch
     {
-
         private string labelField;
-
-        private DataElementRef[] notRelevantDataElementsField;
 
         private object conditionTypeField;
 
         private object itemField;
+
+        private RulesDecisionPointBranch branchField;
 
         /// <remarks/>
         public string Label
@@ -1662,20 +2071,19 @@
             }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("DataElementRef", IsNullable = false)]
-        public DataElementRef[] NotRelevantDataElements
-        {
-            get
-            {
-                return this.notRelevantDataElementsField;
-            }
-            set
-            {
-                this.notRelevantDataElementsField = value;
-            }
-        }
-
+        [XmlElement("AndCondition", typeof(AndCondition))]
+        [XmlElement("OrCondition", typeof(OrCondition))]
+        [XmlElement("NotCondition", typeof(NotCondition))]
+        [XmlElement("SectionIf", typeof(SectionIf))]
+        [XmlElement("SectionIfNot", typeof(SectionIfNot))]
+        [XmlElement("EqualCondition", typeof(EqualCondition))]
+        [XmlElement("GreaterThanCondition", typeof(GreaterThanCondition))]
+        [XmlElement("LessThanCondition", typeof(LessThanCondition))]
+        [XmlElement("NotEqualCondition", typeof(NotEqualCondition))]
+        [XmlElement("GreaterThanOrEqualsCondition", typeof(GreaterThanOrEqualsCondition))]
+        [XmlElement("LessThanOrEqualsCondition", typeof(LessThanOrEqualsCondition))]
+        [XmlElement("ContainsCondition", typeof(ContainsCondition))]
+        [XmlElement("HasAnyNChoicesCondition", typeof(HasAnyNChoicesCondition))]
         /// <remarks/>
         public object ConditionType
         {
@@ -1686,6 +2094,61 @@
             set
             {
                 this.conditionTypeField = value;
+            }
+        }
+
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("DecisionPoint", typeof(RulesDecisionPoint))]
+        [System.Xml.Serialization.XmlElementAttribute("EndPointRef", typeof(EndPointRef))]
+        public object Item
+        {
+            get
+            {
+                return this.itemField;
+            }
+            set
+            {
+                this.itemField = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlElement("Branch")]
+        public RulesDecisionPointBranch DecisionPointBranch
+        {
+            get
+            {
+                return this.branchField;
+            }
+            set
+            {
+                this.branchField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class RulesDecisionPointDefaultBranch
+    {
+        private string labelField;
+
+        private object itemField;
+
+        /// <remarks/>
+        public string Label
+        {
+            get
+            {
+                return this.labelField;
+            }
+            set
+            {
+                this.labelField = value;
             }
         }
 
@@ -1711,23 +2174,79 @@
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class DataElementRef
+    public partial class EndpointBranch
     {
+        private string labelField;
 
-        private string dataElementIdField;
+        private object conditionTypeField;
+
+        private EndpointBranch branchField;
+
+        private ReportText[] reportTextField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
-        public string DataElementId
+        public string Label
         {
             get
             {
-                return this.dataElementIdField;
+                return this.labelField;
             }
             set
             {
-                this.dataElementIdField = value;
+                this.labelField = value;
+            }
+        }
+
+        [XmlElement("AndCondition", typeof(AndCondition))]
+        [XmlElement("OrCondition", typeof(OrCondition))]
+        [XmlElement("NotCondition", typeof(NotCondition))]
+        [XmlElement("SectionIf", typeof(SectionIf))]
+        [XmlElement("SectionIfNot", typeof(SectionIfNot))]
+        [XmlElement("EqualCondition", typeof(EqualCondition))]
+        [XmlElement("GreaterThanCondition", typeof(GreaterThanCondition))]
+        [XmlElement("LessThanCondition", typeof(LessThanCondition))]
+        [XmlElement("NotEqualCondition", typeof(NotEqualCondition))]
+        [XmlElement("GreaterThanOrEqualsCondition", typeof(GreaterThanOrEqualsCondition))]
+        [XmlElement("LessThanOrEqualsCondition", typeof(LessThanOrEqualsCondition))]
+        [XmlElement("ContainsCondition", typeof(ContainsCondition))]
+        [XmlElement("HasAnyNChoicesCondition", typeof(HasAnyNChoicesCondition))]
+        /// <remarks/>
+        public object ConditionType
+        {
+            get
+            {
+                return this.conditionTypeField;
+            }
+            set
+            {
+                this.conditionTypeField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElement("ReportText")]
+        public ReportText[] ReportText
+        {
+            get
+            {
+                return this.reportTextField;
+            }
+            set
+            {
+                this.reportTextField = value;
+            }
+        }
+
+        [System.Xml.Serialization.XmlElement("Branch")]
+        public EndpointBranch EndpointInnerBranch
+        {
+            get
+            {
+                return this.branchField;
+            }
+            set
+            {
+                this.branchField = value;
             }
         }
     }
@@ -1741,12 +2260,103 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class EndPointRef
     {
+        private string endPointIdField;
+
+        private string diagramIdIdField;
+
+        private BaseElementContentsIsRepeatable isRepeatableField;
+
+        private bool isRepeatableFieldSpecified;
+
+        private string repeatGroupField;
+
+        private string repeatCountField;
 
         private string labelField;
 
         private string descriptionField;
 
-        private string endPointIdField;
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
+        public string EndPointId
+        {
+            get
+            {
+                return this.endPointIdField;
+            }
+            set
+            {
+                this.endPointIdField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
+        public string DiagramId
+        {
+            get
+            {
+                return this.diagramIdIdField;
+            }
+            set
+            {
+                this.diagramIdIdField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseElementContentsIsRepeatable IsRepeatable
+        {
+            get
+            {
+                return this.isRepeatableField;
+            }
+            set
+            {
+                this.isRepeatableField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IsRepeatableSpecified
+        {
+            get
+            {
+                return this.isRepeatableFieldSpecified;
+            }
+            set
+            {
+                this.isRepeatableFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        public string RepeatGroup
+        {
+            get
+            {
+                return this.repeatGroupField;
+            }
+            set
+            {
+                this.repeatGroupField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string RepeatCount
+        {
+            get
+            {
+                return this.repeatCountField;
+            }
+            set
+            {
+                this.repeatCountField = value;
+            }
+        }
 
         /// <remarks/>
         public string Label
@@ -1773,78 +2383,6 @@
                 this.descriptionField = value;
             }
         }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
-        public string EndPointId
-        {
-            get
-            {
-                return this.endPointIdField;
-            }
-            set
-            {
-                this.endPointIdField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class RulesDecisionPointDefaultBranch
-    {
-
-        private string labelField;
-
-        private DataElementRef[] notRelevantDataElementsField;
-
-        private object itemField;
-
-        /// <remarks/>
-        public string Label
-        {
-            get
-            {
-                return this.labelField;
-            }
-            set
-            {
-                this.labelField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("DataElementRef", IsNullable = false)]
-        public DataElementRef[] NotRelevantDataElements
-        {
-            get
-            {
-                return this.notRelevantDataElementsField;
-            }
-            set
-            {
-                this.notRelevantDataElementsField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("DecisionPoint", typeof(RulesDecisionPoint))]
-        [System.Xml.Serialization.XmlElementAttribute("EndPointRef", typeof(EndPointRef))]
-        public object Item
-        {
-            get
-            {
-                return this.itemField;
-            }
-            set
-            {
-                this.itemField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -1856,7 +2394,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class EndPoints
     {
-
         private TemplatePartial[] templatePartialField;
 
         private EndPoint[] endPointField;
@@ -1897,10 +2434,11 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class TemplatePartial : TextTemplateContent
+    public partial class TemplatePartial
     {
-
         private string idField;
+
+        private EndpointBranch[] branchField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
@@ -1915,6 +2453,19 @@
                 this.idField = value;
             }
         }
+
+        [System.Xml.Serialization.XmlElementAttribute("Branch")]
+        public EndpointBranch[] EndPointBranch
+        {
+            get
+            {
+                return this.branchField;
+            }
+            set
+            {
+                this.branchField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -1926,12 +2477,11 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class EndPoint
     {
-
         private string labelField;
 
         private Diagnosis diagnosisField;
 
-        private ReportText[] reportTextsField;
+        private ReportSections reportSectionsField;
 
         private ActionableFinding actionableFindingField;
 
@@ -1966,16 +2516,16 @@
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("ReportText", IsNullable = false)]
-        public ReportText[] ReportTexts
+        [System.Xml.Serialization.XmlElementAttribute("ReportSections")]
+        public ReportSections ReportSections
         {
             get
             {
-                return this.reportTextsField;
+                return this.reportSectionsField;
             }
             set
             {
-                this.reportTextsField = value;
+                this.reportSectionsField = value;
             }
         }
 
@@ -1993,6 +2543,7 @@
         }
 
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ImagingFollowup")]
         public ImagingFollowup ImagingFollowup
         {
             get
@@ -2027,14 +2578,41 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class ReportText : TextTemplateContent
+    public partial class ReportSections
     {
+        private ReportSection[] reportSectionField;
 
-        private ReportTextSectionId sectionIdField;
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ReportSection")]
+        public ReportSection[] ReportSection
+        {
+            get
+            {
+                return this.reportSectionField;
+            }
+            set
+            {
+                this.reportSectionField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ReportSection
+    {
+        private string sectionIdField;
+
+        private EndpointBranch[] branchField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public ReportTextSectionId SectionId
+        public string SectionId
         {
             get
             {
@@ -2045,29 +2623,78 @@
                 this.sectionIdField = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Branch")]
+        public EndpointBranch[] Branch
+        {
+            get
+            {
+                return this.branchField;
+            }
+            set
+            {
+                this.branchField = value;
+            }
+        }
     }
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
     [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public enum ReportTextSectionId
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ReportText
     {
+        private string typeField;
+
+        private string valueField;
+
+        private string textField;
 
         /// <remarks/>
-        findings,
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Type
+        {
+            get
+            {
+                return this.typeField;
+            }
+            set
+            {
+                this.typeField = value;
+            }
+        }
 
         /// <remarks/>
-        impression,
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string Value
+        {
+            get
+            {
+                return this.valueField;
+            }
+            set
+            {
+                this.valueField = value;
+            }
+        }
 
         /// <remarks/>
-        recommendation,
-
-        /// <remarks/>
-        impressionRecommendation,
-
-        /// <remarks/>
-        citation,
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                this.textField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -2079,7 +2706,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ActionableFinding
     {
-
         private string categoryField;
 
         /// <remarks/>
@@ -2106,12 +2732,7 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ImagingFollowup
     {
-
-        private string clinicalConditionField;
-
-        private Citation[] referencesField;
-
-        private EvidenceLevel evidenceLevelField;
+        private RecommendationBase recommendationBaseField;
 
         private PreferredImagingExam preferredImagingExamField;
 
@@ -2122,42 +2743,15 @@
         private RecommendedTimeFrame recommendedTimeFrameField;
 
         /// <remarks/>
-        public string ClinicalCondition
+        public RecommendationBase RecommendationBase
         {
             get
             {
-                return this.clinicalConditionField;
+                return this.recommendationBaseField;
             }
             set
             {
-                this.clinicalConditionField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("Citation", IsNullable = false)]
-        public Citation[] References
-        {
-            get
-            {
-                return this.referencesField;
-            }
-            set
-            {
-                this.referencesField = value;
-            }
-        }
-
-        /// <remarks/>
-        public EvidenceLevel EvidenceLevel
-        {
-            get
-            {
-                return this.evidenceLevelField;
-            }
-            set
-            {
-                this.evidenceLevelField = value;
+                this.recommendationBaseField = value;
             }
         }
 
@@ -2224,7 +2818,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class EvidenceLevel
     {
-
         private string codingSystemField;
 
         private string valueField;
@@ -2265,54 +2858,107 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class RecommendationBase
+    {
+        private string clinicalConditionField;
+
+        private Citation[] referencesField;
+
+        private EvidenceLevel evidenceLevelField;
+
+        /// <remarks/>
+        public string ClinicalCondition
+        {
+            get
+            {
+                return this.clinicalConditionField;
+            }
+            set
+            {
+                this.clinicalConditionField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayItemAttribute("Citation", IsNullable = false)]
+        public Citation[] References
+        {
+            get
+            {
+                return this.referencesField;
+            }
+            set
+            {
+                this.referencesField = value;
+            }
+        }
+
+        /// <remarks/>
+        public EvidenceLevel EvidenceLevel
+        {
+            get
+            {
+                return this.evidenceLevelField;
+            }
+            set
+            {
+                this.evidenceLevelField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class PreferredImagingExam
     {
+        private string clinicalConditionField;
 
-        private string codingSystemField;
+        private Citation[] referencesField;
 
-        private string codeField;
-
-        private string[] textField;
+        private EvidenceLevel evidenceLevelField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string CodingSystem
+        public string ClinicalCondition
         {
             get
             {
-                return this.codingSystemField;
+                return this.clinicalConditionField;
             }
             set
             {
-                this.codingSystemField = value;
+                this.clinicalConditionField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string Code
+        [System.Xml.Serialization.XmlArrayItemAttribute("Citation", IsNullable = false)]
+        public Citation[] References
         {
             get
             {
-                return this.codeField;
+                return this.referencesField;
             }
             set
             {
-                this.codeField = value;
+                this.referencesField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public EvidenceLevel EvidenceLevel
         {
             get
             {
-                return this.textField;
+                return this.evidenceLevelField;
             }
             set
             {
-                this.textField = value;
+                this.evidenceLevelField = value;
             }
         }
     }
@@ -2326,7 +2972,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Exam
     {
-
         private string codeField;
 
         private string codeSystemField;
@@ -2335,7 +2980,7 @@
 
         private string bodyRegionField;
 
-        private string[] textField;
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -2395,7 +3040,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -2417,12 +3062,11 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class IndicationForFollowup
     {
-
         private string codingSystemField;
 
         private string codeField;
 
-        private string[] textField;
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -2454,7 +3098,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -2476,7 +3120,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class RecommendedTimeFrame
     {
-
         private string earliestField;
 
         private string latestField;
@@ -2821,10 +3464,9 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class GlobalValue
     {
-
         private string idField;
 
-        private string[] textField;
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
@@ -2842,7 +3484,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
         {
             get
             {
@@ -2891,10 +3533,9 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class TextExpression
     {
-
         private InsertValue[] insertValueField;
 
-        private string[] textField;
+        private string textField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("InsertValue")]
@@ -2912,7 +3553,33 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
+        public string Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                this.textField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ArithmeticExpression
+    {
+        private string textField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Text
         {
             get
             {
@@ -2934,7 +3601,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class InsertValue
     {
-
         private string dataElementIdField;
 
         private string significantDigitsField;
@@ -2977,15 +3643,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ComputedDataElement
     {
-
-        private string labelField;
-
-        private string hintField;
-
-        private Diagram[] diagramsField;
-
-        private object itemField;
-
         private string idField;
 
         private string displaySequenceField;
@@ -2994,60 +3651,13 @@
 
         private bool showValueFieldSpecified;
 
-        /// <remarks/>
-        public string Label
-        {
-            get
-            {
-                return this.labelField;
-            }
-            set
-            {
-                this.labelField = value;
-            }
-        }
+        private string labelField;
 
-        /// <remarks/>
-        public string Hint
-        {
-            get
-            {
-                return this.hintField;
-            }
-            set
-            {
-                this.hintField = value;
-            }
-        }
+        private string hintField;
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("Diagram", IsNullable = false)]
-        public Diagram[] Diagrams
-        {
-            get
-            {
-                return this.diagramsField;
-            }
-            set
-            {
-                this.diagramsField = value;
-            }
-        }
+        private Diagram[] diagramsField;
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("DecisionPoint", typeof(valueBranches))]
-        [System.Xml.Serialization.XmlElementAttribute("computedValue", typeof(object))]
-        public object Item
-        {
-            get
-            {
-                return this.itemField;
-            }
-            set
-            {
-                this.itemField = value;
-            }
-        }
+        private object itemField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "ID")]
@@ -3104,6 +3714,62 @@
                 this.showValueFieldSpecified = value;
             }
         }
+
+        /// <remarks/>
+        public string Label
+        {
+            get
+            {
+                return this.labelField;
+            }
+            set
+            {
+                this.labelField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string Hint
+        {
+            get
+            {
+                return this.hintField;
+            }
+            set
+            {
+                this.hintField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayItemAttribute("Diagram", IsNullable = false)]
+        public Diagram[] Diagrams
+        {
+            get
+            {
+                return this.diagramsField;
+            }
+            set
+            {
+                this.diagramsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("DecisionPoint", typeof(valueBranches))]
+        [System.Xml.Serialization.XmlElementAttribute("ArithmeticExpression", typeof(ArithmeticExpression))]
+        [System.Xml.Serialization.XmlElementAttribute("TextExpression", typeof(TextExpression))]
+        public object Item
+        {
+            get
+            {
+                return this.itemField;
+            }
+            set
+            {
+                this.itemField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -3127,9 +3793,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class NumericDataElement : baseElementContents
+    public partial class NumericDataElement : BaseElementContents
     {
-
         private decimal minimumField;
 
         private bool minimumFieldSpecified;
@@ -3138,7 +3803,7 @@
 
         private bool maximumFieldSpecified;
 
-        private string unitsField;
+        private NumericConditionalProperties conditionalPropertiesField;
 
         /// <remarks/>
         public decimal Minimum
@@ -3195,15 +3860,354 @@
         }
 
         /// <remarks/>
-        public string Units
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperties")]
+        public NumericConditionalProperties ConditionalProperties
         {
             get
             {
-                return this.unitsField;
+                return this.conditionalPropertiesField;
             }
             set
             {
-                this.unitsField = value;
+                this.conditionalPropertiesField = value;
+            }
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class DateTimeDataElement : BaseElementContents
+    {
+        private string minimumDateField;
+
+        private string maximumDateField;
+
+        private DateTimeConditionalProperties conditionalPropertiesField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumDate
+        {
+            get
+            {
+                return this.minimumDateField;
+            }
+            set
+            {
+                this.minimumDateField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumDate
+        {
+            get
+            {
+                return this.maximumDateField;
+            }
+            set
+            {
+                this.maximumDateField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperties")]
+        public DateTimeConditionalProperties ConditionalProperties
+        {
+            get
+            {
+                return this.conditionalPropertiesField;
+            }
+            set
+            {
+                this.conditionalPropertiesField = value;
+            }
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class TimeSpanDataElement : BaseElementContents
+    {
+        private BaseShowDurationAttributes showDaysField;
+
+        private bool showDaysFieldSpecified;
+
+        private BaseShowDurationAttributes showHoursField;
+
+        private bool showHoursFieldSpecified;
+
+        private BaseShowDurationAttributes showMinutesField;
+
+        private bool showMinutesFieldSpecified;
+
+        private BaseShowDurationAttributes showSecondsField;
+
+        private bool showSecondsFieldSpecified;
+
+        private string minimumDayField;
+
+        private string minimumHoursField;
+
+        private string minimumMinutesField;
+
+        private string minimumSecondsField;
+
+        private string maximumDayField;
+
+        private string maximumHoursField;
+
+        private string maximumMinutesField;
+
+        private string maximumSecondsField;
+
+        private DurationConditionalProperties conditionalPropertiesField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseShowDurationAttributes ShowDays
+        {
+            get
+            {
+                return this.showDaysField;
+            }
+            set
+            {
+                this.showDaysField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ShowDaysSpecified
+        {
+            get
+            {
+                return this.showDaysFieldSpecified;
+            }
+            set
+            {
+                this.showDaysFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseShowDurationAttributes ShowHours
+        {
+            get
+            {
+                return this.showHoursField;
+            }
+            set
+            {
+                this.showHoursField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ShowHoursSpecified
+        {
+            get
+            {
+                return this.showHoursFieldSpecified;
+            }
+            set
+            {
+                this.showHoursFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseShowDurationAttributes ShowMinutes
+        {
+            get
+            {
+                return this.showMinutesField;
+            }
+            set
+            {
+                this.showMinutesField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ShowMinutesSpecified
+        {
+            get
+            {
+                return this.showMinutesFieldSpecified;
+            }
+            set
+            {
+                this.showMinutesFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public BaseShowDurationAttributes ShowSeconds
+        {
+            get
+            {
+                return this.showSecondsField;
+            }
+            set
+            {
+                this.showSecondsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ShowSecondsSpecified
+        {
+            get
+            {
+                return this.showSecondsFieldSpecified;
+            }
+            set
+            {
+                this.showSecondsFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumDay
+        {
+            get
+            {
+                return this.minimumDayField;
+            }
+            set
+            {
+                this.minimumDayField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumDay
+        {
+            get
+            {
+                return this.maximumDayField;
+            }
+            set
+            {
+                this.maximumDayField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumHours
+        {
+            get
+            {
+                return this.minimumHoursField;
+            }
+            set
+            {
+                this.minimumHoursField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumHours
+        {
+            get
+            {
+                return this.maximumHoursField;
+            }
+            set
+            {
+                this.maximumHoursField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumMinutes
+        {
+            get
+            {
+                return this.minimumMinutesField;
+            }
+            set
+            {
+                this.minimumMinutesField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumMinutes
+        {
+            get
+            {
+                return this.maximumMinutesField;
+            }
+            set
+            {
+                this.maximumMinutesField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumSeconds
+        {
+            get
+            {
+                return this.minimumSecondsField;
+            }
+            set
+            {
+                this.minimumSecondsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumSeconds
+        {
+            get
+            {
+                return this.maximumSecondsField;
+            }
+            set
+            {
+                this.maximumSecondsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperties")]
+        public DurationConditionalProperties ConditionalProperties
+        {
+            get
+            {
+                return this.conditionalPropertiesField;
+            }
+            set
+            {
+                this.conditionalPropertiesField = value;
             }
         }
     }
@@ -3215,12 +4219,13 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class IntegerDataElement : baseElementContents
+    public partial class IntegerDataElement : BaseElementContents
     {
-
         private string minimumField;
 
         private string maximumField;
+
+        private IntegerConditionalProperties conditionalPropertiesField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
@@ -3249,6 +4254,20 @@
                 this.maximumField = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperties")]
+        public IntegerConditionalProperties ConditionalProperties
+        {
+            get
+            {
+                return this.conditionalPropertiesField;
+            }
+            set
+            {
+                this.conditionalPropertiesField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -3260,7 +4279,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Choice
     {
-
         private string valueField;
 
         private string labelField;
@@ -3393,7 +4411,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ChoiceInfo
     {
-
         private Choice choiceField;
 
         private Choice[] choice1Field;
@@ -3436,7 +4453,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class ImageMap
     {
-
         private string locationField;
 
         private string labelField;
@@ -3508,7 +4524,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class DrawStyle
     {
-
         private string outlineField;
 
         private string hoverFillField;
@@ -3567,7 +4582,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class Area
     {
-
         private AreaShape shapeField;
 
         private string coordsField;
@@ -3671,7 +4685,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public enum AreaShape
     {
-
         /// <remarks/>
         rect,
 
@@ -3716,70 +4729,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class ChoiceDataElement : baseElementContents
+    public partial class ChoiceDataElement : BaseChoiceElementContents
     {
-
-        private ChoiceInfo choiceInfoField;
-
-        private ImageMap imageMapField;
-
-        private ChoiceDataElementAllowFreetext allowFreetextField;
-
-        private bool allowFreetextFieldSpecified;
-
-        /// <remarks/>
-        public ChoiceInfo ChoiceInfo
-        {
-            get
-            {
-                return this.choiceInfoField;
-            }
-            set
-            {
-                this.choiceInfoField = value;
-            }
-        }
-
-        /// <remarks/>
-        public ImageMap ImageMap
-        {
-            get
-            {
-                return this.imageMapField;
-            }
-            set
-            {
-                this.imageMapField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public ChoiceDataElementAllowFreetext AllowFreetext
-        {
-            get
-            {
-                return this.allowFreetextField;
-            }
-            set
-            {
-                this.allowFreetextField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool AllowFreetextSpecified
-        {
-            get
-            {
-                return this.allowFreetextFieldSpecified;
-            }
-            set
-            {
-                this.allowFreetextFieldSpecified = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -3803,38 +4754,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class MultiChoiceDataElement : baseElementContents
+    public partial class MultiChoiceDataElement : BaseChoiceElementContents
     {
-
-        private ChoiceInfo choiceInfoField;
-
-        private ImageMap imageMapField;
-
-        /// <remarks/>
-        public ChoiceInfo ChoiceInfo
-        {
-            get
-            {
-                return this.choiceInfoField;
-            }
-            set
-            {
-                this.choiceInfoField = value;
-            }
-        }
-
-        /// <remarks/>
-        public ImageMap ImageMap
-        {
-            get
-            {
-                return this.imageMapField;
-            }
-            set
-            {
-                this.imageMapField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -3844,40 +4765,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class AndCondition
+    public partial class AndCondition : ConditionTypes
     {
-
-        private object conditionTypeField;
-
-        private object[] conditionType1Field;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
-        public object ConditionType
-        {
-            get
-            {
-                return this.conditionTypeField;
-            }
-            set
-            {
-                this.conditionTypeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ConditionType", Order = 1)]
-        public object[] ConditionType1
-        {
-            get
-            {
-                return this.conditionType1Field;
-            }
-            set
-            {
-                this.conditionType1Field = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -3887,40 +4776,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class OrCondition
+    public partial class OrCondition : ConditionTypes
     {
-
-        private object conditionTypeField;
-
-        private object[] conditionType1Field;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 0)]
-        public object ConditionType
-        {
-            get
-            {
-                return this.conditionTypeField;
-            }
-            set
-            {
-                this.conditionTypeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ConditionType", Order = 1)]
-        public object[] ConditionType1
-        {
-            get
-            {
-                return this.conditionType1Field;
-            }
-            set
-            {
-                this.conditionType1Field = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -3930,24 +4787,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class NotCondition
+    public partial class NotCondition : ConditionTypes
     {
-
-        private object[] conditionTypeField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ConditionType")]
-        public object[] ConditionType
-        {
-            get
-            {
-                return this.conditionTypeField;
-            }
-            set
-            {
-                this.conditionTypeField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -3957,24 +4798,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class EqualCondition
+    public partial class SectionIf : BaseSectionIfConditionContent
     {
-
-        private string comparisonValueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
-        {
-            get
-            {
-                return this.comparisonValueField;
-            }
-            set
-            {
-                this.comparisonValueField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -3984,24 +4809,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class GreaterThanCondition
+    public partial class SectionIfNot : BaseSectionIfConditionContent
     {
-
-        private string comparisonValueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
-        {
-            get
-            {
-                return this.comparisonValueField;
-            }
-            set
-            {
-                this.comparisonValueField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -4011,24 +4820,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class LessThanCondition
+    public partial class EqualCondition : ComparisonConditionContents
     {
-
-        private string comparisonValueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
-        {
-            get
-            {
-                return this.comparisonValueField;
-            }
-            set
-            {
-                this.comparisonValueField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -4038,24 +4831,8 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class GreaterThanOrEqualsCondition
+    public partial class GreaterThanCondition : ComparisonConditionContents
     {
-
-        private string comparisonValueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
-        {
-            get
-            {
-                return this.comparisonValueField;
-            }
-            set
-            {
-                this.comparisonValueField = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -4065,24 +4842,52 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class LessThanOrEqualsCondition
+    public partial class LessThanCondition : ComparisonConditionContents
     {
+    }
 
-        private string comparisonValueField;
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class NotEqualCondition : ComparisonConditionContents
+    {
+    }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
-        {
-            get
-            {
-                return this.comparisonValueField;
-            }
-            set
-            {
-                this.comparisonValueField = value;
-            }
-        }
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class GreaterThanOrEqualsCondition : ComparisonConditionContents
+    {
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class LessThanOrEqualsCondition : ComparisonConditionContents
+    {
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ContainsCondition : ComparisonConditionContents
+    {
     }
 
     /// <remarks/>
@@ -4094,7 +4899,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class HasAnyNChoicesCondition
     {
-
         private string dataElementIdField;
 
         private string minimumChoicesField;
@@ -4124,49 +4928,6 @@
             set
             {
                 this.minimumChoicesField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class ContainsCondition
-    {
-
-        private string dataElementIdField;
-
-        private string comparisonValueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
-        public string DataElementId
-        {
-            get
-            {
-                return this.dataElementIdField;
-            }
-            set
-            {
-                this.dataElementIdField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
-        {
-            get
-            {
-                return this.comparisonValueField;
-            }
-            set
-            {
-                this.comparisonValueField = value;
             }
         }
     }
@@ -4221,60 +4982,6 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class NotRelevantDataElements
-    {
-
-        private DataElementRef[] dataElementRefField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("DataElementRef")]
-        public DataElementRef[] DataElementRef
-        {
-            get
-            {
-                return this.dataElementRefField;
-            }
-            set
-            {
-                this.dataElementRefField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class ReportTexts
-    {
-
-        private ReportText[] reportTextField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ReportText")]
-        public ReportText[] ReportText
-        {
-            get
-            {
-                return this.reportTextField;
-            }
-            set
-            {
-                this.reportTextField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class AcceptableImagingExams
     {
 
@@ -4304,7 +5011,6 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class InsertPartial
     {
-
         private string partialIdField;
 
         /// <remarks/>
@@ -4329,22 +5035,171 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class SectionIf : TextTemplateContent
+    public partial class Source
     {
+        private string vendorField;
 
-        private string dataElementIdField;
+        private string appNameField;
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
-        public string DataElementId
+        private string versionField;
+
+        public string Vendor
         {
             get
             {
-                return this.dataElementIdField;
+                return this.vendorField;
             }
             set
             {
-                this.dataElementIdField = value;
+                this.vendorField = value;
+            }
+        }
+
+        public string AppName
+        {
+            get
+            {
+                return this.appNameField;
+            }
+            set
+            {
+                this.appNameField = value;
+            }
+        }
+
+        public string Version
+        {
+            get
+            {
+                return this.versionField;
+            }
+            set
+            {
+                this.versionField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class TextTemplateContent
+    {
+        private string[] textField;
+
+        private TemplateTags[] templateTagsField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                this.textField = value;
+            }
+        }
+
+        /// <remarks/>
+        public TemplateTags[] TemplateTags
+        {
+            get
+            {
+                return this.templateTagsField;
+            }
+            set
+            {
+                this.templateTagsField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class TemplateTags
+    {
+        private object textItems;
+
+        /// <remarks/>
+        [XmlElement("InsertValue", typeof(InsertValue))]
+        [XmlElement("InsertPartial", typeof(InsertPartial))]
+        [XmlElement("PlainText", typeof(PlainText))]
+        [XmlElement("NewLine", typeof(NewLine))]
+        public object TextItem
+        {
+            get
+            {
+                return this.textItems;
+            }
+            set
+            {
+                this.textItems = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class NewLine
+    {
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class PlainText
+    {
+        private string textField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                this.textField = value;
+            }
+        }
+    }
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class NumericConditionalProperties
+    {
+        private NumericConditionalProperty[] conditionalPropertyField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperty")]
+        public NumericConditionalProperty[] ConditionalProperty
+        {
+            get
+            {
+                return this.conditionalPropertyField;
+            }
+            set
+            {
+                this.conditionalPropertyField = value;
             }
         }
     }
@@ -4356,15 +5211,665 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class SectionIfValue : TextTemplateContent
+    public partial class IntegerConditionalProperties
     {
+        private IntegerConditionalProperty[] conditionalPropertyField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperty")]
+        public IntegerConditionalProperty[] ConditionalProperty
+        {
+            get
+            {
+                return this.conditionalPropertyField;
+            }
+            set
+            {
+                this.conditionalPropertyField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class DateTimeConditionalProperties
+    {
+        private DateTimeConditionalProperty[] conditionalPropertyField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperty")]
+        public DateTimeConditionalProperty[] ConditionalProperty
+        {
+            get
+            {
+                return this.conditionalPropertyField;
+            }
+            set
+            {
+                this.conditionalPropertyField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class DurationConditionalProperties
+    {
+        private DurationConditionalProperty[] conditionalPropertyField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperty")]
+        public DurationConditionalProperty[] ConditionalProperty
+        {
+            get
+            {
+                return this.conditionalPropertyField;
+            }
+            set
+            {
+                this.conditionalPropertyField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ChoiceConditionalProperties
+    {
+        private ChoiceConditionalProperty[] conditionalPropertyField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperty")]
+        public ChoiceConditionalProperty[] ConditionalProperty
+        {
+            get
+            {
+                return this.conditionalPropertyField;
+            }
+            set
+            {
+                this.conditionalPropertyField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class BaseConditionalPropertyContents
+    {
+        private object conditionTypeField;
+
+        private string isRelevantField;
+
+        private string isRequiredField;
+
+        private string displaySequenceField;
+
+        [XmlElement("AndCondition", typeof(AndCondition))]
+        [XmlElement("OrCondition", typeof(OrCondition))]
+        [XmlElement("NotCondition", typeof(NotCondition))]
+        [XmlElement("SectionIf", typeof(SectionIf))]
+        [XmlElement("SectionIfNot", typeof(SectionIfNot))]
+        [XmlElement("EqualCondition", typeof(EqualCondition))]
+        [XmlElement("GreaterThanCondition", typeof(GreaterThanCondition))]
+        [XmlElement("LessThanCondition", typeof(LessThanCondition))]
+        [XmlElement("NotEqualCondition", typeof(NotEqualCondition))]
+        [XmlElement("GreaterThanOrEqualsCondition", typeof(GreaterThanOrEqualsCondition))]
+        [XmlElement("LessThanOrEqualsCondition", typeof(LessThanOrEqualsCondition))]
+        [XmlElement("ContainsCondition", typeof(ContainsCondition))]
+        [XmlElement("HasAnyNChoicesCondition", typeof(HasAnyNChoicesCondition))]
+        /// <remarks/>
+        public object ConditionType
+        {
+            get
+            {
+                return this.conditionTypeField;
+            }
+            set
+            {
+                this.conditionTypeField = value;
+            }
+        }
+
+        public string IsRelevant
+        {
+            get
+            {
+                return this.isRelevantField;
+            }
+            set
+            {
+                this.isRelevantField = value;
+            }
+        }
+
+        public string IsRequired
+        {
+            get
+            {
+                return this.isRequiredField;
+            }
+            set
+            {
+                this.isRequiredField = value;
+            }
+        }
+
+        public string DisplaySequence
+        {
+            get
+            {
+                return this.displaySequenceField;
+            }
+            set
+            {
+                this.displaySequenceField = value;
+            }
+        }
+    }
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ChoiceConditionalProperty : BaseConditionalPropertyContents
+    {
+        private ChoiceNotRelevant[] choiceNotRelevantField;
+
+        [System.Xml.Serialization.XmlElementAttribute("ChoiceNotRelevant")]
+        public ChoiceNotRelevant[] NotRelevantChoice
+        {
+            get
+            {
+                return this.choiceNotRelevantField;
+            }
+            set
+            {
+                this.choiceNotRelevantField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class NumericConditionalProperty : BaseConditionalPropertyContents
+    {
+        private decimal minimumField;
+
+        private bool minimumFieldSpecified;
+
+        private decimal maximumField;
+
+        private bool maximumFieldSpecified;
+
+        public decimal Minimum
+        {
+            get
+            {
+                return this.minimumField;
+            }
+            set
+            {
+                this.minimumField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MinimumSpecified
+        {
+            get
+            {
+                return this.minimumFieldSpecified;
+            }
+            set
+            {
+                this.minimumFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        public decimal Maximum
+        {
+            get
+            {
+                return this.maximumField;
+            }
+            set
+            {
+                this.maximumField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaximumSpecified
+        {
+            get
+            {
+                return this.maximumFieldSpecified;
+            }
+            set
+            {
+                this.maximumFieldSpecified = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class IntegerConditionalProperty : BaseConditionalPropertyContents
+    {
+        private string minimumField;
+
+        private bool minimumFieldSpecified;
+
+        private string maximumField;
+
+        private bool maximumFieldSpecified;
+
+        public string Minimum
+        {
+            get
+            {
+                return this.minimumField;
+            }
+            set
+            {
+                this.minimumField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MinimumSpecified
+        {
+            get
+            {
+                return this.minimumFieldSpecified;
+            }
+            set
+            {
+                this.minimumFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        public string Maximum
+        {
+            get
+            {
+                return this.maximumField;
+            }
+            set
+            {
+                this.maximumField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool MaximumSpecified
+        {
+            get
+            {
+                return this.maximumFieldSpecified;
+            }
+            set
+            {
+                this.maximumFieldSpecified = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class DateTimeConditionalProperty : BaseConditionalPropertyContents
+    {
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class DurationConditionalProperty : BaseConditionalPropertyContents
+    {
+        private string minimumDayField;
+
+        private string minimumHoursField;
+
+        private string minimumMinutesField;
+
+        private string minimumSecondsField;
+
+        private string maximumDayField;
+
+        private string maximumHoursField;
+
+        private string maximumMinutesField;
+
+        private string maximumSecondsField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumDay
+        {
+            get
+            {
+                return this.minimumDayField;
+            }
+            set
+            {
+                this.minimumDayField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumDay
+        {
+            get
+            {
+                return this.maximumDayField;
+            }
+            set
+            {
+                this.maximumDayField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumHours
+        {
+            get
+            {
+                return this.minimumHoursField;
+            }
+            set
+            {
+                this.minimumHoursField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumHours
+        {
+            get
+            {
+                return this.maximumHoursField;
+            }
+            set
+            {
+                this.maximumHoursField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumMinutes
+        {
+            get
+            {
+                return this.minimumMinutesField;
+            }
+            set
+            {
+                this.minimumMinutesField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumMinutes
+        {
+            get
+            {
+                return this.maximumMinutesField;
+            }
+            set
+            {
+                this.maximumMinutesField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MinimumSeconds
+        {
+            get
+            {
+                return this.minimumSecondsField;
+            }
+            set
+            {
+                this.minimumSecondsField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute()]
+        public string MaximumSeconds
+        {
+            get
+            {
+                return this.maximumSecondsField;
+            }
+            set
+            {
+                this.maximumSecondsField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ChoiceNotRelevant
+    {
+        private string choiceValueField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string ChoiceValue
+        {
+            get
+            {
+                return this.choiceValueField;
+            }
+            set
+            {
+                this.choiceValueField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class BaseChoiceElementContents : BaseElementContents
+    {
+        private ChoiceInfo choiceInfoField;
+
+        private ImageMap imageMapField;
+
+        private ChoiceDataElementAllowFreetext allowFreetextField;
+
+        private bool allowFreetextFieldSpecified;
+
+        private ChoiceConditionalProperties conditionalPropertiesField;
+
+        /// <remarks/>
+        public ChoiceInfo ChoiceInfo
+        {
+            get
+            {
+                return this.choiceInfoField;
+            }
+            set
+            {
+                this.choiceInfoField = value;
+            }
+        }
+
+        /// <remarks/>
+        public ImageMap ImageMap
+        {
+            get
+            {
+                return this.imageMapField;
+            }
+            set
+            {
+                this.imageMapField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public ChoiceDataElementAllowFreetext AllowFreetext
+        {
+            get
+            {
+                return this.allowFreetextField;
+            }
+            set
+            {
+                this.allowFreetextField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool AllowFreetextSpecified
+        {
+            get
+            {
+                return this.allowFreetextFieldSpecified;
+            }
+            set
+            {
+                this.allowFreetextFieldSpecified = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ConditionalProperties")]
+        public ChoiceConditionalProperties ConditionalProperties
+        {
+            get
+            {
+                return this.conditionalPropertiesField;
+            }
+            set
+            {
+                this.conditionalPropertiesField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class ConditionTypes
+    {
+        private object[] conditionTypeField;
+
+        [XmlElement("AndCondition", typeof(AndCondition))]
+        [XmlElement("OrCondition", typeof(OrCondition))]
+        [XmlElement("NotCondition", typeof(NotCondition))]
+        [XmlElement("SectionIf", typeof(SectionIf))]
+        [XmlElement("SectionIfNot", typeof(SectionIfNot))]
+        [XmlElement("EqualCondition", typeof(EqualCondition))]
+        [XmlElement("GreaterThanCondition", typeof(GreaterThanCondition))]
+        [XmlElement("LessThanCondition", typeof(LessThanCondition))]
+        [XmlElement("NotEqualCondition", typeof(NotEqualCondition))]
+        [XmlElement("GreaterThanOrEqualsCondition", typeof(GreaterThanOrEqualsCondition))]
+        [XmlElement("LessThanOrEqualsCondition", typeof(LessThanOrEqualsCondition))]
+        [XmlElement("ContainsCondition", typeof(ContainsCondition))]
+        [XmlElement("HasAnyNChoicesCondition", typeof(HasAnyNChoicesCondition))]
+        /// <remarks/>
+        public object[] ConditionType
+        {
+            get
+            {
+                return this.conditionTypeField;
+            }
+            set
+            {
+                this.conditionTypeField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public class ComparisonConditionContents
+    {
+        private string comparisonValueField;
 
         private string dataElementIdField;
 
-        private string comparisonValueField;
-
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
         public string DataElementId
         {
             get
@@ -4399,39 +5904,11 @@
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class SectionIfNot : TextTemplateContent
+    public partial class BaseSectionIfConditionContent
     {
-
         private string dataElementIdField;
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
-        public string DataElementId
-        {
-            get
-            {
-                return this.dataElementIdField;
-            }
-            set
-            {
-                this.dataElementIdField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class SectionIfValueNot : TextTemplateContent
-    {
-
-        private string dataElementIdField;
-
-        private string comparisonValueField;
+        private TextTemplateContent textTemplateContentField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "IDREF")]
@@ -4448,16 +5925,15 @@
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "token")]
-        public string ComparisonValue
+        public TextTemplateContent TextTemplateContent
         {
             get
             {
-                return this.comparisonValueField;
+                return this.textTemplateContentField;
             }
             set
             {
-                this.comparisonValueField = value;
+                this.textTemplateContentField = value;
             }
         }
     }

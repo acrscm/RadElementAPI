@@ -217,6 +217,28 @@ namespace RadElement.Service
                                 element.ValueMin = dataElement.ValueMin;
                                 element.ValueMax = dataElement.ValueMax;
                                 element.StepValue = 1;
+                                element.Unit = dataElement.Unit ?? "";
+                            }
+
+                            if (elementType == DataElementType.Numeric)
+                            {
+                                float? minValue = null;
+                                float? maxValue = null;
+
+                                if (dataElement.ValueMin.HasValue)
+                                {
+                                    minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                                }
+
+                                if (dataElement.ValueMax.HasValue)
+                                {
+                                    maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
+                                }
+                                element.ValueType = "float";
+                                element.ValueMin = minValue;
+                                element.ValueMax = maxValue;
+                                element.StepValue = 0.1f;
+                                element.Unit = dataElement.Unit ?? "";
                             }
 
                             if (elementType == DataElementType.Choice)
@@ -230,22 +252,14 @@ namespace RadElement.Service
                                 element.MaxCardinality = (short)dataElement.Options.Count;
                             }
 
-                            if (elementType == DataElementType.Numeric)
+                            if (elementType == DataElementType.DateTime)
                             {
-                                float? minValue = null;
-                                if (dataElement.ValueMin.HasValue)
-                                {
-                                    minValue = Convert.ToSingle(dataElement.ValueMin.Value);
-                                }
-                                float? maxValue = null;
-                                if (dataElement.ValueMax.HasValue)
-                                {
-                                    maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                                }
-                                element.ValueType = "float";
-                                element.ValueMin = minValue;
-                                element.ValueMax = maxValue;
-                                element.StepValue = 0.1f;
+                                element.ValueType = "date";
+                            }
+
+                            if (elementType == DataElementType.Duration)
+                            {
+                                element.ValueType = "string";
                             }
 
                             radElementDbContext.Element.Add(element);
@@ -353,6 +367,29 @@ namespace RadElement.Service
                                 element.ValueMin = dataElement.ValueMin;
                                 element.ValueMax = dataElement.ValueMax;
                                 element.StepValue = 1;
+                                element.Unit = dataElement.Unit ?? "";
+                            }
+
+                            if (elementType == DataElementType.Numeric)
+                            {
+                                float? minValue = null;
+                                float? maxValue = null;
+
+                                if (dataElement.ValueMin.HasValue)
+                                {
+                                    minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                                }
+
+                                if (dataElement.ValueMax.HasValue)
+                                {
+                                    maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
+                                }
+
+                                element.ValueType = "float";
+                                element.ValueMin = minValue;
+                                element.ValueMax = maxValue;
+                                element.StepValue = 0.1f;
+                                element.Unit = dataElement.Unit ?? "";
                             }
 
                             if (elementType == DataElementType.Choice)
@@ -366,22 +403,14 @@ namespace RadElement.Service
                                 element.MaxCardinality = (short)dataElement.Options.Count;
                             }
 
-                            if (elementType == DataElementType.Numeric)
+                            if (elementType == DataElementType.DateTime)
                             {
-                                float? minValue = null;
-                                if (dataElement.ValueMin.HasValue)
-                                {
-                                    minValue = Convert.ToSingle(dataElement.ValueMin.Value);
-                                }
-                                float? maxValue = null;
-                                if (dataElement.ValueMax.HasValue)
-                                {
-                                    maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                                }
-                                element.ValueType = "float";
-                                element.ValueMin = minValue;
-                                element.ValueMax = maxValue;
-                                element.StepValue = 0.1f;
+                                element.ValueType = "date";
+                            }
+
+                            if (elementType == DataElementType.Duration)
+                            {
+                                element.ValueType = "string";
                             }
 
                             if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
