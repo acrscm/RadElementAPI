@@ -30,6 +30,16 @@ namespace RadElement.Core.Domain
         MultiChoice,
 
         /// <summary>
+        /// Data Element Type is DateTime
+        /// </summary>
+        DateTime,
+
+        ///// <summary>
+        ///// Data Element Type is Duration
+        ///// </summary>
+        //Duration,
+
+        /// <summary>
         /// Data Element Type is Global
         /// </summary>
         Global,

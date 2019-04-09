@@ -1,5 +1,4 @@
-﻿using RadElement.Core.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RadElement.Core.DTO
 {
@@ -19,7 +18,12 @@ namespace RadElement.Core.DTO
         /// Gets or sets the question.
         /// </summary>
         public string Question { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the unit.
+        /// </summary>
+        public string Unit { get; set; }
+
         /// <summary>
         /// Gets or sets the value minimum.
         /// </summary>

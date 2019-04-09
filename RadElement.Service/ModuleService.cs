@@ -178,38 +178,55 @@ namespace RadElement.Service
                 element.ValueMin = intElement.MinimumValue;
                 element.ValueMax = intElement.MaximumValue;
                 element.StepValue = 1;
-            }
-
-            if (data.DataElementType == DataElementType.Choice)
-            {
-                ChoiceElement choiceElement = data as ChoiceElement;
-                element.ValueType = "valueSet";
-            }
-
-            if (data.DataElementType == DataElementType.MultiChoice)
-            {
-                MultipleChoiceElement choiceElement = data as MultipleChoiceElement;
-                element.ValueType = "valueSet";
-                element.MaxCardinality = (short)choiceElement.Options.Count;
+                element.Unit = intElement.Unit ?? "";
             }
 
             if (data is NumericElement)
             {
                 NumericElement numericElement = data as NumericElement;
                 float? minValue = null;
+                float? maxValue = null;
+
                 if (numericElement.MinimumValue.HasValue)
                 {
                     minValue = Convert.ToSingle(numericElement.MinimumValue.Value);
                 }
-                float? maxValue = null;
+
                 if (numericElement.MaximumValue.HasValue)
                 {
                     maxValue = Convert.ToSingle(numericElement.MaximumValue.Value);
                 }
+
                 element.ValueType = "float";
                 element.ValueMin = minValue;
                 element.ValueMax = maxValue;
                 element.StepValue = 0.1f;
+                element.Unit = numericElement.Unit ?? "";
+            }
+
+            if (data is ChoiceElement)
+            {
+                ChoiceElement choiceElement = data as ChoiceElement;
+                element.ValueType = "valueSet";
+            }
+
+            if (data is MultipleChoiceElement)
+            {
+                MultipleChoiceElement choiceElement = data as MultipleChoiceElement;
+                element.ValueType = "valueSet";
+                element.MaxCardinality = (short)choiceElement.Options.Count;
+            }
+
+            if (data is DateTimeElement)
+            {
+                DateTimeElement datetimeElement = data as DateTimeElement;
+                element.ValueType = "date";
+            }
+
+            if (data is DurationElement)
+            {
+                DurationElement durationElement = data as DurationElement;
+                element.ValueType = "string";
             }
 
             radElementDbContext.Element.Add(element);
@@ -269,6 +286,7 @@ namespace RadElement.Service
                 Name = module.ModuleName.Replace("_", " "),
                 Description = desc,
                 ContactName = contact,
+                Status = "Proposed"
             };
 
             radElementDbContext.ElementSet.Add(set);
