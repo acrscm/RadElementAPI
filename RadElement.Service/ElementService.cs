@@ -257,10 +257,10 @@ namespace RadElement.Service
                                 element.ValueType = "date";
                             }
 
-                            if (elementType == DataElementType.Duration)
-                            {
-                                element.ValueType = "string";
-                            }
+                            //if (elementType == DataElementType.Duration)
+                            //{
+                            //    element.ValueType = "string";
+                            //}
 
                             radElementDbContext.Element.Add(element);
                             radElementDbContext.SaveChanges();
@@ -408,10 +408,10 @@ namespace RadElement.Service
                                 element.ValueType = "date";
                             }
 
-                            if (elementType == DataElementType.Duration)
-                            {
-                                element.ValueType = "string";
-                            }
+                            //if (elementType == DataElementType.Duration)
+                            //{
+                            //    element.ValueType = "string";
+                            //}
 
                             if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
                             {

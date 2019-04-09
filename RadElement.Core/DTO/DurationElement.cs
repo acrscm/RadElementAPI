@@ -9,7 +9,7 @@ namespace RadElement.Core.DTO
     {
         public DurationElement()
         {
-            DataElementType = DataElementType.Duration;
+            // DataElementType = DataElementType.Duration;
         }
 
         /// <summary>
