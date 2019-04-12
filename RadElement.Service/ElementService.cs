@@ -124,14 +124,20 @@ namespace RadElement.Service
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var elements = radElementDbContext.Element.ToList();
-                    var filteredElements = elements.FindAll(x => x.Definition.ToLower().Contains(searchKeyword.ToLower()) || x.Editor.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                 x.Instructions.ToLower().Contains(searchKeyword.ToLower()) || x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                 x.Question.ToLower().Contains(searchKeyword.ToLower()) || x.References.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                 x.ShortName.ToLower().Contains(searchKeyword.ToLower()) || x.Source.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                 x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
+                    var elems = GetElementDetailsArrayDto(elements);
+                    var filteredElements = elems.FindAll(x => x.ElementId.ToString().ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Definition.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Editor.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Instructions.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Question.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.References.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.ShortName.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Source.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                            x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsArrayDto(filteredElements.ToList()), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(filteredElements, HttpStatusCode.OK));
                     }
                     else
                     {
