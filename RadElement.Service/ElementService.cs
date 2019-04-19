@@ -257,6 +257,11 @@ namespace RadElement.Service
                                 element.ValueType = "date";
                             }
 
+                            if (elementType == DataElementType.String)
+                            {
+                                element.ValueType = "string";
+                            }
+
                             //if (elementType == DataElementType.Duration)
                             //{
                             //    element.ValueType = "string";
@@ -406,6 +411,11 @@ namespace RadElement.Service
                             if (elementType == DataElementType.DateTime)
                             {
                                 element.ValueType = "date";
+                            }
+
+                            if (elementType == DataElementType.String)
+                            {
+                                element.ValueType = "string";
                             }
 
                             //if (elementType == DataElementType.Duration)
