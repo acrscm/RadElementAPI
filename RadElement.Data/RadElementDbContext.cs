@@ -37,7 +37,7 @@ namespace RadElement.Data
         {
             modelBuilder.Entity<Code>(entity =>
             {
-                entity.ToTable("code");
+                entity.ToTable("Code");
 
                 entity.HasIndex(e => e.Code1)
                     .HasName("value");
@@ -73,7 +73,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<CodeRef>(entity =>
             {
-                entity.ToTable("coderef");
+                entity.ToTable("CodeRef");
 
                 entity.HasIndex(e => e.CodeId)
                     .HasName("codeID");
@@ -102,7 +102,7 @@ namespace RadElement.Data
             {
                 entity.HasKey(e => e.Abbrev);
 
-                entity.ToTable("codesystem");
+                entity.ToTable("CodeSystem");
 
                 entity.Property(e => e.Abbrev)
                     .HasColumnName("abbrev")
@@ -131,7 +131,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<Editor>(entity =>
             {
-                entity.ToTable("editor");
+                entity.ToTable("Editor");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -145,7 +145,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<Element>(entity =>
             {
-                entity.ToTable("element");
+                entity.ToTable("Element");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -237,7 +237,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<ElementSet>(entity =>
             {
-                entity.ToTable("elementset");
+                entity.ToTable("ElementSet");
 
                 entity.HasIndex(e => e.ParentId)
                     .HasName("parent");
@@ -268,7 +268,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<ElementSetRef>(entity =>
             {
-                entity.ToTable("elementsetref");
+                entity.ToTable("ElementSetRef");
 
                 entity.HasIndex(e => e.ElementId)
                     .HasName("elementID");
@@ -291,7 +291,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<ElementValue>(entity =>
             {
-                entity.ToTable("elementvalue");
+                entity.ToTable("ElementValue");
 
                 entity.HasIndex(e => e.ElementId)
                     .HasName("elementID");
@@ -325,7 +325,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<Image>(entity =>
             {
-                entity.ToTable("image");
+                entity.ToTable("Image");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -349,7 +349,7 @@ namespace RadElement.Data
 
             modelBuilder.Entity<ImageRef>(entity =>
             {
-                entity.ToTable("imageref");
+                entity.ToTable("ImageRef");
 
                 entity.HasIndex(e => e.ElementId)
                     .HasName("elementID");
