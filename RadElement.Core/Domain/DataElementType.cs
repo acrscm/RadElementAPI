@@ -40,6 +40,11 @@ namespace RadElement.Core.Domain
         //Duration,
 
         /// <summary>
+        /// Data Element Type is String
+        /// </summary>
+        String,
+
+        /// <summary>
         /// Data Element Type is Global
         /// </summary>
         Global,

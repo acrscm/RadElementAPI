@@ -62,7 +62,6 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<NullReferenceException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
@@ -142,7 +141,6 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ArgumentNullException>(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 

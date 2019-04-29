@@ -88,11 +88,14 @@ namespace RadElement.Service
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var sets = radElementDbContext.ElementSet.ToList();
-                    var filteredSets = sets.FindAll(x => x.Name.ToLower().Contains(searchKeyword.ToLower()) || x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                x.ContactName.ToLower().Contains(searchKeyword.ToLower())); ;
+                    var elementSets = GetElementSetDetailsArrayDto(sets);
+                    var filteredSets = elementSets.FindAll(x => x.SetId.ToString().ToLower().Contains(searchKeyword.ToLower()) || 
+                                                    x.Name.ToLower().Contains(searchKeyword.ToLower()) || 
+                                                    x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
+                                                    x.ContactName.ToLower().Contains(searchKeyword.ToLower())); ;
                     if (filteredSets != null && filteredSets.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementSetDetailsArrayDto(filteredSets), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(filteredSets, HttpStatusCode.OK));
                     }
                     else
                     {
