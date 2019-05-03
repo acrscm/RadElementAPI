@@ -176,7 +176,19 @@
             </summary>
             <seealso cref="T:Microsoft.AspNetCore.Mvc.Controller" />
         </member>
-        <member name="M:RadElement.API.Controllers.HelloWorldController.HelloWorld">
+        <member name="M:RadElement.API.Controllers.HelloWorldController.GetHelloWorld">
+            <summary>
+            Method used to check if service is running
+            </summary>
+            <returns>Returns "Hello World" </returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.HelloWorldController.PostHelloWorld">
+            <summary>
+            Method used to check if service is running
+            </summary>
+            <returns>Returns "Hello World" </returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.HelloWorldController.PostHelloWorldWithRoute">
             <summary>
             Method used to check if service is running
             </summary>

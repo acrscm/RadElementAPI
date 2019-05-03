@@ -15,6 +15,7 @@ namespace RadElement.API.Controllers
     [Produces("application/json")]
     [Route("radelement/api/v1")]
     [Authorize(Policy = "UserIdExists")]
+    [ApiController]
     public class ModuleController : BaseController
     {
         private readonly IModuleService moduleService;
@@ -35,8 +36,7 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="xmlContent">Content of the XML.</param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("module")]
+        [HttpPost("modules")]
         public async Task<IActionResult> CreateModule([FromBody]XmlElement xmlContent)
         {
             var result = await moduleService.CreateModule(xmlContent);
@@ -49,8 +49,7 @@ namespace RadElement.API.Controllers
         /// <param name="xmlContent">Content of the XML.</param>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("module/{setId}")]
+        [HttpPut("modules/{setId}")]
         public async Task<IActionResult> UpdateModule([FromBody]XmlElement xmlContent, string setId)
         {
             var result = await moduleService.UpdateModule(xmlContent, setId);

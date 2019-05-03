@@ -15,6 +15,7 @@ namespace RadElement.API.Controllers
     [Produces("application/json")]
     [Route("radelement/api/v1")]
     [Authorize(Policy = "UserIdExists")]
+    [ApiController]
     public class ElementSetController : BaseController
     {
         private readonly IElementSetService elementSetService;
@@ -34,8 +35,7 @@ namespace RadElement.API.Controllers
         /// Fetches all the sets.
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [Route("set")]
+        [HttpGet("sets")]
         public async Task<IActionResult> GetSets()
         {
             var result = await elementSetService.GetSets();
@@ -47,8 +47,7 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("set/{setId}")]
+        [HttpGet("sets/{setId}")]
         public async Task<IActionResult> GetSetBySetId(string setId)
         {
             var result = await elementSetService.GetSet(setId);
@@ -60,9 +59,8 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("set/search")]
-        public async Task<IActionResult> SearchSet(string searchKeyword)
+        [HttpGet("sets/search")]
+         public async Task<IActionResult> SearchSet(string searchKeyword)
         {
             var result = await elementSetService.SearchSet(searchKeyword);
             return StatusCode((int)result.Code, result.Value);
@@ -73,8 +71,7 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("set")]
+        [HttpPost("sets")]
         public async Task<IActionResult> CreateSet([FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.CreateSet(content);
@@ -87,8 +84,7 @@ namespace RadElement.API.Controllers
         /// <param name="setId">The set identifier.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("set/{setId}")]
+        [HttpPut("sets/{setId}")]
         public async Task<IActionResult> UpdateSet(string setId, [FromBody]CreateUpdateSet content)
         {
             var result = await elementSetService.UpdateSet(setId, content);
@@ -100,8 +96,7 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("set/{setId}")]
+        [HttpDelete("sets/{setId}")]
         public async Task<IActionResult> DeleteSet(string setId)
         {
             var result = await elementSetService.DeleteSet(setId);
