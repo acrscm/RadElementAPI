@@ -86,7 +86,7 @@ namespace RadElement.API.Controllers
         /// <param name="elementType">Type of the element.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        [HttpPost("set/{setId}/element/{elementType}")]
+        [HttpPost("sets/{setId}/elements/{elementType}")]
         public async Task<IActionResult> CreateElement(string setId, ElementType elementType, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.CreateElement(setId, (DataElementType)elementType, content);
@@ -101,7 +101,7 @@ namespace RadElement.API.Controllers
         /// <param name="elementType">Type of the element.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        [HttpPut("set/{setId}/element/{elementId}/{elementType}")]
+        [HttpPut("sets/{setId}/elements/{elementId}/{elementType}")]
         public async Task<IActionResult> UpdateElement(string setId, string elementId, ElementType elementType, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.UpdateElement(setId, elementId, (DataElementType)elementType, content);
