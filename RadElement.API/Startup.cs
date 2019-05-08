@@ -82,7 +82,8 @@ namespace RadElement.API
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = authConfig.Issuer,
                         ValidAudience = authConfig.Audience,
-                        IssuerSigningKey = GetKey(authConfig.KeyFilePath, authConfig.ConvertToUnsecureString(authConfig.SigningPassword))
+                        IssuerSigningKey = GetKey(authConfig.KeyFilePath, authConfig.ConvertToUnsecureString(authConfig.SigningPassword)),
+                        
                     };
                 });
 
