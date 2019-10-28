@@ -24,6 +24,8 @@ namespace RadElement.Infrastructure
 
         public string SwaggerRoutePrefix => configuration["Environment:SwaggerRoutePrefix"];
 
+        public string ApplicationFilesPath => configuration["Environment:ApplicationFilesPath"];
+
         public string RootPath => AppDomain.CurrentDomain.BaseDirectory;
         
         public string AccessToken => configuration["AccessToken"];

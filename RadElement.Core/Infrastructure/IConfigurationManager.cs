@@ -36,6 +36,11 @@ namespace RadElement.Core.Infrastructure
         string SwaggerRoutePrefix { get; }
 
         /// <summary>
+        /// Gets the application files path.
+        /// </summary>
+        string ApplicationFilesPath { get; }
+
+        /// <summary>
         /// Get Root Directory path
         /// </summary>
         string RootPath { get; }
