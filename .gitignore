@@ -11,8 +11,6 @@ RadElement.Service/obj
 RadElement.Service/bin/
 RadElement.Service.Tests/obj
 RadElement.Service.Tests/bin/
-RadElement.API.IntegrationTests/obj
-RadElement.API.IntegrationTests/bin/
 
 .vs
 /RadElement.API/bin
@@ -28,7 +26,5 @@ RadElement.API.IntegrationTests/bin/
 /RadElement.Service/bin/
 /RadElement.Service.Tests/obj
 /RadElement.Service.Tests/bin/
-/RadElement.API.IntegrationTests/obj
-/RadElement.API.IntegrationTests/bin/
 
 
