@@ -504,7 +504,7 @@ namespace RadElement.Service
                 ElementValue elementvalue = new ElementValue()
                 {
                     Name = option.Label,
-                    Value = string.Empty,
+                    Value = option.Label,
                     Definition = option.Label,
                     ElementId = elementId,
                 };
