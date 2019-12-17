@@ -21,6 +21,9 @@ using RadElement.API.AuthorizationRequirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
+using System.Linq;
 
 namespace RadElement.API
 {
@@ -115,6 +118,19 @@ namespace RadElement.API
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
             });
 
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<GzipCompressionProvider>();
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.EnableForHttps = true;
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(GetMimeTypesForCompression());
+            });
+
+            services.Configure<BrotliCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
             services.AddMvcCore().AddApiExplorer();
 
             services.AddCors(o => o.AddPolicy("AllowAllOrigins", builder =>
@@ -167,6 +183,7 @@ namespace RadElement.API
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+            app.UseResponseCompression();
             app.UseStaticFiles();
             app.UseCors("AllowAllOrigins");
             app.UseMvc();
@@ -177,6 +194,23 @@ namespace RadElement.API
                 c.DocumentTitle = Configuration["Title"] + " " + Configuration["Version"];
                 c.SwaggerEndpoint(Configuration["Environment:ApplicationURL"] + "/swagger/" + Configuration["Version"] + "/swagger.json", Configuration["Title"] + " " + Configuration["Version"]);
             });
+        }
+
+        /// <summary>
+        /// Gets the MIME types for compression.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<string> GetMimeTypesForCompression()
+        {
+            return new[]
+            {
+                "application/json",
+                "image/png",
+                "image/jpeg",
+                "image/gif",
+                "image/tiff",
+                "image/webp"
+            };
         }
     }
 }
