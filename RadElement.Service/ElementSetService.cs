@@ -11,9 +11,20 @@ using System.Threading.Tasks;
 
 namespace RadElement.Service
 {
+    /// <summary>
+    /// Business service for handling the element set related operations
+    /// </summary>
+    /// <seealso cref="RadElement.Core.Services.IElementSetService" />
     public class ElementSetService : IElementSetService
     {
+        /// <summary>
+        /// The RAD element database context
+        /// </summary>
         private IRadElementDbContext radElementDbContext;
+
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
 
         /// <summary>
@@ -245,6 +256,13 @@ namespace RadElement.Service
             }
         }
 
+        /// <summary>
+        /// Determines whether [is valid set identifier] [the specified set identifier].
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <returns>
+        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsValidSetId(string setId)
         {
             if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
@@ -257,6 +275,11 @@ namespace RadElement.Service
             return false;
         }
 
+        /// <summary>
+        /// Gets the element set details array dto.
+        /// </summary>
+        /// <param name="sets">The sets.</param>
+        /// <returns></returns>
         private List<ElementSetDetails> GetElementSetDetailsArrayDto(List<ElementSet> sets)
         {
             List<ElementSetDetails> setDetails = new List<ElementSetDetails>();
@@ -268,6 +291,11 @@ namespace RadElement.Service
             return setDetails;
         }
 
+        /// <summary>
+        /// Gets the element set details dto.
+        /// </summary>
+        /// <param name="set">The set.</param>
+        /// <returns></returns>
         private ElementSetDetails GetElementSetDetailsDto(ElementSet set)
         {
             return new ElementSetDetails()

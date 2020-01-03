@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>RadElement.API</id> 
+    <id>RadElement</id> 
     <version>1.0.0</version>
     <title>ACR Assist</title>
     <authors>American College of Radiology</authors>
@@ -16,7 +16,6 @@
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
-   	 <file src="RadElement.API\bin\Release\netcoreapp2.2\publish\**\*.*" target="" />
-	
+   	 <file src="RadElement.API\bin\Release\netcoreapp3.1\publish\**\*.*" target="" />	
   </files>
 </package>

@@ -7,6 +7,9 @@ namespace RadElement.Core.DTO
     /// </summary>
     public class DateTimeElement : DataElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DateTimeElement"/> class.
+        /// </summary>
         public DateTimeElement()
         {
             DataElementType = DataElementType.DateTime;

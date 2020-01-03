@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RadElement.API.Controllers
@@ -5,9 +6,10 @@ namespace RadElement.API.Controllers
     /// <summary>
     /// Endpoint for hello worls controller
     /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
+    /// <seealso cref="Controller" />
     [Produces("application/json")]
     [Route("api/HelloWorld")]
+    [AllowAnonymous]
     [ApiController]
     public class HelloWorldController : Controller
     {
@@ -15,7 +17,7 @@ namespace RadElement.API.Controllers
         /// Method used to check if service is running
         /// </summary>
         /// <returns>Returns "Hello World" </returns>
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetHelloWorld()
         {
@@ -26,7 +28,7 @@ namespace RadElement.API.Controllers
         /// Method used to check if service is running
         /// </summary>
         /// <returns>Returns "Hello World" </returns>
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult PostHelloWorld()
         {
@@ -37,7 +39,7 @@ namespace RadElement.API.Controllers
         /// Method used to check if service is running
         /// </summary>
         /// <returns>Returns "Hello World" </returns>
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("test")]
         public IActionResult PostHelloWorldWithRoute()
         {

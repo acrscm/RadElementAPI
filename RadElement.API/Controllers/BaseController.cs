@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Net;
 
 namespace RadElement.API.Controllers
 {
@@ -8,7 +7,7 @@ namespace RadElement.API.Controllers
     /// Base  class for all controllers
     /// </summary>
     [Produces("application/json")]
-    public abstract class BaseController : Controller
+    public abstract class BaseController : ControllerBase
     {
         /// <summary>
         /// Instance of the Logger

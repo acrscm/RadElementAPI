@@ -7,6 +7,9 @@ namespace RadElement.Core.DTO
     /// </summary>
     public class GlobalValue : DataElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlobalValue"/> class.
+        /// </summary>
         public GlobalValue()
         {
             DataElementType = DataElementType.Global;

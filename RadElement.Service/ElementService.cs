@@ -11,6 +11,10 @@ using Serilog;
 
 namespace RadElement.Service
 {
+    /// <summary>
+    /// Business service for handling the element related operations
+    /// </summary>
+    /// <seealso cref="RadElement.Core.Services.IElementService" />
     public class ElementService : IElementService
     {
         private IRadElementDbContext radElementDbContext;
@@ -497,6 +501,11 @@ namespace RadElement.Service
             }
         }
 
+        /// <summary>
+        /// Adds the element values.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="elementId">The element identifier.</param>
         private void AddElementValues(List<Core.DTO.Option> options, uint elementId)
         {
             foreach (Core.DTO.Option option in options)
@@ -514,6 +523,13 @@ namespace RadElement.Service
             }
         }
 
+        /// <summary>
+        /// Determines whether [is valid element identifier] [the specified element identifier].
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns>
+        ///   <c>true</c> if [is valid element identifier] [the specified element identifier]; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsValidElementId(string elementId)
         {
             if (elementId.Length > 3 && elementId.Substring(0, 3) == "RDE")
@@ -526,6 +542,13 @@ namespace RadElement.Service
             return false;
         }
 
+        /// <summary>
+        /// Determines whether [is valid set identifier] [the specified set identifier].
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <returns>
+        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsValidSetId(string setId)
         {
             if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
@@ -538,6 +561,11 @@ namespace RadElement.Service
             return false;
         }
 
+        /// <summary>
+        /// Gets the element details array dto.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
         private List<ElementDetails> GetElementDetailsArrayDto(List<Element> elements)
         {
             List<ElementDetails> elementDetails = new List<ElementDetails>();
@@ -549,6 +577,11 @@ namespace RadElement.Service
             return elementDetails;
         }
 
+        /// <summary>
+        /// Gets the element details dto.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns></returns>
         private ElementDetails GetElementDetailsDto(Element element)
         {
             return new ElementDetails()

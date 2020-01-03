@@ -14,8 +14,19 @@ namespace RadElement.API.AuthorizationRequirements
     /// </summary>
     public class UserIdExistsRequirementHandler : AuthorizationHandler<UserIdRequirement>, IAuthorizationRequirement
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger<UserIdExistsRequirementHandler> logger;
+
+        /// <summary>
+        /// The authorization configuration
+        /// </summary>
         private readonly AuthorizationConfig authorizationConfig;
+
+        /// <summary>
+        /// The user accounts configuration
+        /// </summary>
         private readonly UserAccounts userAccountsConfig;
 
         /// <summary>

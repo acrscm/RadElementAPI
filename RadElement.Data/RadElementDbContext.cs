@@ -5,26 +5,93 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RadElement.Data
 {
+    /// <summary>
+    /// Repository class for data related operations
+    /// </summary>
+    /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
+    /// <seealso cref="RadElement.Core.Data.IRadElementDbContext" />
     public partial class RadElementDbContext : DbContext, IRadElementDbContext
     {
+        /// <summary>
+        /// The configuration manager
+        /// </summary>
         private readonly IConfigurationManager configurationManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RadElementDbContext"/> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="configurationManager">The configuration manager.</param>
         public RadElementDbContext(DbContextOptions<RadElementDbContext> options,IConfigurationManager configurationManager) : base(options)
         {
             this.configurationManager = configurationManager;
         }
 
+        /// <summary>
+        /// Gets the code.
+        /// </summary>
         public virtual DbSet<Code> Code { get; set; }
+
+        /// <summary>
+        /// Gets the code reference.
+        /// </summary>
         public virtual DbSet<CodeRef> CodeRef { get; set; }
+
+        /// <summary>
+        /// Gets the code system.
+        /// </summary>
         public virtual DbSet<CodeSystem> CodeSystem { get; set; }
+
+        /// <summary>
+        /// Gets the editor.
+        /// </summary>
         public virtual DbSet<Editor> Editor { get; set; }
+
+        /// <summary>
+        /// Gets the element.
+        /// </summary>
         public virtual DbSet<Element> Element { get; set; }
+
+        /// <summary>
+        /// Gets the element set.
+        /// </summary>
         public virtual DbSet<ElementSet> ElementSet { get; set; }
+
+        /// <summary>
+        /// </summary>
+        /// <!-- Badly formed XML comment ignored for member "P:RadElement.Core.Data.IRadElementDbContext.ElementSetRef" -->
         public virtual DbSet<ElementSetRef> ElementSetRef { get; set; }
+
+        /// <summary>
+        /// Gets the element value.
+        /// </summary>
         public virtual DbSet<ElementValue> ElementValue { get; set; }
+
+        /// <summary>
+        /// Gets the image.
+        /// </summary>
         public virtual DbSet<Image> Image { get; set; }
+
+        /// <summary>
+        /// Gets the image reference.
+        /// </summary>
         public virtual DbSet<ImageRef> ImageRef { get; set; }
 
+        /// <summary>
+        /// <para>
+        /// Override this method to configure the database (and other options) to be used for this context.
+        /// This method is called for each instance of the context that is created.
+        /// The base implementation does nothing.
+        /// </para>
+        /// <para>
+        /// In situations where an instance of <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptions" /> may or may not have been passed
+        /// to the constructor, you can use <see cref="P:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder.IsConfigured" /> to determine if
+        /// the options have already been set, and skip some or all of the logic in
+        /// <see cref="M:Microsoft.EntityFrameworkCore.DbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)" />.
+        /// </para>
+        /// </summary>
+        /// <param name="optionsBuilder">A builder used to create or modify options for this context. Databases (and other extensions)
+        /// typically define extension methods on this object that allow you to configure the context.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -33,6 +100,18 @@ namespace RadElement.Data
             }
         }
 
+        /// <summary>
+        /// Override this method to further configure the model that was discovered by convention from the entity types
+        /// exposed in <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1" /> properties on your derived context. The resulting model may be cached
+        /// and re-used for subsequent instances of your derived context.
+        /// </summary>
+        /// <param name="modelBuilder">The builder being used to construct the model for this context. Databases (and other extensions) typically
+        /// define extension methods on this object that allow you to configure aspects of the model that are specific
+        /// to a given database.</param>
+        /// <remarks>
+        /// If a model is explicitly set on the options for this context (via <see cref="M:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder.UseModel(Microsoft.EntityFrameworkCore.Metadata.IModel)" />)
+        /// then this method will not be run.
+        /// </remarks>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Code>(entity =>

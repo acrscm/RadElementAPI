@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace RadElement.Core.Data
 {
+    /// <summary>
+    /// Repository interface for data related operations
+    /// </summary>
     public interface IRadElementDbContext
     {
         /// <summary>

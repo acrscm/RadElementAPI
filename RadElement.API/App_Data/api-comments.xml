@@ -9,6 +9,21 @@
             Filter that checks if the User specified by the UserName exists in Assist
             </summary>
         </member>
+        <member name="F:RadElement.API.AuthorizationRequirements.UserIdExistsRequirementHandler.logger">
+            <summary>
+            The logger
+            </summary>
+        </member>
+        <member name="F:RadElement.API.AuthorizationRequirements.UserIdExistsRequirementHandler.authorizationConfig">
+            <summary>
+            The authorization configuration
+            </summary>
+        </member>
+        <member name="F:RadElement.API.AuthorizationRequirements.UserIdExistsRequirementHandler.userAccountsConfig">
+            <summary>
+            The user accounts configuration
+            </summary>
+        </member>
         <member name="M:RadElement.API.AuthorizationRequirements.UserIdExistsRequirementHandler.#ctor(Microsoft.Extensions.Logging.ILogger{RadElement.API.AuthorizationRequirements.UserIdExistsRequirementHandler},RadElement.Core.Infrastructure.AuthorizationConfig,RadElement.Core.Infrastructure.UserAccounts)">
             <summary>
             Initializes the insatnce of the class
@@ -196,11 +211,11 @@
         </member>
         <member name="T:RadElement.API.Filters.AuthorizationHeaderOperationFilter">
             <summary>
-            Adds the authorization header for swager documentation
+            Provides the filter for authorization headers
             </summary>
             <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter" />
         </member>
-        <member name="M:RadElement.API.Filters.AuthorizationHeaderOperationFilter.Apply(Swashbuckle.AspNetCore.Swagger.Operation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+        <member name="M:RadElement.API.Filters.AuthorizationHeaderOperationFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
             <summary>
             Applies the specified operation.
             </summary>
@@ -311,7 +326,7 @@
         </member>
         <member name="T:RadElement.API.Startup">
             <summary>
-            Class called when the application starts
+            Program starts here
             </summary>
         </member>
         <member name="P:RadElement.API.Startup.Configuration">
@@ -324,7 +339,12 @@
             Represents the hosting environment
             </summary>
         </member>
-        <member name="M:RadElement.API.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+        <member name="F:RadElement.API.Startup.swaggerSchemaName">
+            <summary>
+            The swagger schema name
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
             Called when application starts up
             </summary>
@@ -337,12 +357,32 @@
             </summary>
             <param name="services">The services.</param>
         </member>
-        <member name="M:RadElement.API.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+        <member name="M:RadElement.API.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
             Configures the specified application.
             </summary>
             <param name="app">The application.</param>
             <param name="env">The env.</param>
+        </member>
+        <member name="M:RadElement.API.Startup.GetKey(System.String,System.String)">
+            <summary>
+            Gets the key.
+            </summary>
+            <param name="keyFilePath">The key file path.</param>
+            <param name="password">The password.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Startup.GetSwaggerSecurityScheme">
+            <summary>
+            Gets the swagger security scheme.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Startup.GetMimeTypesForCompression">
+            <summary>
+            Gets the MIME types for compression.
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

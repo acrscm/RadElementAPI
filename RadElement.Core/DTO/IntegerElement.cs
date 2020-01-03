@@ -6,7 +6,10 @@ namespace RadElement.Core.DTO
     /// Represents a Integer elemeny
     /// </summary>
     public class IntegerElement : DataElement
-    {    
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IntegerElement"/> class.
+        /// </summary>
         public IntegerElement()
         {
             DataElementType = DataElementType.Integer;

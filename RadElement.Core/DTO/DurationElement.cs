@@ -7,6 +7,9 @@ namespace RadElement.Core.DTO
     /// </summary>
     public class DurationElement : DataElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DurationElement"/> class.
+        /// </summary>
         public DurationElement()
         {
             // DataElementType = DataElementType.Duration;
