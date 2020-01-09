@@ -37,8 +37,6 @@ namespace RadElement.API
                                         optional: true, reloadOnChange: true)
                                   .AddJsonFile($"appsettings.{env.EnvironmentName}.json",
                                         optional: true, reloadOnChange: true);
-
-                           builder.AddEnvironmentVariables("ACRCONNECT_MV_");
                        }).UseSerilog();
                    });
     }
