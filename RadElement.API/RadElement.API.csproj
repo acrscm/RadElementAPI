@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>App_Data/api-comments.xml</DocumentationFile>
   </PropertyGroup>
