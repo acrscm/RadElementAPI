@@ -308,21 +308,21 @@
         </member>
         <member name="T:RadElement.API.Program">
             <summary>
-             Entry point for the application
+            Entry point for the application
             </summary>
         </member>
         <member name="M:RadElement.API.Program.Main(System.String[])">
             <summary>
-            Defines the entry point of the application.
+            Entry point method
             </summary>
-            <param name="args">The arguments.</param>
+            <param name="args">Represents the command line arguments</param>
         </member>
-        <member name="M:RadElement.API.Program.BuildWebHost(System.String[])">
+        <member name="M:RadElement.API.Program.CreateHostBuilder(System.String[])">
             <summary>
-            Builds the web host.
+            Creates the web host
             </summary>
-            <param name="args">The arguments.</param>
-            <returns></returns>
+            <param name="args">Represents the command line arguments</param>
+            <returns>TReturns the web host</returns>
         </member>
         <member name="T:RadElement.API.Startup">
             <summary>

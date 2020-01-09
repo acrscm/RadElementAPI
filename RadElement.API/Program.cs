@@ -1,44 +1,45 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace RadElement.API
 {
     /// <summary>
-    ///  Entry point for the application
+    /// Entry point for the application
     /// </summary>
     public class Program
     {
         /// <summary>
-        /// Defines the entry point of the application.
+        /// Entry point method
         /// </summary>
-        /// <param name="args">The arguments.</param>
+        /// <param name="args">Represents the command line arguments</param>
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
         /// <summary>
-        /// Builds the web host.
+        /// Creates the web host
         /// </summary>
-        /// <param name="args">The arguments.</param>
-        /// <returns></returns>
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .ConfigureAppConfiguration((context, builder) =>
-                {
-                    var env = context.HostingEnvironment;
+        /// <param name="args">Represents the command line arguments</param>
+        /// <returns>TReturns the web host</returns>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+               Host.CreateDefaultBuilder(args)
+                   .ConfigureWebHostDefaults(webBuilder =>
+                   {
+                       webBuilder.UseStartup<Startup>()
+                       .ConfigureAppConfiguration((context, builder) =>
+                       {
+                           var env = context.HostingEnvironment;
 
-                    builder.AddJsonFile("appsettings.json",
-                                 optional: true, reloadOnChange: true)
-                           .AddJsonFile($"appsettings.{env.EnvironmentName}.json",
-                                 optional: true, reloadOnChange: true);
+                           builder.AddJsonFile("appsettings.json",
+                                        optional: true, reloadOnChange: true)
+                                  .AddJsonFile($"appsettings.{env.EnvironmentName}.json",
+                                        optional: true, reloadOnChange: true);
 
-                    builder.AddEnvironmentVariables();
-                })
-                .UseSerilog()
-                .Build();
+                           builder.AddEnvironmentVariables("ACRCONNECT_MV_");
+                       }).UseSerilog();
+                   });
     }
 }

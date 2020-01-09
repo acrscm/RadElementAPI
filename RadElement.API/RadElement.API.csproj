@@ -7,15 +7,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>App_Data/api-comments.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Controllers\ModuleController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml.user" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
@@ -42,10 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\Certificates\RadElement.cer">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\Certificates\RadElement.pfx">
+    <Content Update="wwwroot\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
