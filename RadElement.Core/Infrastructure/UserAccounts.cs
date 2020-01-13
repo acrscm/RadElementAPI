@@ -3,7 +3,7 @@
 namespace RadElement.Core.Infrastructure
 {
     /// <summary>
-    /// Constains the details for user accounts
+    /// Contains the details for user accounts
     /// </summary>
     public class UserAccounts
     {

@@ -1,10 +1,12 @@
 ﻿using RadElement.Core.Domain;
 using RadElement.Core.DTO;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RadElement.Core.Services
 {
+    /// <summary>
+    /// Business interface for handling the element related operations
+    /// </summary>
     public interface IElementService
     {
         /// <summary>

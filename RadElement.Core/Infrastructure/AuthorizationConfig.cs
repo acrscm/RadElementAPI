@@ -6,7 +6,7 @@ using System.Security;
 namespace RadElement.Core.Infrastructure
 {
     /// <summary>
-    /// Constains the details for configuring authorization
+    /// Contains the details for configuring authorization
     /// </summary>
     public class AuthorizationConfig
     {

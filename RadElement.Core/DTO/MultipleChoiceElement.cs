@@ -7,6 +7,9 @@ namespace RadElement.Core.DTO
     /// </summary>
     public class MultipleChoiceElement : ChoiceElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MultipleChoiceElement"/> class.
+        /// </summary>
         public MultipleChoiceElement()
         {
             DataElementType = DataElementType.MultiChoice;

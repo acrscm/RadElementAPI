@@ -9,7 +9,6 @@ using RadElement.Core.Services.Exception;
 
 namespace RadElement.API.Filters
 {
-
     /// <summary>
     /// Handles all the exceptions
     /// </summary>

@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace RadElement.Core.Services
 {
+    /// <summary>
+    /// Business interface for handling the element set related operations
+    /// </summary>
     public interface IElementSetService
     {
         /// <summary>

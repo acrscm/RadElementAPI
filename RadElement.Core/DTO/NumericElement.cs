@@ -7,6 +7,9 @@ namespace RadElement.Core.DTO
     /// </summary>
     public class NumericElement : DataElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NumericElement"/> class.
+        /// </summary>
         public NumericElement()
         {
             DataElementType = DataElementType.Numeric;

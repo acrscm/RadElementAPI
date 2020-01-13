@@ -6,17 +6,14 @@
     <title>ACR Assist</title>
     <authors>American College of Radiology</authors>
     <owners>American College of Radiology</owners>
-    <projectUrl>https://dev-assist.acr.org/marvalapi/wiki/</projectUrl>
+    <projectUrl>https://dev-assist.acr.org/radelementservice/wiki/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>ACR Assist Marval</description>
-    <summary />
-    <copyright>© 2016-2017, American College of Radiology</copyright>
+    <copyright>© 2020-2021, American College of Radiology</copyright>
     <language>es-US</language>
-    <tags>TRIAD, DICOM, Imaging</tags>
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
-   	 <file src="RadElement.API\bin\Release\netcoreapp2.2\publish\**\*.*" target="" />
-	
+   	 <file src="RadElement.API\bin\Release\netcoreapp3.1\publish\**\*.*" target="" />	
   </files>
 </package>

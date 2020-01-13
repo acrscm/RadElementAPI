@@ -8,6 +8,9 @@ namespace RadElement.Core.DTO
     /// </summary>
     public class ChoiceElement : DataElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChoiceElement"/> class.
+        /// </summary>
         public ChoiceElement()
         {
             DataElementType = DataElementType.Choice;

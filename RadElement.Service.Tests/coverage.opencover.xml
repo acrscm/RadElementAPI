@@ -1,51 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CoverageSession>
-  <Summary numSequencePoints="2865" visitedSequencePoints="606" numBranchPoints="328" visitedBranchPoints="304" sequenceCoverage="21.15" branchCoverage="92.68" maxCyclomaticComplexity="748" minCyclomaticComplexity="33" visitedClasses="40" numClasses="158" visitedMethods="97" numMethods="802" />
+  <Summary numSequencePoints="2878" visitedSequencePoints="606" numBranchPoints="328" visitedBranchPoints="304" sequenceCoverage="21.05" branchCoverage="92.68" maxCyclomaticComplexity="752" minCyclomaticComplexity="33" visitedClasses="40" numClasses="158" visitedMethods="97" numMethods="806" />
   <Modules>
-    <Module hash="C8967B33-7C20-4299-9717-4C614DA195F0">
+    <Module hash="8CE8B79F-CE00-4CF7-BD94-2853BEC250CD">
       <ModulePath>RadElement.Core.dll</ModulePath>
-      <ModuleTime>2019-10-25T01:54:43</ModuleTime>
+      <ModuleTime>2019-10-25T01:56:46</ModuleTime>
       <ModuleName>RadElement.Core</ModuleName>
       <Files>
-        <File uid="1" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Services\Exception\InputValidationFailureException.cs" />
-        <File uid="2" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Services\Exception\ResourceNotFoundException.cs" />
-        <File uid="3" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Infrastructure\Account.cs" />
-        <File uid="4" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Infrastructure\AuthorizationConfig.cs" />
-        <File uid="5" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Infrastructure\UserAccounts.cs" />
-        <File uid="6" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\ChoiceElement.cs" />
-        <File uid="7" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\CreateUpdateElement.cs" />
-        <File uid="8" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\CreateUpdateSet.cs" />
-        <File uid="9" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\DateTimeElement.cs" />
-        <File uid="10" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\DurationElement.cs" />
-        <File uid="11" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\ElementDetails.cs" />
-        <File uid="12" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\ElementIdDetails.cs" />
-        <File uid="13" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\ElementSetDetails.cs" />
-        <File uid="14" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\GlobalValue.cs" />
-        <File uid="15" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\IntegerElement.cs" />
-        <File uid="16" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\MultipleChoiceElement.cs" />
-        <File uid="17" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\NumericElement.cs" />
-        <File uid="18" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\Option.cs" />
-        <File uid="19" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\DTO\SetIdDetails.cs" />
-        <File uid="20" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\AssistModule.cs" />
-        <File uid="21" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\Code.cs" />
-        <File uid="22" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\CodeRef.cs" />
-        <File uid="23" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\CodeSystem.cs" />
-        <File uid="24" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\DataElement.cs" />
-        <File uid="25" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\Editor.cs" />
-        <File uid="26" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\Element.cs" />
-        <File uid="27" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\ElementSet.cs" />
-        <File uid="28" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\ElementSetRef.cs" />
-        <File uid="29" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\ElementValue.cs" />
-        <File uid="30" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\Image.cs" />
-        <File uid="31" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\ImageRef.cs" />
-        <File uid="32" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\JsonResult.cs" />
-        <File uid="33" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\ModuleDetails.cs" />
-        <File uid="34" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\Option.cs" />
-        <File uid="35" fullPath="D:\Projects\rad_element_microservice\RadElement.Core\Domain\Schema.cs" />
+        <File uid="1" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Services\Exception\InputValidationFailureException.cs" />
+        <File uid="2" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Services\Exception\ResourceNotFoundException.cs" />
+        <File uid="3" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Infrastructure\Account.cs" />
+        <File uid="4" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Infrastructure\AuthorizationConfig.cs" />
+        <File uid="5" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Infrastructure\UserAccounts.cs" />
+        <File uid="6" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\ChoiceElement.cs" />
+        <File uid="7" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\CreateUpdateElement.cs" />
+        <File uid="8" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\CreateUpdateSet.cs" />
+        <File uid="9" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\DateTimeElement.cs" />
+        <File uid="10" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\DurationElement.cs" />
+        <File uid="11" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\ElementDetails.cs" />
+        <File uid="12" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\ElementIdDetails.cs" />
+        <File uid="13" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\ElementSetDetails.cs" />
+        <File uid="14" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\GlobalValue.cs" />
+        <File uid="15" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\IntegerElement.cs" />
+        <File uid="16" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\MultipleChoiceElement.cs" />
+        <File uid="17" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\NumericElement.cs" />
+        <File uid="18" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\Option.cs" />
+        <File uid="19" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\DTO\SetIdDetails.cs" />
+        <File uid="20" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\AssistModule.cs" />
+        <File uid="21" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\Code.cs" />
+        <File uid="22" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\CodeRef.cs" />
+        <File uid="23" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\CodeSystem.cs" />
+        <File uid="24" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\DataElement.cs" />
+        <File uid="25" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\Editor.cs" />
+        <File uid="26" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\Element.cs" />
+        <File uid="27" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\ElementSet.cs" />
+        <File uid="28" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\ElementSetRef.cs" />
+        <File uid="29" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\ElementValue.cs" />
+        <File uid="30" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\Image.cs" />
+        <File uid="31" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\ImageRef.cs" />
+        <File uid="32" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\JsonResult.cs" />
+        <File uid="33" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\ModuleDetails.cs" />
+        <File uid="34" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\Option.cs" />
+        <File uid="35" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Core\Domain\Schema.cs" />
       </Files>
       <Classes>
         <Class>
-          <Summary numSequencePoints="8" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="1" visitedMethods="0" numMethods="3" />
+          <Summary numSequencePoints="12" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="1" visitedMethods="0" numMethods="4" />
           <FullName>RadElement.Core.Services.Exception.InputValidationFailureException</FullName>
           <Methods>
             <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="False" isGetter="True" isSetter="False" isStatic="True">
@@ -65,45 +65,98 @@
               <Name>System.Void RadElement.Core.Services.Exception.InputValidationFailureException::.ctor(System.Collections.Generic.Dictionary`2&lt;System.String,System.String&gt;)</Name>
               <FileRef uid="1" />
               <SequencePoints>
-                <SequencePoint vc="0" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="1" />
-                <SequencePoint vc="0" uspid="17" ordinal="1" sl="17" sc="1" el="17" ec="2" bec="0" bev="0" fileid="1" />
-                <SequencePoint vc="0" uspid="18" ordinal="2" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="1" />
-                <SequencePoint vc="0" uspid="19" ordinal="3" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="25" ordinal="0" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="26" ordinal="1" sl="26" sc="1" el="26" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="27" ordinal="2" sl="27" sc="1" el="27" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="28" ordinal="3" sl="28" sc="1" el="28" ec="2" bec="0" bev="0" fileid="1" />
               </SequencePoints>
               <BranchPoints />
-              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="16" ec="1" el="19" bec="0" bev="0" fileid="1" xmlns:p8="xsi" />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="25" ec="1" el="28" bec="0" bev="0" fileid="1" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="4" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Void RadElement.Core.Services.Exception.InputValidationFailureException::.ctor(System.String,System.Collections.Generic.Dictionary`2&lt;System.String,System.String&gt;)</Name>
+              <FileRef uid="1" />
+              <SequencePoints>
+                <SequencePoint vc="0" uspid="35" ordinal="0" sl="35" sc="1" el="35" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="36" ordinal="1" sl="36" sc="1" el="36" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="37" ordinal="2" sl="37" sc="1" el="37" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="38" ordinal="3" sl="38" sc="1" el="38" ec="2" bec="0" bev="0" fileid="1" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="35" ec="1" el="38" bec="0" bev="0" fileid="1" xmlns:p8="xsi" />
             </Method>
             <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
               <Summary numSequencePoints="3" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
               <MetadataToken />
-              <Name>System.Void RadElement.Core.Services.Exception.InputValidationFailureException::.ctor(System.String)</Name>
+              <Name>System.Void RadElement.Core.Services.Exception.InputValidationFailureException::.ctor(System.String,System.Exception)</Name>
               <FileRef uid="1" />
               <SequencePoints>
-                <SequencePoint vc="0" uspid="21" ordinal="0" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="1" />
-                <SequencePoint vc="0" uspid="22" ordinal="1" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="1" />
-                <SequencePoint vc="0" uspid="23" ordinal="2" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="45" ordinal="0" sl="45" sc="1" el="45" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="46" ordinal="1" sl="46" sc="1" el="46" ec="2" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="0" uspid="47" ordinal="2" sl="47" sc="1" el="47" ec="2" bec="0" bev="0" fileid="1" />
               </SequencePoints>
               <BranchPoints />
-              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="21" ec="1" el="23" bec="0" bev="0" fileid="1" xmlns:p8="xsi" />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="45" ec="1" el="47" bec="0" bev="0" fileid="1" xmlns:p8="xsi" />
             </Method>
           </Methods>
         </Class>
         <Class>
-          <Summary numSequencePoints="3" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="1" visitedMethods="0" numMethods="1" />
+          <Summary numSequencePoints="12" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="1" visitedMethods="0" numMethods="4" />
           <FullName>RadElement.Core.Services.Exception.ResourceNotFoundException</FullName>
           <Methods>
+            <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="3" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Void RadElement.Core.Services.Exception.ResourceNotFoundException::.ctor()</Name>
+              <FileRef uid="2" />
+              <SequencePoints>
+                <SequencePoint vc="0" uspid="14" ordinal="0" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="15" ordinal="1" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="16" ordinal="2" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="2" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="14" ec="1" el="16" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
+            </Method>
             <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
               <Summary numSequencePoints="3" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
               <MetadataToken />
               <Name>System.Void RadElement.Core.Services.Exception.ResourceNotFoundException::.ctor(System.String)</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="0" uspid="10" ordinal="0" sl="10" sc="1" el="10" ec="2" bec="0" bev="0" fileid="2" />
-                <SequencePoint vc="0" uspid="11" ordinal="1" sl="11" sc="1" el="11" ec="2" bec="0" bev="0" fileid="2" />
-                <SequencePoint vc="0" uspid="12" ordinal="2" sl="12" sc="1" el="12" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="23" ordinal="1" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="24" ordinal="2" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
-              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="10" ec="1" el="12" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="22" ec="1" el="24" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="3" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Void RadElement.Core.Services.Exception.ResourceNotFoundException::.ctor(System.String,System.Exception)</Name>
+              <FileRef uid="2" />
+              <SequencePoints>
+                <SequencePoint vc="0" uspid="31" ordinal="0" sl="31" sc="1" el="31" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="32" ordinal="1" sl="32" sc="1" el="32" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="33" ordinal="2" sl="33" sc="1" el="33" ec="2" bec="0" bev="0" fileid="2" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="31" ec="1" el="33" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
+            </Method>
+            <Method cyclomaticComplexity="1" nPathComplexity="0" sequenceCoverage="0" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="3" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
+              <MetadataToken />
+              <Name>System.Void RadElement.Core.Services.Exception.ResourceNotFoundException::.ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Name>
+              <FileRef uid="2" />
+              <SequencePoints>
+                <SequencePoint vc="0" uspid="40" ordinal="0" sl="40" sc="1" el="40" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="41" ordinal="1" sl="41" sc="1" el="41" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="0" uspid="42" ordinal="2" sl="42" sc="1" el="42" ec="2" bec="0" bev="0" fileid="2" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="40" ec="1" el="42" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
             </Method>
           </Methods>
         </Class>
@@ -10247,12 +10300,12 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="5532811C-3382-4D8F-8592-290B387C3519">
+    <Module hash="0CB60CF9-7CCC-45F7-9929-4A9822DB94E5">
       <ModulePath>RadElement.Data.dll</ModulePath>
-      <ModuleTime>2019-10-25T01:54:43</ModuleTime>
+      <ModuleTime>2019-10-25T01:56:46</ModuleTime>
       <ModuleName>RadElement.Data</ModuleName>
       <Files>
-        <File uid="36" fullPath="D:\Projects\rad_element_microservice\RadElement.Data\RadElementDbContext.cs" />
+        <File uid="36" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Data\RadElementDbContext.cs" />
       </Files>
       <Classes>
         <Class>
@@ -10765,13 +10818,13 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="56C2AE80-7EBD-44EB-BA54-18E2942BB8F9">
+    <Module hash="2E3118F2-EBAC-4F22-86E8-9442D1C7677B">
       <ModulePath>RadElement.Service.dll</ModulePath>
-      <ModuleTime>2019-10-25T01:54:43</ModuleTime>
+      <ModuleTime>2019-10-25T01:56:46</ModuleTime>
       <ModuleName>RadElement.Service</ModuleName>
       <Files>
-        <File uid="37" fullPath="D:\Projects\rad_element_microservice\RadElement.Service\ElementService.cs" />
-        <File uid="38" fullPath="D:\Projects\rad_element_microservice\RadElement.Service\ElementSetService.cs" />
+        <File uid="37" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Service\ElementService.cs" />
+        <File uid="38" fullPath="D:\Projects_Core_3.0\rad_element_microservice\RadElement.Service\ElementSetService.cs" />
       </Files>
       <Classes>
         <Class>
