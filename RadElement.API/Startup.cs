@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -162,8 +163,7 @@ namespace RadElement.API
 
             services.AddMvc().AddNewtonsoftJson();
             services.AddMvcCore().AddApiExplorer();
-
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         }
 
         /// <summary>

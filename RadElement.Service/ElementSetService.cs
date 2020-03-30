@@ -100,8 +100,8 @@ namespace RadElement.Service
                 {
                     var sets = radElementDbContext.ElementSet.ToList();
                     var elementSets = GetElementSetDetailsArrayDto(sets);
-                    var filteredSets = elementSets.FindAll(x => x.SetId.ToString().ToLower().Contains(searchKeyword.ToLower()) || 
-                                                    x.Name.ToLower().Contains(searchKeyword.ToLower()) || 
+                    var filteredSets = elementSets.FindAll(x => x.SetId.ToString().ToLower().Contains(searchKeyword.ToLower()) ||
+                                                    x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
                                                     x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
                                                     x.ContactName.ToLower().Contains(searchKeyword.ToLower())); ;
                     if (filteredSets != null && filteredSets.Any())
@@ -135,17 +135,19 @@ namespace RadElement.Service
         {
             try
             {
-                if (content == null || string.IsNullOrEmpty(content.ModuleName) || string.IsNullOrEmpty(content.ContactName) || string.IsNullOrEmpty(content.Description))
-                {
-                    return await Task.FromResult(new JsonResult("Element set is invalid", HttpStatusCode.BadRequest));
-                }
-
                 ElementSet set = new ElementSet()
                 {
-                    Name = content.ModuleName.Replace("_", " "),
+                    Name = content.ModuleName.Trim(),
                     Description = content.Description,
                     ContactName = content.ContactName,
-                    Status = "Proposed"
+                    ParentId = content.ParentId,
+                    Status = "Proposed",
+                    StatusDate = DateTime.UtcNow,
+                    Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null,
+                    BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null,
+                    AgeLowerBound = content.AgeLowerBound,
+                    AgeUpperBound = content.AgeUpperBound,
+                    Version = content.Version
                 };
 
                 radElementDbContext.ElementSet.Add(set);
@@ -173,20 +175,21 @@ namespace RadElement.Service
                 if (IsValidSetId(setId))
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
-
-                    if (content == null || string.IsNullOrEmpty(content.ModuleName) || string.IsNullOrEmpty(content.ContactName) || string.IsNullOrEmpty(content.Description))
-                    {
-                        return new JsonResult("Element set is invalid", HttpStatusCode.BadRequest);
-                    }
-
                     var elementSets = radElementDbContext.ElementSet.ToList();
                     var elementSet = elementSets.Find(x => x.Id == id);
 
                     if (elementSet != null)
                     {
-                        elementSet.Name = content.ModuleName.Replace("_", " ");
+                        elementSet.Name = content.ModuleName.Trim();
                         elementSet.Description = content.Description;
                         elementSet.ContactName = content.ContactName;
+                        elementSet.ParentId = content.ParentId;
+                        elementSet.Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null;
+                        elementSet.BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null;
+                        elementSet.AgeLowerBound = content.AgeLowerBound;
+                        elementSet.AgeUpperBound = content.AgeUpperBound;
+                        elementSet.Version = content.Version;
+
                         radElementDbContext.SaveChanges();
                         return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
                     }
@@ -306,7 +309,13 @@ namespace RadElement.Service
                 Description = set.Description,
                 Name = set.Name,
                 ParentId = set.ParentId,
-                Status = set.Status
+                Status = set.Status,
+                StatusDate = set.StatusDate,
+                Modality = set.Modality,
+                BiologicalSex = set.BiologicalSex,
+                AgeLowerBound = set.AgeLowerBound,
+                AgeUpperBound = set.AgeUpperBound,
+                Version = set.Version
             };
         }
     }
