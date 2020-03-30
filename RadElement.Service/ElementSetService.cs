@@ -268,7 +268,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidSetId(string setId)
         {
-            if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
             {
                 int id;
                 bool result = Int32.TryParse(setId.Remove(0, 4), out id);
