@@ -88,6 +88,7 @@ namespace RadElement.API
                             ValidateAudience = true,
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,
+                            ClockSkew = TimeSpan.Zero,
                             ValidIssuer = authConfig.Issuer,
                             ValidAudience = authConfig.Audience,
                             IssuerSigningKey = GetKey(authConfig.KeyFilePath, authConfig.ConvertToUnsecureString(authConfig.SigningPassword))
