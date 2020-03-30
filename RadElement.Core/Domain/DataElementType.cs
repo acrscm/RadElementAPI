@@ -32,12 +32,7 @@ namespace RadElement.Core.Domain
         /// Data Element Type is DateTime
         /// </summary>
         DateTime,
-
-        ///// <summary>
-        ///// Data Element Type is Duration
-        ///// </summary>
-        //Duration,
-
+        
         /// <summary>
         /// Data Element Type is String
         /// </summary>

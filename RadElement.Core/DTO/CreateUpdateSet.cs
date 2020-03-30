@@ -6,24 +6,21 @@ namespace RadElement.Core.DTO
     public class CreateUpdateSet
     {
         /// <summary>
-        /// Gets or sets the name of the module.
+        /// Gets or sets the name.
         /// </summary>
         [Required]
-        [MinLength(1)]
-        public string ModuleName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
         /// </summary>
         [Required]
-        [MinLength(1)]
         public string Description { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the contact.
         /// </summary>
         [Required]
-        [MinLength(1)]
         public string ContactName { get; set; }
 
         /// <summary>
@@ -54,7 +51,7 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the version.
         /// </summary>
-        [StringLength(8)]
+        [MaxLength(8)]
         public string Version { get; set; }
     }
 }

@@ -190,33 +190,12 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(null, null, null)]
-        [InlineData("", "", "")]
-        public async void CreateSetShouldReturnBadRequestIfSetContentsAreInvalid(string moduleName, string contactName, string description)
-        {
-            IntializeMockData();
-            var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.CreateSet(set);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(setInvalidMessage, result.Value);
-        }
-
-        [Theory]
         [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
         [InlineData("Sinus1", "Sinus2", "Sinus3")]
         public async void CreateSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -235,7 +214,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -268,33 +247,12 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES1", "Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("RDES2", "Sinus1", "Sinus2", "Sinus3")]
-        public async void UpdateSetShouldReturnBadRequestIfSetContentsAreInvalid(string setId, string moduleName, string contactName, string description)
-        {
-            IntializeMockData();
-            var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-
-            var sut = new ElementSetService(mockRadElementContext.Object, mockLogger.Object);
-            var result = await sut.UpdateSet(setId, set);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
-        }
-
-        [Theory]
         [InlineData("RDES53", "Tumuor1", "Tumuor2", "Tumuor3")]
         [InlineData("RDES66", "Sinus1", "Sinus2", "Sinus3")]
         public async void UpdateSetShouldThrowInternalServerErrorForExceptions(string setId, string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -313,7 +271,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 

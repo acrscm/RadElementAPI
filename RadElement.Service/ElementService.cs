@@ -165,9 +165,9 @@ namespace RadElement.Service
         /// Creates the element.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        /// <param name="content">The content.</param>
+        /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        public async Task<JsonResult> CreateElement(string setId, DataElementType elementType, CreateUpdateElement dataElement)
+        public async Task<JsonResult> CreateElement(string setId, CreateUpdateElement dataElement)
         {
             try
             {
@@ -179,12 +179,7 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
                     }
 
-                    if (string.IsNullOrEmpty(dataElement.Label))
-                    {
-                        return await Task.FromResult(new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest));
-                    }
-
-                    if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+                    if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
                     {
                         if (dataElement.Options == null)
                         {
@@ -196,96 +191,69 @@ namespace RadElement.Service
                     var elementSets = radElementDbContext.ElementSet.ToList();
                     var elementSet = elementSets.Find(x => x.Id == id);
 
-                    if (elementSet != null)
+                    if (elementSet != null && dataElement.ValueType != DataElementType.Global)
                     {
-                        if (elementType != DataElementType.Global)
+                        Element element = new Element()
                         {
-                            Element element = new Element()
-                            {
-                                Name = dataElement.Label,
-                                ShortName = "",
-                                Definition = dataElement.Definition ?? "",
-                                MaxCardinality = 1,
-                                MinCardinality = 1,
-                                Source = "DSI TOUCH-AI",
-                                Status = "Proposed",
-                                StatusDate = DateTime.Now,
-                                Editor = "",
-                                Instructions = "",
-                                Question = dataElement.Label ?? "",
-                                References = "",
-                                Synonyms = "",
-                                VersionDate = DateTime.Now,
-                                Version = "1",
-                                ValueSize = 0,
-                                Unit = ""
-                            };
+                            Name = dataElement.Name,
+                            ShortName = dataElement.ShortName ?? string.Empty,
+                            Definition = dataElement.Definition ?? string.Empty,
+                            ValueType = GetElementValueType(dataElement.ValueType),
+                            MinCardinality = 1,
+                            MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (short)dataElement.Options.Count : (short)1,
+                            Unit = dataElement.Unit ?? string.Empty,
+                            Question = dataElement.Question ?? dataElement.Name,
+                            Instructions = dataElement.Instructions ?? string.Empty,
+                            References = dataElement.References ?? string.Empty,
+                            Version = dataElement.Version ?? "1",
+                            VersionDate = DateTime.Now,
+                            Synonyms = dataElement.Synonyms ?? string.Empty,
+                            Source = dataElement.Source ?? string.Empty,
+                            Status = "Proposed",
+                            StatusDate = DateTime.Now,
+                            Editor = dataElement.Editor ?? string.Empty,
+                            Modality = dataElement.Modality != null && dataElement.Modality.Any() ? string.Join(",", dataElement.Modality) : null,
+                            BiologicalSex = dataElement.BiologicalSex != null && dataElement.BiologicalSex.Any() ? string.Join(",", dataElement.BiologicalSex) : null,
+                            AgeLowerBound = dataElement.AgeLowerBound,
+                            AgeUpperBound = dataElement.AgeUpperBound,
+                            ValueSize = 0
+                        };
 
-                            if (elementType == DataElementType.Integer)
+                        if (dataElement.ValueType == DataElementType.Integer)
+                        {
+                            element.ValueMin = dataElement.ValueMin;
+                            element.ValueMax = dataElement.ValueMax;
+                            element.StepValue = 1;
+                        }
+
+                        if (dataElement.ValueType == DataElementType.Numeric)
+                        {
+                            float? minValue = null;
+                            float? maxValue = null;
+
+                            if (dataElement.ValueMin.HasValue)
                             {
-                                element.ValueType = "integer";
-                                element.ValueMin = dataElement.ValueMin;
-                                element.ValueMax = dataElement.ValueMax;
-                                element.StepValue = 1;
-                                element.Unit = dataElement.Unit ?? "";
+                                minValue = Convert.ToSingle(dataElement.ValueMin.Value);
                             }
 
-                            if (elementType == DataElementType.Numeric)
+                            if (dataElement.ValueMax.HasValue)
                             {
-                                float? minValue = null;
-                                float? maxValue = null;
-
-                                if (dataElement.ValueMin.HasValue)
-                                {
-                                    minValue = Convert.ToSingle(dataElement.ValueMin.Value);
-                                }
-
-                                if (dataElement.ValueMax.HasValue)
-                                {
-                                    maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                                }
-                                element.ValueType = "float";
-                                element.ValueMin = minValue;
-                                element.ValueMax = maxValue;
-                                element.StepValue = 0.1f;
-                                element.Unit = dataElement.Unit ?? "";
+                                maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
                             }
 
-                            if (elementType == DataElementType.Choice)
-                            {
-                                element.ValueType = "valueSet";
-                            }
+                            element.ValueMin = minValue;
+                            element.ValueMax = maxValue;
+                            element.StepValue = 0.1f;
+                        }
 
-                            if (elementType == DataElementType.MultiChoice)
-                            {
-                                element.ValueType = "valueSet";
-                                element.MaxCardinality = (short)dataElement.Options.Count;
-                            }
+                        radElementDbContext.Element.Add(element);
+                        radElementDbContext.SaveChanges();
 
-                            if (elementType == DataElementType.DateTime)
-                            {
-                                element.ValueType = "date";
-                            }
+                        elementId = (int)element.Id;
 
-                            if (elementType == DataElementType.String)
-                            {
-                                element.ValueType = "string";
-                            }
-
-                            //if (elementType == DataElementType.Duration)
-                            //{
-                            //    element.ValueType = "string";
-                            //}
-
-                            radElementDbContext.Element.Add(element);
-                            radElementDbContext.SaveChanges();
-
-                            elementId = (int)element.Id;
-
-                            if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
-                            {
-                                AddElementValues(dataElement.Options, element.Id);
-                            }
+                        if (dataElement.ValueType == DataElementType.MultiChoice || dataElement.ValueType == DataElementType.Choice)
+                        {
+                            AddElementValues(dataElement.Options, element.Id);
                         }
 
                         ElementSetRef setRef = new ElementSetRef()
@@ -317,7 +285,7 @@ namespace RadElement.Service
         /// <param name="elementId">The element identifier.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        public async Task<JsonResult> UpdateElement(string setId, string elementId, DataElementType elementType, CreateUpdateElement dataElement)
+        public async Task<JsonResult> UpdateElement(string setId, string elementId, CreateUpdateElement dataElement)
         {
             try
             {
@@ -331,12 +299,7 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
                     }
 
-                    if (string.IsNullOrEmpty(dataElement.Label))
-                    {
-                        return await Task.FromResult(new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest));
-                    }
-
-                    if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
+                    if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
                     {
                         if (dataElement.Options == null)
                         {
@@ -358,34 +321,37 @@ namespace RadElement.Service
                                 radElementDbContext.ElementValue.RemoveRange(elementValues);
                             }
 
-                            element.Name = dataElement.Label;
-                            element.ShortName = "";
-                            element.Definition = dataElement.Definition ?? "";
-                            element.MaxCardinality = 1;
+                            element.Name = dataElement.Name;
+                            element.ShortName = dataElement.ShortName ?? string.Empty;
+                            element.Definition = dataElement.Definition ?? string.Empty;
+                            element.ValueType = GetElementValueType(dataElement.ValueType);
                             element.MinCardinality = 1;
-                            element.Source = "DSI TOUCH-AI";
+                            element.MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (short)dataElement.Options.Count : (short)1;
+                            element.Unit = dataElement.Unit ?? string.Empty;
+                            element.Question = dataElement.Question ?? dataElement.Name;
+                            element.Instructions = dataElement.Instructions ?? string.Empty;
+                            element.References = dataElement.References ?? string.Empty;
+                            element.Version = dataElement.Version ?? "1";
+                            element.VersionDate = DateTime.Now;
+                            element.Synonyms = dataElement.Synonyms ?? string.Empty;
+                            element.Source = dataElement.Source ?? string.Empty;
                             element.Status = "Proposed";
                             element.StatusDate = DateTime.Now;
-                            element.Editor = "";
-                            element.Instructions = "";
-                            element.Question = dataElement.Label ?? "";
-                            element.References = "";
-                            element.Synonyms = "";
-                            element.VersionDate = DateTime.Now;
-                            element.Version = "1";
+                            element.Editor = dataElement.Editor ?? string.Empty;
+                            element.Modality = dataElement.Modality != null && dataElement.Modality.Any() ? string.Join(",", dataElement.Modality) : null;
+                            element.BiologicalSex = dataElement.BiologicalSex != null && dataElement.BiologicalSex.Any() ? string.Join(",", dataElement.BiologicalSex) : null;
+                            element.AgeLowerBound = dataElement.AgeLowerBound;
+                            element.AgeUpperBound = dataElement.AgeUpperBound;
                             element.ValueSize = 0;
-                            element.Unit = "";
 
-                            if (elementType == DataElementType.Integer)
+                            if (dataElement.ValueType == DataElementType.Integer)
                             {
-                                element.ValueType = "integer";
                                 element.ValueMin = dataElement.ValueMin;
                                 element.ValueMax = dataElement.ValueMax;
                                 element.StepValue = 1;
-                                element.Unit = dataElement.Unit ?? "";
                             }
 
-                            if (elementType == DataElementType.Numeric)
+                            if (dataElement.ValueType == DataElementType.Numeric)
                             {
                                 float? minValue = null;
                                 float? maxValue = null;
@@ -400,40 +366,12 @@ namespace RadElement.Service
                                     maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
                                 }
 
-                                element.ValueType = "float";
                                 element.ValueMin = minValue;
                                 element.ValueMax = maxValue;
                                 element.StepValue = 0.1f;
-                                element.Unit = dataElement.Unit ?? "";
                             }
 
-                            if (elementType == DataElementType.Choice)
-                            {
-                                element.ValueType = "valueSet";
-                            }
-
-                            if (elementType == DataElementType.MultiChoice)
-                            {
-                                element.ValueType = "valueSet";
-                                element.MaxCardinality = (short)dataElement.Options.Count;
-                            }
-
-                            if (elementType == DataElementType.DateTime)
-                            {
-                                element.ValueType = "date";
-                            }
-
-                            if (elementType == DataElementType.String)
-                            {
-                                element.ValueType = "string";
-                            }
-
-                            //if (elementType == DataElementType.Duration)
-                            //{
-                            //    element.ValueType = "string";
-                            //}
-
-                            if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
+                            if (dataElement.ValueType == DataElementType.MultiChoice || dataElement.ValueType == DataElementType.Choice)
                             {
                                 AddElementValues(dataElement.Options, element.Id);
                             }
@@ -535,7 +473,7 @@ namespace RadElement.Service
             if (elementId.Length > 3 && elementId.Substring(0, 3) == "RDE")
             {
                 int id;
-                bool result = Int32.TryParse(elementId.Remove(0, 3), out id);
+                bool result = int.TryParse(elementId.Remove(0, 3), out id);
                 return result;
             }
 
@@ -551,10 +489,10 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidSetId(string setId)
         {
-            if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.InvariantCulture))
             {
                 int id;
-                bool result = Int32.TryParse(setId.Remove(0, 4), out id);
+                bool result = int.TryParse(setId.Remove(0, 4), out id);
                 return result;
             }
 
@@ -575,6 +513,42 @@ namespace RadElement.Service
             }
 
             return elementDetails;
+        }
+
+        /// <summary>
+        /// Gets the type of the element value.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        private string GetElementValueType(DataElementType type)
+        {
+            var valueType = string.Empty;
+
+            switch (type)
+            {
+                case DataElementType.Choice:
+                case DataElementType.MultiChoice:
+                    valueType = "valueSet";
+                    break;
+
+                case DataElementType.Integer:
+                    valueType = "integer";
+                    break;
+
+                case DataElementType.Numeric:
+                    valueType = "float";
+                    break;
+
+                case DataElementType.DateTime:
+                    valueType = "date";
+                    break;
+
+                case DataElementType.String:
+                    valueType = "string";
+                    break;
+            }
+
+            return valueType;
         }
 
         /// <summary>

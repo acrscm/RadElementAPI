@@ -103,9 +103,6 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Gets or sets the status.
         /// </summary>
-        /// <value>
-        /// The status.
-        /// </value>
         public string Status { get; set; }
 
         /// <summary>
@@ -117,5 +114,25 @@ namespace RadElement.Core.Domain
         /// Gets or sets the editor.
         /// </summary>
         public string Editor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the modality.
+        /// </summary>
+        public string Modality { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Biological sex.
+        /// </summary>
+        public string BiologicalSex { get; set; }
+
+        /// <summary>
+        /// Gets or sets the age upper bound.
+        /// </summary>
+        public float? AgeUpperBound { get; set; }
+
+        /// <summary>
+        /// Gets or sets the age lower bound.
+        /// </summary>
+        public float? AgeLowerBound { get; set; }
     }
 }

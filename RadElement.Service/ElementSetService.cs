@@ -135,9 +135,14 @@ namespace RadElement.Service
         {
             try
             {
+                if (content == null)
+                {
+                    return await Task.FromResult(new JsonResult("Element set is invalid", HttpStatusCode.BadRequest));
+                }
+
                 ElementSet set = new ElementSet()
                 {
-                    Name = content.ModuleName.Trim(),
+                    Name = content.Name.Trim(),
                     Description = content.Description,
                     ContactName = content.ContactName,
                     ParentId = content.ParentId,
@@ -175,12 +180,18 @@ namespace RadElement.Service
                 if (IsValidSetId(setId))
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
+
+                    if (content == null)
+                    {
+                        return await Task.FromResult(new JsonResult("Element set is invalid", HttpStatusCode.BadRequest));
+                    }
+
                     var elementSets = radElementDbContext.ElementSet.ToList();
                     var elementSet = elementSets.Find(x => x.Id == id);
 
                     if (elementSet != null)
                     {
-                        elementSet.Name = content.ModuleName.Trim();
+                        elementSet.Name = content.Name.Trim();
                         elementSet.Description = content.Description;
                         elementSet.ContactName = content.ContactName;
                         elementSet.ParentId = content.ParentId;
