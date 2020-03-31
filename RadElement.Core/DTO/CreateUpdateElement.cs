@@ -28,6 +28,7 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the type of the value.
         /// </summary>
+        [Required]
         public DataElementType ValueType { get; set; }
 
         /// <summary>
