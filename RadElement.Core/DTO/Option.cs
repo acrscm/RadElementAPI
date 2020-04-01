@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RadElement.Core.DTO
+﻿namespace RadElement.Core.DTO
 {
     /// <summary>
     /// Represents the option
@@ -10,18 +6,28 @@ namespace RadElement.Core.DTO
     public class Option
     {
         /// <summary>
-        /// Gets or sets the label
-        /// </summary>
-        public string Label { get; set; }
-
-        /// <summary>
         /// Gets or sets the value
         /// </summary>
         public string Value { get; set; }
 
         /// <summary>
+        /// Gets or sets the Name
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the definition.
+        /// </summary>
+        public string Definition { get; set; }
+
+        /// <summary>
         /// Gets or sets the report text
         /// </summary>
         public string ReportText { get; set; }
+
+        /// <summary>
+        /// Gets or sets the images.
+        /// </summary>
+        public string Images { get; set; }
     }
 }

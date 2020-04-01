@@ -22,7 +22,9 @@ namespace RadElement.Data
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="configurationManager">The configuration manager.</param>
-        public RadElementDbContext(DbContextOptions<RadElementDbContext> options,IConfigurationManager configurationManager) : base(options)
+        public RadElementDbContext(
+            DbContextOptions<RadElementDbContext> options,
+            IConfigurationManager configurationManager) : base(options)
         {
             this.configurationManager = configurationManager;
         }

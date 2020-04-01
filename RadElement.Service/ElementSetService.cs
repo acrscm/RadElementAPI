@@ -282,7 +282,7 @@ namespace RadElement.Service
             if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
             {
                 int id;
-                bool result = Int32.TryParse(setId.Remove(0, 4), out id);
+                bool result = int.TryParse(setId.Remove(0, 4), out id);
                 return result;
             }
 

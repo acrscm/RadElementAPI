@@ -205,7 +205,7 @@ namespace RadElement.Service
                             Question = dataElement.Question ?? dataElement.Name,
                             Instructions = dataElement.Instructions ?? string.Empty,
                             References = dataElement.References ?? string.Empty,
-                            Version = dataElement.Version ?? "1",
+                            Version = dataElement.Version ?? "",
                             VersionDate = DateTime.Now,
                             Synonyms = dataElement.Synonyms ?? string.Empty,
                             Source = dataElement.Source ?? string.Empty,
@@ -331,7 +331,7 @@ namespace RadElement.Service
                             element.Question = dataElement.Question ?? dataElement.Name;
                             element.Instructions = dataElement.Instructions ?? string.Empty;
                             element.References = dataElement.References ?? string.Empty;
-                            element.Version = dataElement.Version ?? "1";
+                            element.Version = dataElement.Version ?? "";
                             element.VersionDate = DateTime.Now;
                             element.Synonyms = dataElement.Synonyms ?? string.Empty;
                             element.Source = dataElement.Source ?? string.Empty;
@@ -444,20 +444,20 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="options">The options.</param>
         /// <param name="elementId">The element identifier.</param>
-        private void AddElementValues(List<Core.DTO.Option> options, uint elementId)
+        private void AddElementValues(List<Option> options, uint elementId)
         {
-            foreach (Core.DTO.Option option in options)
+            foreach (Option option in options)
             {
                 ElementValue elementvalue = new ElementValue()
                 {
-                    Name = option.Label,
-                    Value = string.Empty,
-                    Definition = option.Label,
                     ElementId = elementId,
+                    Value = option.Value ?? "",
+                    Name = option.Name ?? "",
+                    Definition = option.Definition ?? "",
+                    Images = option.Images ?? ""
                 };
 
                 radElementDbContext.ElementValue.Add(elementvalue);
-                radElementDbContext.SaveChanges();
             }
         }
 
@@ -470,7 +470,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidElementId(string elementId)
         {
-            if (elementId.Length > 3 && elementId.Substring(0, 3) == "RDE")
+            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
             {
                 int id;
                 bool result = int.TryParse(elementId.Remove(0, 3), out id);

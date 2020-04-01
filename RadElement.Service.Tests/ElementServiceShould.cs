@@ -302,13 +302,13 @@ namespace RadElement.Service.Tests
             }
             else if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
             {
-                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options = new List<Option>();
                 dataElement.Options.AddRange(
-                    new List<Core.DTO.Option>()
+                    new List<Option>()
                     {
-                        new Core.DTO.Option { Label = "value1", Value = "1" },
-                        new Core.DTO.Option { Label = "value2", Value = "2" },
-                        new Core.DTO.Option { Label = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1" },
+                        new Option { Name = "value2", Value = "2" },
+                        new Option { Name = "value3", Value = "3" }
                     }
                 );
             }
@@ -346,13 +346,13 @@ namespace RadElement.Service.Tests
             }
             else if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
             {
-                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options = new List<Option>();
                 dataElement.Options.AddRange(
-                    new List<Core.DTO.Option>()
+                    new List<Option>()
                     {
-                        new Core.DTO.Option { Label = "value1", Value = "1" },
-                        new Core.DTO.Option { Label = "value2", Value = "2" },
-                        new Core.DTO.Option { Label = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1" },
+                        new Option { Name = "value2", Value = "2" },
+                        new Option { Name = "value3", Value = "3" }
                     }
                 );
             }
@@ -450,13 +450,13 @@ namespace RadElement.Service.Tests
             }
             else if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
             {
-                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options = new List<Option>();
                 dataElement.Options.AddRange(
-                    new List<Core.DTO.Option>()
+                    new List<Option>()
                     {
-                        new Core.DTO.Option { Label = "value1", Value = "1" },
-                        new Core.DTO.Option { Label = "value2", Value = "2" },
-                        new Core.DTO.Option { Label = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1" },
+                        new Option { Name = "value2", Value = "2" },
+                        new Option { Name = "value3", Value = "3" }
                     }
                 );
             }
@@ -494,13 +494,13 @@ namespace RadElement.Service.Tests
             }
             else if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
             {
-                dataElement.Options = new List<Core.DTO.Option>();
+                dataElement.Options = new List<Option>();
                 dataElement.Options.AddRange(
-                    new List<Core.DTO.Option>()
+                    new List<Option>()
                     {
-                        new Core.DTO.Option { Label = "value1", Value = "1" },
-                        new Core.DTO.Option { Label = "value2", Value = "2" },
-                        new Core.DTO.Option { Label = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1" },
+                        new Option { Name = "value2", Value = "2" },
+                        new Option { Name = "value3", Value = "3" }
                     }
                 );
             }
