@@ -32,52 +32,52 @@ namespace RadElement.Data
         /// <summary>
         /// Gets the code.
         /// </summary>
-        public virtual DbSet<Code> Code { get; set; }
+        public DbSet<Code> Code { get; set; }
 
         /// <summary>
         /// Gets the code reference.
         /// </summary>
-        public virtual DbSet<CodeRef> CodeRef { get; set; }
+        public DbSet<CodeRef> CodeRef { get; set; }
 
         /// <summary>
         /// Gets the code system.
         /// </summary>
-        public virtual DbSet<CodeSystem> CodeSystem { get; set; }
+        public DbSet<CodeSystem> CodeSystem { get; set; }
 
         /// <summary>
         /// Gets the editor.
         /// </summary>
-        public virtual DbSet<Editor> Editor { get; set; }
+        public DbSet<Editor> Editor { get; set; }
 
         /// <summary>
         /// Gets the element.
         /// </summary>
-        public virtual DbSet<Element> Element { get; set; }
+        public DbSet<Element> Element { get; set; }
 
         /// <summary>
         /// Gets the element set.
         /// </summary>
-        public virtual DbSet<ElementSet> ElementSet { get; set; }
+        public DbSet<ElementSet> ElementSet { get; set; }
 
         /// <summary>
+        /// Gets the element set reference.
         /// </summary>
-        /// <!-- Badly formed XML comment ignored for member "P:RadElement.Core.Data.IRadElementDbContext.ElementSetRef" -->
-        public virtual DbSet<ElementSetRef> ElementSetRef { get; set; }
+        public DbSet<ElementSetRef> ElementSetRef { get; set; }
 
         /// <summary>
         /// Gets the element value.
         /// </summary>
-        public virtual DbSet<ElementValue> ElementValue { get; set; }
+        public DbSet<ElementValue> ElementValue { get; set; }
 
         /// <summary>
         /// Gets the image.
         /// </summary>
-        public virtual DbSet<Image> Image { get; set; }
+        public DbSet<Image> Image { get; set; }
 
         /// <summary>
         /// Gets the image reference.
         /// </summary>
-        public virtual DbSet<ImageRef> ImageRef { get; set; }
+        public DbSet<ImageRef> ImageRef { get; set; }
 
         /// <summary>
         /// <para>

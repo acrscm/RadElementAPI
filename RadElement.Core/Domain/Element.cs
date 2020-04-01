@@ -53,12 +53,12 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Gets or sets the minimum cardinality.
         /// </summary>
-        public short MinCardinality { get; set; }
+        public uint MinCardinality { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum cardinality.
         /// </summary>
-        public short MaxCardinality { get; set; }
+        public uint MaxCardinality { get; set; }
 
         /// <summary>
         /// Gets or sets the unit.

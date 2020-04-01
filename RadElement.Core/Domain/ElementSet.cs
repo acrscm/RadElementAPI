@@ -31,16 +31,6 @@ namespace RadElement.Core.Domain
         public int? ParentId { get; set; }
 
         /// <summary>
-        /// Gets or sets the status
-        /// </summary>
-        public string Status { get; set; }
-
-        /// <summary>
-        /// Gets or sets the status date
-        /// </summary>
-        public DateTime? StatusDate { get; set; }
-
-        /// <summary>
         /// Gets or sets the modality.
         /// </summary>
         public string Modality { get; set; }
@@ -59,6 +49,16 @@ namespace RadElement.Core.Domain
         /// Gets or sets the age lower bound.
         /// </summary>
         public float? AgeLowerBound { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status
+        /// </summary>
+        public string Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status date
+        /// </summary>
+        public DateTime? StatusDate { get; set; }
 
         /// <summary>
         /// Gets or sets the version.

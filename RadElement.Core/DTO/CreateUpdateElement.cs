@@ -71,7 +71,7 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the version date.
         /// </summary>
-        public DateTime VersionDate { get; set; }
+        public DateTime? VersionDate { get; set; }
 
         /// <summary>
         /// Gets or sets the synonyms.

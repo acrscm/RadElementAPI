@@ -38,7 +38,7 @@ namespace RadElement.Service
         public async Task<JsonResult> GetElements()
         {
             try
-            {
+                {
                 var elements = radElementDbContext.Element.ToList();
                 return await Task.FromResult(new JsonResult(GetElementDetailsArrayDto(elements), HttpStatusCode.OK));
             }
@@ -169,185 +169,56 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> CreateElement(string setId, CreateUpdateElement dataElement)
         {
-            int elementId = 0;
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (IsValidSetId(setId))
+                try
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    if (dataElement == null)
+                    if (IsValidSetId(setId))
                     {
-                        return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
-                    }
-
-                    if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
-                    {
-                        if (dataElement.Options == null)
+                        int id = Convert.ToInt32(setId.Remove(0, 4));
+                        if (dataElement == null)
                         {
-                            return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
-                        }
-                    }
-
-                    var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == id);
-
-                    if (elementSet != null)
-                    {
-                        Element element = new Element()
-                        {
-                            Name = dataElement.Name,
-                            ShortName = dataElement.ShortName ?? string.Empty,
-                            Definition = dataElement.Definition ?? string.Empty,
-                            ValueType = GetElementValueType(dataElement.ValueType),
-                            MinCardinality = 1,
-                            MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (short)dataElement.Options.Count : (short)1,
-                            Unit = dataElement.Unit ?? string.Empty,
-                            Question = dataElement.Question ?? dataElement.Name,
-                            Instructions = dataElement.Instructions ?? string.Empty,
-                            References = dataElement.References ?? string.Empty,
-                            Version = dataElement.Version ?? "",
-                            VersionDate = DateTime.Now,
-                            Synonyms = dataElement.Synonyms ?? string.Empty,
-                            Source = dataElement.Source ?? string.Empty,
-                            Status = "Proposed",
-                            StatusDate = DateTime.Now,
-                            Editor = dataElement.Editor ?? string.Empty,
-                            Modality = dataElement.Modality != null && dataElement.Modality.Any() ? string.Join(",", dataElement.Modality) : null,
-                            BiologicalSex = dataElement.BiologicalSex != null && dataElement.BiologicalSex.Any() ? string.Join(",", dataElement.BiologicalSex) : null,
-                            AgeLowerBound = dataElement.AgeLowerBound,
-                            AgeUpperBound = dataElement.AgeUpperBound,
-                            ValueSize = 0
-                        };
-
-                        if (dataElement.ValueType == DataElementType.Integer)
-                        {
-                            element.ValueMin = dataElement.ValueMin;
-                            element.ValueMax = dataElement.ValueMax;
-                            element.StepValue = 1;
+                            return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
                         }
 
-                        if (dataElement.ValueType == DataElementType.Numeric)
+                        if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
                         {
-                            float? minValue = null;
-                            float? maxValue = null;
-
-                            if (dataElement.ValueMin.HasValue)
+                            if (dataElement.Options == null || dataElement.Options.Count == 0)
                             {
-                                minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                                return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
                             }
+                        }
 
-                            if (dataElement.ValueMax.HasValue)
+                        var elementSets = radElementDbContext.ElementSet.ToList();
+                        var elementSet = elementSets.Find(x => x.Id == id);
+
+                        if (elementSet != null)
+                        {
+                            Element element = new Element()
                             {
-                                maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                            }
-
-                            element.ValueMin = minValue;
-                            element.ValueMax = maxValue;
-                            element.StepValue = 0.1f;
-                        }
-
-                        radElementDbContext.Element.Add(element);
-                        radElementDbContext.SaveChanges();
-
-                        elementId = (int)element.Id;
-
-                        if (dataElement.ValueType == DataElementType.MultiChoice || dataElement.ValueType == DataElementType.Choice)
-                        {
-                            AddElementValues(dataElement.Options, element.Id);
-                        }
-
-                        ElementSetRef setRef = new ElementSetRef()
-                        {
-                            ElementSetId = id,
-                            ElementId = (short)elementId
-                        };
-
-                        radElementDbContext.ElementSetRef.Add(setRef);
-                        radElementDbContext.SaveChanges();
-                        return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = "RDE" + elementId.ToString() }, HttpStatusCode.Created));
-                    }
-                }
-
-                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0}.", setId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                if (elementId != 0)
-                {
-                    var response = DeleteElement(setId, "RDE" + elementId.ToString());
-                }
-
-                logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Updates the set.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <param name="elementId">The element identifier.</param>
-        /// <param name="dataElement">The data element.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> UpdateElement(string setId, string elementId, CreateUpdateElement dataElement)
-        {
-            try
-            {
-                if (IsValidSetId(setId) && IsValidElementId(elementId))
-                {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    int elemId = Convert.ToInt32(elementId.Remove(0, 3));
-
-                    if (dataElement == null)
-                    {
-                        return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
-                    }
-
-                    if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
-                    {
-                        if (dataElement.Options == null)
-                        {
-                            return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
-                        }
-                    }
-
-                    var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == id);
-
-                    if (elementSet != null)
-                    {
-                        var element = radElementDbContext.Element.ToList().Find(x => x.Id == elemId);
-                        if (element != null)
-                        {
-                            var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id);
-                            if (elementValues != null && elementValues.Any())
-                            {
-                                radElementDbContext.ElementValue.RemoveRange(elementValues);
-                            }
-
-                            element.Name = dataElement.Name;
-                            element.ShortName = dataElement.ShortName ?? string.Empty;
-                            element.Definition = dataElement.Definition ?? string.Empty;
-                            element.ValueType = GetElementValueType(dataElement.ValueType);
-                            element.MinCardinality = 1;
-                            element.MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (short)dataElement.Options.Count : (short)1;
-                            element.Unit = dataElement.Unit ?? string.Empty;
-                            element.Question = dataElement.Question ?? dataElement.Name;
-                            element.Instructions = dataElement.Instructions ?? string.Empty;
-                            element.References = dataElement.References ?? string.Empty;
-                            element.Version = dataElement.Version ?? "";
-                            element.VersionDate = DateTime.Now;
-                            element.Synonyms = dataElement.Synonyms ?? string.Empty;
-                            element.Source = dataElement.Source ?? string.Empty;
-                            element.Status = "Proposed";
-                            element.StatusDate = DateTime.Now;
-                            element.Editor = dataElement.Editor ?? string.Empty;
-                            element.Modality = dataElement.Modality != null && dataElement.Modality.Any() ? string.Join(",", dataElement.Modality) : null;
-                            element.BiologicalSex = dataElement.BiologicalSex != null && dataElement.BiologicalSex.Any() ? string.Join(",", dataElement.BiologicalSex) : null;
-                            element.AgeLowerBound = dataElement.AgeLowerBound;
-                            element.AgeUpperBound = dataElement.AgeUpperBound;
-                            element.ValueSize = 0;
+                                Name = dataElement.Name,
+                                ShortName = dataElement.ShortName ?? string.Empty,
+                                Definition = dataElement.Definition ?? string.Empty,
+                                ValueType = GetElementValueType(dataElement.ValueType),
+                                MinCardinality = 1,
+                                MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (uint)dataElement.Options.Count : (uint)1,
+                                Unit = dataElement.Unit ?? string.Empty,
+                                Question = dataElement.Question ?? dataElement.Name,
+                                Instructions = dataElement.Instructions ?? string.Empty,
+                                References = dataElement.References ?? string.Empty,
+                                Version = dataElement.Version ?? "",
+                                VersionDate = dataElement.VersionDate ?? DateTime.Now,
+                                Synonyms = dataElement.Synonyms ?? string.Empty,
+                                Source = dataElement.Source ?? string.Empty,
+                                Status = "Proposed",
+                                StatusDate = DateTime.Now,
+                                Editor = dataElement.Editor ?? string.Empty,
+                                Modality = dataElement.Modality != null && dataElement.Modality.Any() ? string.Join(",", dataElement.Modality) : null,
+                                BiologicalSex = dataElement.BiologicalSex != null && dataElement.BiologicalSex.Any() ? string.Join(",", dataElement.BiologicalSex) : null,
+                                AgeLowerBound = dataElement.AgeLowerBound,
+                                AgeUpperBound = dataElement.AgeUpperBound,
+                                ValueSize = 0
+                            };
 
                             if (dataElement.ValueType == DataElementType.Integer)
                             {
@@ -376,24 +247,157 @@ namespace RadElement.Service
                                 element.StepValue = 0.1f;
                             }
 
+                            radElementDbContext.Element.Add(element);
+                            radElementDbContext.SaveChanges();
+
                             if (dataElement.ValueType == DataElementType.MultiChoice || dataElement.ValueType == DataElementType.Choice)
                             {
                                 AddElementValues(dataElement.Options, element.Id);
                             }
 
+                            ElementSetRef setRef = new ElementSetRef()
+                            {
+                                ElementSetId = id,
+                                ElementId = (int)element.Id
+                            };
+
+                            radElementDbContext.ElementSetRef.Add(setRef);
                             radElementDbContext.SaveChanges();
-                            return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is updated.", setId, elementId), HttpStatusCode.OK));
+
+                            transaction.Commit();
+                            return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = "RDE" + element.Id.ToString() }, HttpStatusCode.Created));
                         }
                     }
-                }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
+                    return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0}.", setId), HttpStatusCode.NotFound));
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
-            catch (Exception ex)
+        }
+
+        /// <summary>
+        /// Updates the set.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="elementId">The element identifier.</param>
+        /// <param name="dataElement">The data element.</param>
+        /// <returns></returns>
+        public async Task<JsonResult> UpdateElement(string setId, string elementId, CreateUpdateElement dataElement)
+        {
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                try
+                {
+                    if (IsValidSetId(setId) && IsValidElementId(elementId))
+                    {
+                        int id = Convert.ToInt32(setId.Remove(0, 4));
+                        int elemId = Convert.ToInt32(elementId.Remove(0, 3));
+
+                        if (dataElement == null)
+                        {
+                            return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
+                        }
+
+                        if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
+                        {
+                            if (dataElement.Options == null || dataElement.Options.Count == 0)
+                            {
+                                return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
+                            }
+                        }
+
+                        var elementSets = radElementDbContext.ElementSet.ToList();
+                        var elementSet = elementSets.Find(x => x.Id == id);
+
+                        if (elementSet != null)
+                        {
+                            var element = radElementDbContext.Element.ToList().Find(x => x.Id == elemId);
+                            if (element != null)
+                            {
+                                var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id);
+                                if (elementValues != null && elementValues.Any())
+                                {
+                                    radElementDbContext.ElementValue.RemoveRange(elementValues);
+                                }
+
+                                element.Name = dataElement.Name;
+                                element.ShortName = dataElement.ShortName ?? string.Empty;
+                                element.Definition = dataElement.Definition ?? string.Empty;
+                                element.ValueType = GetElementValueType(dataElement.ValueType);
+                                element.MinCardinality = 1;
+                                element.MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (uint)dataElement.Options.Count : (uint)1;
+                                element.Unit = dataElement.Unit ?? string.Empty;
+                                element.Question = dataElement.Question ?? dataElement.Name;
+                                element.Instructions = dataElement.Instructions ?? string.Empty;
+                                element.References = dataElement.References ?? string.Empty;
+                                element.Version = dataElement.Version ?? "";
+                                element.VersionDate = DateTime.Now;
+                                element.Synonyms = dataElement.Synonyms ?? string.Empty;
+                                element.Source = dataElement.Source ?? string.Empty;
+                                element.Status = "Proposed";
+                                element.StatusDate = DateTime.Now;
+                                element.Editor = dataElement.Editor ?? string.Empty;
+                                element.Modality = dataElement.Modality != null && dataElement.Modality.Any() ? string.Join(",", dataElement.Modality) : null;
+                                element.BiologicalSex = dataElement.BiologicalSex != null && dataElement.BiologicalSex.Any() ? string.Join(",", dataElement.BiologicalSex) : null;
+                                element.AgeLowerBound = dataElement.AgeLowerBound;
+                                element.AgeUpperBound = dataElement.AgeUpperBound;
+                                element.ValueSize = 0;
+
+                                if (dataElement.ValueType == DataElementType.Integer)
+                                {
+                                    element.ValueMin = dataElement.ValueMin;
+                                    element.ValueMax = dataElement.ValueMax;
+                                    element.StepValue = 1;
+                                }
+
+                                if (dataElement.ValueType == DataElementType.Numeric)
+                                {
+                                    float? minValue = null;
+                                    float? maxValue = null;
+
+                                    if (dataElement.ValueMin.HasValue)
+                                    {
+                                        minValue = Convert.ToSingle(dataElement.ValueMin.Value);
+                                    }
+
+                                    if (dataElement.ValueMax.HasValue)
+                                    {
+                                        maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
+                                    }
+
+                                    element.ValueMin = minValue;
+                                    element.ValueMax = maxValue;
+                                    element.StepValue = 0.1f;
+                                }
+
+                                if (dataElement.ValueType == DataElementType.MultiChoice || dataElement.ValueType == DataElementType.Choice)
+                                {
+                                    AddElementValues(dataElement.Options, element.Id);
+                                }
+
+                                radElementDbContext.SaveChanges();
+
+                                transaction.Commit();
+                                return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is updated.", setId, elementId), HttpStatusCode.OK));
+                            }
+                        }
+                    }
+
+                    return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
@@ -405,42 +409,48 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> DeleteElement(string setId, string elementId)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (IsValidSetId(setId) && IsValidElementId(elementId))
+                try
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    int elemId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var elementSetRefs = radElementDbContext.ElementSetRef.ToList();
-                    var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == id && x.ElementId == elemId);
-
-                    if (elementSetRef != null)
+                    if (IsValidSetId(setId) && IsValidElementId(elementId))
                     {
-                        var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == elementSetRef.ElementId);
-                        var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
+                        int id = Convert.ToInt32(setId.Remove(0, 4));
+                        int elemId = Convert.ToInt32(elementId.Remove(0, 3));
+                        var elementSetRefs = radElementDbContext.ElementSetRef.ToList();
+                        var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == id && x.ElementId == elemId);
 
-                        if (elementValues != null && elementValues.Any())
+                        if (elementSetRef != null)
                         {
-                            radElementDbContext.ElementValue.RemoveRange(elementValues);
-                        }
+                            var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == elementSetRef.ElementId);
+                            var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
 
-                        if (element != null)
-                        {
-                            radElementDbContext.Element.Remove(element);
-                        }
+                            if (elementValues != null && elementValues.Any())
+                            {
+                                radElementDbContext.ElementValue.RemoveRange(elementValues);
+                            }
 
-                        radElementDbContext.ElementSetRef.Remove(elementSetRef);
-                        radElementDbContext.SaveChanges();
-                        return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is deleted.", setId, elementId), HttpStatusCode.OK));
+                            if (element != null)
+                            {
+                                radElementDbContext.Element.Remove(element);
+                            }
+
+                            radElementDbContext.ElementSetRef.Remove(elementSetRef);
+                            radElementDbContext.SaveChanges();
+
+                            transaction.Commit();
+                            return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is deleted.", setId, elementId), HttpStatusCode.OK));
+                        }
                     }
+                    return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
                 }
-                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
@@ -463,6 +473,7 @@ namespace RadElement.Service
                 };
 
                 radElementDbContext.ElementValue.Add(elementvalue);
+                radElementDbContext.SaveChanges();
             }
         }
 
@@ -477,8 +488,7 @@ namespace RadElement.Service
         {
             if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
             {
-                int id;
-                bool result = int.TryParse(elementId.Remove(0, 3), out id);
+                bool result = int.TryParse(elementId.Remove(0, 3), out _);
                 return result;
             }
 
@@ -496,8 +506,7 @@ namespace RadElement.Service
         {
             if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.InvariantCulture))
             {
-                int id;
-                bool result = int.TryParse(setId.Remove(0, 4), out id);
+                bool result = int.TryParse(setId.Remove(0, 4), out _);
                 return result;
             }
 
@@ -567,28 +576,32 @@ namespace RadElement.Service
             {
                 Id = element.Id,
                 ElementId = "RDE" + element.Id,
-                Definition = element.Definition,
-                Editor = element.Editor,
-                Instructions = element.Instructions,
-                MaxCardinality = element.MaxCardinality,
-                MinCardinality = element.MinCardinality,
                 Name = element.Name,
-                Question = element.Question,
-                References = element.References,
                 ShortName = element.ShortName,
+                Definition = element.Definition,
+                ValueType = element.ValueType,
+                ValueSize = element.ValueSize,
+                ValueMin = element.ValueMin,
+                ValueMax = element.ValueMax,
+                StepValue = element.StepValue,
+                MinCardinality = element.MinCardinality,
+                MaxCardinality = element.MaxCardinality,
+                Unit = element.Unit,
+                Question = element.Question,
+                Instructions = element.Instructions,
+                References = element.References,
+                Version = element.Version,
+                VersionDate = element.VersionDate,
+                Synonyms = element.Synonyms,
                 Source = element.Source,
                 Status = element.Status,
                 StatusDate = element.StatusDate,
-                StepValue = element.StepValue,
-                Synonyms = element.Synonyms,
-                Unit = element.Unit,
-                ValueMax = element.ValueMax,
-                ValueMin = element.ValueMin,
-                ValueSize = element.ValueSize,
-                ValueType = element.ValueType,
-                Version = element.Version,
-                VersionDate = element.VersionDate,
-                ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id) : null
+                Editor = element.Editor,
+                Modality = element.Modality,
+                BiologicalSex = element.BiologicalSex,
+                AgeLowerBound = element.AgeLowerBound,
+                AgeUpperBound = element.AgeUpperBound,
+                ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id) : null,
             };
         }
     }

@@ -71,6 +71,7 @@ namespace RadElement.API
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
+
             var authConfig = Configuration.GetSection("AuthorizationConfig").Get<AuthorizationConfig>();
             var accountsConfig = Configuration.GetSection("AccountsConfig").Get<UserAccounts>();
 
