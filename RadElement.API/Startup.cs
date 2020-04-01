@@ -146,10 +146,10 @@ namespace RadElement.API
             services.AddSingleton<AuthorizationConfig>(authConfig);
             services.AddSingleton<UserAccounts>(accountsConfig);
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddScoped<IRadElementDbContext, RadElementDbContext>();
             services.AddTransient<IConfigurationManager, ConfigurationManager>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementSetService, ElementSetService>();
-            services.AddTransient<IRadElementDbContext, RadElementDbContext>();
             services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();
             services.AddSingleton<ILogger>(Log.Logger);
 

@@ -169,6 +169,7 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> CreateElement(string setId, CreateUpdateElement dataElement)
         {
+            int elementId = 0;
             try
             {
                 if (IsValidSetId(setId))
@@ -187,7 +188,6 @@ namespace RadElement.Service
                         }
                     }
 
-                    int elementId = 0;
                     var elementSets = radElementDbContext.ElementSet.ToList();
                     var elementSet = elementSets.Find(x => x.Id == id);
 
@@ -272,6 +272,11 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
+                if (elementId != 0)
+                {
+                    var response = DeleteElement(setId, "RDE" + elementId.ToString());
+                }
+
                 logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
