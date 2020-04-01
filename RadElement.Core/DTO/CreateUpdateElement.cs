@@ -29,7 +29,7 @@ namespace RadElement.Core.DTO
         /// Gets or sets the type of the value.
         /// </summary>
         [Required]
-        public DataElementType ValueType { get; set; }
+        public DataElementType? ValueType { get; set; }
 
         /// <summary>
         /// Gets or sets the value minimum.

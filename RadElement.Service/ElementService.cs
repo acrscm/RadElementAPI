@@ -191,7 +191,7 @@ namespace RadElement.Service
                     var elementSets = radElementDbContext.ElementSet.ToList();
                     var elementSet = elementSets.Find(x => x.Id == id);
 
-                    if (elementSet != null && dataElement.ValueType != DataElementType.Global)
+                    if (elementSet != null)
                     {
                         Element element = new Element()
                         {
@@ -520,7 +520,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        private string GetElementValueType(DataElementType type)
+        private string GetElementValueType(DataElementType? type)
         {
             var valueType = string.Empty;
 

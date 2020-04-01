@@ -36,11 +36,6 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Data Element Type is String
         /// </summary>
-        String,
-
-        /// <summary>
-        /// Data Element Type is Global
-        /// </summary>
-        Global,
+        String
     }
 }
