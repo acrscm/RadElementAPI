@@ -22,7 +22,6 @@ namespace RadElement.Service.Tests
         private const string setNotFoundMessageWithSearchMessage = "No such set with keyword '{0}'.";
         private const string setInvalidMessage = "Element set is invalid";
         private const string invalidSearchMessage = "Keyword '{0}' given is invalid";
-        private const string setIdInvalidMessage = "No such element with set id {0}.";
         private const string setUpdatedMessage = "Set with id {0} is updated.";
         private const string setDeletedMessage = "Set with id {0} is deleted.";
 

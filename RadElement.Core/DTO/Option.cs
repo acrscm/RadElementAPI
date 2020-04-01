@@ -21,11 +21,6 @@
         public string Definition { get; set; }
 
         /// <summary>
-        /// Gets or sets the report text
-        /// </summary>
-        public string ReportText { get; set; }
-
-        /// <summary>
         /// Gets or sets the images.
         /// </summary>
         public string Images { get; set; }

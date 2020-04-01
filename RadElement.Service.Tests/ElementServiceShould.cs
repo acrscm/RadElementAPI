@@ -23,7 +23,6 @@ namespace RadElement.Service.Tests
         private const string elementNotFoundMessageWithSearchMessage = "No such element with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword '{0}' given is invalid";
         private const string dataElementInvalidMessage = "Dataelement fields are invalid in request";
-        private const string labelInvalidMessage = "'Label' field is missing in request";
         private const string choiceInvalidMessage = "'Options' field is missing for Choice type elements in request";
         private const string elemenIdandSetIdInvalidMessage = "No such element with set id {0} and element id {1}.";
         private const string setIdInvalidMessage = "No such element with set id {0}.";
@@ -306,9 +305,9 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1" },
-                        new Option { Name = "value2", Value = "2" },
-                        new Option { Name = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
+                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
+                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
                     }
                 );
             }
@@ -350,9 +349,9 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1" },
-                        new Option { Name = "value2", Value = "2" },
-                        new Option { Name = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
+                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
+                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
                     }
                 );
             }
@@ -454,9 +453,9 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1" },
-                        new Option { Name = "value2", Value = "2" },
-                        new Option { Name = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
+                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
+                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
                     }
                 );
             }
@@ -498,9 +497,9 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1" },
-                        new Option { Name = "value2", Value = "2" },
-                        new Option { Name = "value3", Value = "3" }
+                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
+                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
+                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
                     }
                 );
             }
