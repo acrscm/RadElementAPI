@@ -201,12 +201,6 @@
             </summary>
             <returns>Returns "Hello World" </returns>
         </member>
-        <member name="M:RadElement.API.Controllers.HelloWorldController.PostHelloWorldWithRoute">
-            <summary>
-            Method used to check if service is running
-            </summary>
-            <returns>Returns "Hello World" </returns>
-        </member>
         <member name="T:RadElement.API.Filters.AuthorizationHeaderOperationFilter">
             <summary>
             Provides the filter for authorization headers
