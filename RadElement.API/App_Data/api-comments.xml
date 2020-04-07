@@ -96,7 +96,7 @@
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.SearchElement(System.String)">
+        <member name="M:RadElement.API.Controllers.ElementController.SearchElement(RadElement.Core.DTO.SearchKeyword)">
             <summary>
             Searches the element with provided keyword.
             </summary>
