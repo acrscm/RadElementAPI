@@ -139,27 +139,20 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchElement(string searchKeyword)
+        public async Task<JsonResult> SearchElement(SearchKeyword searchKeyword)
         {
             try
             {
-                if (!string.IsNullOrEmpty(searchKeyword))
+                var elements = radElementDbContext.Element.ToList();
+                var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.Keyword.ToLower()) ||
+                                                           x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
+                if (filteredElements != null && filteredElements.Any())
                 {
-                    var elements = radElementDbContext.Element.ToList();
-                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
-                                                               x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
-                    if (filteredElements != null && filteredElements.Any())
-                    {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements), HttpStatusCode.OK));
-                    }
-                    else
-                    {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
-                    }
+                    return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements), HttpStatusCode.OK));
                 }
                 else
                 {
-                    return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest));
+                    return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                 }
             }
             catch (Exception ex)
