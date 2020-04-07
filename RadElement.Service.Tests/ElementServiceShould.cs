@@ -38,7 +38,6 @@ namespace RadElement.Service.Tests
         private const string elementNotFoundMessage = "No such element with id '{0}'";
         private const string elementSetIdNotFoundMessage = "No such elements with set id '{0}'.";
         private const string elementNotFoundMessageWithSearchMessage = "No such element with keyword '{0}'.";
-        private const string invalidSearchMessage = "Keyword '{0}' given is invalid";
         private const string dataElementInvalidMessage = "Dataelement fields are invalid in request";
         private const string labelInvalidMessage = "'Label' field is missing in request";
         private const string choiceInvalidMessage = "'Options' field is missing for Choice type elements in request";
@@ -182,22 +181,7 @@ namespace RadElement.Service.Tests
         #endregion
 
         #region SearchElement
-
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public async void SearchElementShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
-        {
-            IntializeMockData();
-            var result = await service.SearchElement(new SearchKeyword { Keyword = searchKeyword });
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(string.Format(invalidSearchMessage, searchKeyword), result.Value);
-        }
-
+        
         [Theory]
         [InlineData("test")]
         [InlineData("test1")]

@@ -152,7 +152,7 @@ namespace RadElement.Service
                 }
                 else
                 {
-                    return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
+                    return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword.Keyword), HttpStatusCode.NotFound));
                 }
             }
             catch (Exception ex)
