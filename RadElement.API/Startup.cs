@@ -27,6 +27,7 @@ using RadElement.Infrastructure;
 using RadElement.Service;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
+using AutoMapper;
 
 namespace RadElement.API
 {   
@@ -110,6 +111,7 @@ namespace RadElement.API
                  }
             );
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddDbContext<RadElementDbContext>(options => options.UseMySql(Configuration.GetConnectionString("Database")));
 
             services.AddHsts(options =>
