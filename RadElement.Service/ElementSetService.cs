@@ -58,7 +58,7 @@ namespace RadElement.Service
             try
             {
                 var sets = radElementDbContext.ElementSet.ToList();
-                return await Task.FromResult(new JsonResult(GetElementSetDetailsArrayDto(sets), HttpStatusCode.OK));
+                return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -113,7 +113,7 @@ namespace RadElement.Service
                                                                                   x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (sets != null && sets.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementSetDetailsArrayDto(sets), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
                     }
                     else
                     {
@@ -287,27 +287,18 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="sets">The sets.</param>
         /// <returns></returns>
-        private List<ElementSetDetails> GetElementSetDetailsArrayDto(List<ElementSet> sets)
+        private object GetElementSetDetailsDto(object value)
         {
-            List<ElementSetDetails> setDetails = new List<ElementSetDetails>();
-            foreach (var set in sets)
+            if (value.GetType() == typeof(List<ElementSet>))
             {
-                setDetails.Add(GetElementSetDetailsDto(set));
+                return mapper.Map<List<ElementSet>, List<ElementSetDetails>>(value as List<ElementSet>);
+            }
+            else if(value.GetType() == typeof(ElementSet))
+            {
+                return mapper.Map<ElementSetDetails>(value as ElementSet);
             }
 
-            return setDetails;
-        }
-
-        /// <summary>
-        /// Gets the element set details dto.
-        /// </summary>
-        /// <param name="set">The set.</param>
-        /// <returns></returns>
-        private ElementSetDetails GetElementSetDetailsDto(ElementSet set)
-        {
-            var setDetails = mapper.Map<ElementSetDetails>(set);
-            setDetails.SetId = string.Concat("RDES", set.Id);
-            return setDetails;
+            return null;
         }
     }
 }

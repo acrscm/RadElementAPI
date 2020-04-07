@@ -58,7 +58,7 @@ namespace RadElement.Service
             try
             {
                 var elements = radElementDbContext.Element.ToList();
-                return await Task.FromResult(new JsonResult(GetElementDetailsArrayDto(elements), HttpStatusCode.OK));
+                return await Task.FromResult(new JsonResult(GetElementDetailsDto(elements), HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace RadElement.Service
 
                     if (selectedElements != null && selectedElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsArrayDto(selectedElements.ToList()), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(selectedElements.ToList()), HttpStatusCode.OK));
                     }
                 }
                 return await Task.FromResult(new JsonResult(string.Format("No such elements with set id '{0}'.", setId), HttpStatusCode.NotFound));
@@ -146,11 +146,11 @@ namespace RadElement.Service
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var elements = radElementDbContext.Element.ToList();
-                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) || 
+                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
                                                                x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsArrayDto(filteredElements), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements), HttpStatusCode.OK));
                     }
                     else
                     {
@@ -280,7 +280,7 @@ namespace RadElement.Service
                             {
                                 element.ValueType = "string";
                             }
-                            
+
                             radElementDbContext.Element.Add(element);
                             radElementDbContext.SaveChanges();
 
@@ -561,32 +561,31 @@ namespace RadElement.Service
         }
 
         /// <summary>
-        /// Gets the element details array dto.
-        /// </summary>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        private List<ElementDetails> GetElementDetailsArrayDto(List<Element> elements)
-        {
-            List<ElementDetails> elementDetails = new List<ElementDetails>();
-            foreach (var element in elements)
-            {
-                elementDetails.Add(GetElementDetailsDto(element));
-            }
-
-            return elementDetails;
-        }
-
-        /// <summary>
         /// Gets the element details dto.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns></returns>
-        private ElementDetails GetElementDetailsDto(Element element)
+        private object GetElementDetailsDto(object element)
         {
-            var elementDetails = mapper.Map<ElementDetails>(element);
-            elementDetails.ElementId = string.Concat("RDE" + element.Id);
-            elementDetails.ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id).ToList() : null;
-            return elementDetails;
+            if (element.GetType() == typeof(List<Element>))
+            {
+                var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
+                elements.ForEach(element =>
+                {
+                    element.ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id).ToList() : null;
+                });
+
+                return elements;
+            }
+            else if (element.GetType() == typeof(Element))
+            {
+                var elementDetails = mapper.Map<ElementDetails>(element as Element);
+                elementDetails.ElementValues = elementDetails.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == (element as Element).Id).ToList() : null;
+
+                return elementDetails;
+            }
+
+            return null;
         }
     }
 }
