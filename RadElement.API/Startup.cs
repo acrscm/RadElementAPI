@@ -26,6 +26,7 @@ using RadElement.Infrastructure;
 using RadElement.Service;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
+using AutoMapper;
 
 namespace RadElement.API
 {   
@@ -107,7 +108,7 @@ namespace RadElement.API
                      config.Filters.Add(new RequireHttpsAttribute());
                  }
             );
-
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddDbContext<RadElementDbContext>(options => options.UseMySql(Configuration.GetConnectionString("Database")));
 
             services.AddHsts(options =>
@@ -148,7 +149,7 @@ namespace RadElement.API
             services.AddTransient<IConfigurationManager, ConfigurationManager>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementSetService, ElementSetService>();
-            services.AddTransient<IRadElementDbContext, RadElementDbContext>();
+            services.AddScoped<IRadElementDbContext, RadElementDbContext>();
             services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();
             services.AddSingleton<ILogger>(Log.Logger);
 

@@ -8,6 +8,7 @@ using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using System.Net;
 using Serilog;
+using AutoMapper;
 
 namespace RadElement.Service
 {
@@ -17,17 +18,34 @@ namespace RadElement.Service
     /// <seealso cref="RadElement.Core.Services.IElementService" />
     public class ElementService : IElementService
     {
+        /// <summary>
+        /// The RAD element database context
+        /// </summary>
         private IRadElementDbContext radElementDbContext;
+
+        /// <summary>
+        /// The mapper
+        /// </summary>
+        private readonly IMapper mapper;
+
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
-        public ElementService(IRadElementDbContext radElementDbContext, ILogger logger)
+        public ElementService(
+            IRadElementDbContext radElementDbContext,
+            IMapper mapper,
+            ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
+            this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -94,7 +112,7 @@ namespace RadElement.Service
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
                     var setRefs = radElementDbContext.ElementSetRef.ToList();
-                    var elementIds = setRefs.FindAll(x => x.ElementSetId == id);
+                    var elementIds = setRefs.Where(x => x.ElementSetId == id);
                     var elements = radElementDbContext.Element.ToList();
 
                     var selectedElements = from elemetId in elementIds
@@ -128,20 +146,11 @@ namespace RadElement.Service
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var elements = radElementDbContext.Element.ToList();
-                    var elems = GetElementDetailsArrayDto(elements);
-                    var filteredElements = elems.FindAll(x => x.ElementId.ToString().ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Definition.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Editor.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Instructions.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Name.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Question.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.References.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.ShortName.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Source.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                            x.Synonyms.ToLower().Contains(searchKeyword.ToLower()));
+                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) || 
+                                                               x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(filteredElements, HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementDetailsArrayDto(filteredElements), HttpStatusCode.OK));
                     }
                     else
                     {
@@ -271,12 +280,7 @@ namespace RadElement.Service
                             {
                                 element.ValueType = "string";
                             }
-
-                            //if (elementType == DataElementType.Duration)
-                            //{
-                            //    element.ValueType = "string";
-                            //}
-
+                            
                             radElementDbContext.Element.Add(element);
                             radElementDbContext.SaveChanges();
 
@@ -352,7 +356,7 @@ namespace RadElement.Service
                         var element = radElementDbContext.Element.ToList().Find(x => x.Id == elemId);
                         if (element != null)
                         {
-                            var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id);
+                            var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id);
                             if (elementValues != null && elementValues.Any())
                             {
                                 radElementDbContext.ElementValue.RemoveRange(elementValues);
@@ -428,11 +432,6 @@ namespace RadElement.Service
                                 element.ValueType = "string";
                             }
 
-                            //if (elementType == DataElementType.Duration)
-                            //{
-                            //    element.ValueType = "string";
-                            //}
-
                             if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
                             {
                                 AddElementValues(dataElement.Options, element.Id);
@@ -473,7 +472,7 @@ namespace RadElement.Service
 
                     if (elementSetRef != null)
                     {
-                        var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == elementSetRef.ElementId);
+                        var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == elementSetRef.ElementId);
                         var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
 
                         if (elementValues != null && elementValues.Any())
@@ -532,7 +531,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidElementId(string elementId)
         {
-            if (elementId.Length > 3 && elementId.Substring(0, 3) == "RDE")
+            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
             {
                 int id;
                 bool result = Int32.TryParse(elementId.Remove(0, 3), out id);
@@ -551,7 +550,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidSetId(string setId)
         {
-            if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
             {
                 int id;
                 bool result = Int32.TryParse(setId.Remove(0, 4), out id);
@@ -584,33 +583,10 @@ namespace RadElement.Service
         /// <returns></returns>
         private ElementDetails GetElementDetailsDto(Element element)
         {
-            return new ElementDetails()
-            {
-                Id = element.Id,
-                ElementId = "RDE" + element.Id,
-                Definition = element.Definition,
-                Editor = element.Editor,
-                Instructions = element.Instructions,
-                MaxCardinality = element.MaxCardinality,
-                MinCardinality = element.MinCardinality,
-                Name = element.Name,
-                Question = element.Question,
-                References = element.References,
-                ShortName = element.ShortName,
-                Source = element.Source,
-                Status = element.Status,
-                StatusDate = element.StatusDate,
-                StepValue = element.StepValue,
-                Synonyms = element.Synonyms,
-                Unit = element.Unit,
-                ValueMax = element.ValueMax,
-                ValueMin = element.ValueMin,
-                ValueSize = element.ValueSize,
-                ValueType = element.ValueType,
-                Version = element.Version,
-                VersionDate = element.VersionDate,
-                ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == element.Id) : null
-            };
+            var elementDetails = mapper.Map<ElementDetails>(element);
+            elementDetails.ElementId = string.Concat("RDE" + element.Id);
+            elementDetails.ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id).ToList() : null;
+            return elementDetails;
         }
     }
 }

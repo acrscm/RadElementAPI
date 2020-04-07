@@ -1,4 +1,5 @@
-﻿using RadElement.Core.Data;
+﻿using AutoMapper;
+using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
@@ -23,6 +24,11 @@ namespace RadElement.Service
         private IRadElementDbContext radElementDbContext;
 
         /// <summary>
+        /// The mapper
+        /// </summary>
+        private readonly IMapper mapper;
+
+        /// <summary>
         /// The logger
         /// </summary>
         private readonly ILogger logger;
@@ -31,10 +37,15 @@ namespace RadElement.Service
         /// Initializes a new instance of the <see cref="ElementSetService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
-        public ElementSetService(IRadElementDbContext radElementDbContext, ILogger logger)
+        public ElementSetService(
+            IRadElementDbContext radElementDbContext,
+            IMapper mapper,
+            ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
+            this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -98,15 +109,11 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = radElementDbContext.ElementSet.ToList();
-                    var elementSets = GetElementSetDetailsArrayDto(sets);
-                    var filteredSets = elementSets.FindAll(x => x.SetId.ToString().ToLower().Contains(searchKeyword.ToLower()) || 
-                                                    x.Name.ToLower().Contains(searchKeyword.ToLower()) || 
-                                                    x.Description.ToLower().Contains(searchKeyword.ToLower()) ||
-                                                    x.ContactName.ToLower().Contains(searchKeyword.ToLower())); ;
-                    if (filteredSets != null && filteredSets.Any())
+                    var sets = radElementDbContext.ElementSet.ToList().Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
+                                                                                  x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    if (sets != null && sets.Any())
                     {
-                        return await Task.FromResult(new JsonResult(filteredSets, HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementSetDetailsArrayDto(sets), HttpStatusCode.OK));
                     }
                     else
                     {
@@ -219,13 +226,13 @@ namespace RadElement.Service
 
                     if (elementSet != null)
                     {
-                        var elementSetRefs = radElementDbContext.ElementSetRef.ToList().FindAll(x => x.ElementSetId == elementSet.Id);
+                        var elementSetRefs = radElementDbContext.ElementSetRef.ToList().Where(x => x.ElementSetId == elementSet.Id);
                         if (elementSetRefs != null && elementSetRefs.Any())
                         {
                             foreach (var setref in elementSetRefs)
                             {
-                                var elementValues = radElementDbContext.ElementValue.ToList().FindAll(x => x.ElementId == setref.ElementId);
-                                var elements = radElementDbContext.Element.ToList().FindAll(x => x.Id == setref.ElementId);
+                                var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == setref.ElementId);
+                                var elements = radElementDbContext.Element.ToList().Where(x => x.Id == setref.ElementId);
 
                                 if (elementValues != null && elementValues.Any())
                                 {
@@ -265,7 +272,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidSetId(string setId)
         {
-            if (setId.Length > 4 && setId.Substring(0, 4) == "RDES")
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
             {
                 int id;
                 bool result = Int32.TryParse(setId.Remove(0, 4), out id);
@@ -298,16 +305,9 @@ namespace RadElement.Service
         /// <returns></returns>
         private ElementSetDetails GetElementSetDetailsDto(ElementSet set)
         {
-            return new ElementSetDetails()
-            {
-                Id = set.Id,
-                SetId = "RDES" + set.Id,
-                ContactName = set.ContactName,
-                Description = set.Description,
-                Name = set.Name,
-                ParentId = set.ParentId,
-                Status = set.Status
-            };
+            var setDetails = mapper.Map<ElementSetDetails>(set);
+            setDetails.SetId = string.Concat("RDES", set.Id);
+            return setDetails;
         }
     }
 }
