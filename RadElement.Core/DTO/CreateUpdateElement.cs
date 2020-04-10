@@ -8,11 +8,11 @@ namespace RadElement.Core.DTO
     public class CreateUpdateElement
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets or sets the identifier.
         /// </summary>
         [Required]
         [MaxLength(255)]
-        public string Name { get; set; }
+        public string Label { get; set; }
 
         /// <summary>
         /// Gets or sets the short name.

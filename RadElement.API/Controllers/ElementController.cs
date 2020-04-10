@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -89,6 +88,19 @@ namespace RadElement.API.Controllers
         public async Task<IActionResult> CreateElement(string setId, [FromBody]CreateUpdateElement content)
         {
             var result = await radElementService.CreateElement(setId, content);
+            return StatusCode((int)result.Code, result.Value);
+        }
+
+        /// <summary>
+        /// Creates the element.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        [HttpPost("sets/{setId}/elements/{elementId}")]
+        public async Task<IActionResult> CreateElement(string setId, string elementId)
+        {
+            var result = await radElementService.CreateElement(setId, elementId);
             return StatusCode((int)result.Code, result.Value);
         }
 

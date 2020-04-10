@@ -79,9 +79,9 @@ namespace RadElement.Service
             {
                 if (IsValidElementId(elementId))
                 {
-                    int id = Convert.ToInt32(elementId.Remove(0, 3));
+                    int setInternalId = Convert.ToInt32(elementId.Remove(0, 3));
                     var elements = radElementDbContext.Element.ToList();
-                    var element = elements.Find(x => x.Id == id);
+                    var element = elements.Find(x => x.Id == setInternalId);
 
                     if (element != null)
                     {
@@ -89,7 +89,7 @@ namespace RadElement.Service
                     }
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such element with id '{0}'", elementId), HttpStatusCode.NotFound));
+                return await Task.FromResult(new JsonResult(string.Format("No such element with id '{0}'.", elementId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
@@ -110,9 +110,9 @@ namespace RadElement.Service
             {
                 if (IsValidSetId(setId))
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
+                    int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
                     var setRefs = radElementDbContext.ElementSetRef.ToList();
-                    var elementIds = setRefs.Where(x => x.ElementSetId == id);
+                    var elementIds = setRefs.Where(x => x.ElementSetId == setInternalId);
                     var elements = radElementDbContext.Element.ToList();
 
                     var selectedElements = from elemetId in elementIds
@@ -175,7 +175,7 @@ namespace RadElement.Service
             {
                 if (IsValidSetId(setId))
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
+                    int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
                     if (dataElement == null)
                     {
                         return await Task.FromResult(new JsonResult("Dataelement fields are invalid in request", HttpStatusCode.BadRequest));
@@ -190,20 +190,20 @@ namespace RadElement.Service
                     }
 
                     var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == id);
+                    var elementSet = elementSets.Find(x => x.Id == setInternalId);
 
                     if (elementSet != null)
                     {
                         Element element = new Element()
                         {
-                            Name = dataElement.Name,
+                            Name = dataElement.Label,
                             ShortName = dataElement.ShortName ?? string.Empty,
                             Definition = dataElement.Definition ?? string.Empty,
                             ValueType = GetElementValueType(dataElement.ValueType),
                             MinCardinality = 1,
                             MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (uint)dataElement.Options.Count : (uint)1,
                             Unit = dataElement.Unit ?? string.Empty,
-                            Question = dataElement.Question ?? dataElement.Name,
+                            Question = dataElement.Question ?? dataElement.Label,
                             Instructions = dataElement.Instructions ?? string.Empty,
                             References = dataElement.References ?? string.Empty,
                             Version = dataElement.Version ?? "",
@@ -257,7 +257,7 @@ namespace RadElement.Service
 
                         ElementSetRef setRef = new ElementSetRef()
                         {
-                            ElementSetId = id,
+                            ElementSetId = setInternalId,
                             ElementId = (int)element.Id
                         };
 
@@ -269,6 +269,59 @@ namespace RadElement.Service
                 }
 
                 return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0}.", setId), HttpStatusCode.NotFound));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
+        /// Creates the element.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        public async Task<JsonResult> CreateElement(string setId, string elementId)
+        {
+            try
+            {
+                if (IsValidSetId(setId))
+                {
+                    int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
+                    var elementSets = radElementDbContext.ElementSet.ToList();
+                    var elementSet = elementSets.Find(x => x.Id == setInternalId);
+
+                    if (elementSet != null)
+                    {
+                        if (IsValidElementId(elementId))
+                        {
+                            int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
+                            var elements = radElementDbContext.Element.ToList();
+                            var element = elements.Find(x => x.Id == elementInternalId);
+
+                            if (element != null)
+                            {
+                                ElementSetRef setRef = new ElementSetRef()
+                                {
+                                    ElementSetId = setInternalId,
+                                    ElementId = elementInternalId
+                                };
+
+                                radElementDbContext.ElementSetRef.Add(setRef);
+                                radElementDbContext.SaveChanges();
+
+                                return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is mapped.", setId, elementId), HttpStatusCode.Created));
+                            }
+                        }
+
+                        return await Task.FromResult(new JsonResult(string.Format("No such element with id '{0}'.", elementId), HttpStatusCode.NotFound));
+                    }
+                }
+
+                return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
@@ -291,8 +344,8 @@ namespace RadElement.Service
             {
                 if (IsValidSetId(setId) && IsValidElementId(elementId))
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    int elemId = Convert.ToInt32(elementId.Remove(0, 3));
+                    int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
+                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
 
                     if (dataElement == null)
                     {
@@ -308,11 +361,11 @@ namespace RadElement.Service
                     }
 
                     var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == id);
+                    var elementSet = elementSets.Find(x => x.Id == setInternalId);
 
                     if (elementSet != null)
                     {
-                        var element = radElementDbContext.Element.ToList().Find(x => x.Id == elemId);
+                        var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementInternalId);
                         if (element != null)
                         {
                             var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id);
@@ -321,14 +374,14 @@ namespace RadElement.Service
                                 radElementDbContext.ElementValue.RemoveRange(elementValues);
                             }
 
-                            element.Name = dataElement.Name;
+                            element.Name = dataElement.Label;
                             element.ShortName = dataElement.ShortName ?? string.Empty;
                             element.Definition = dataElement.Definition ?? string.Empty;
                             element.ValueType = GetElementValueType(dataElement.ValueType);
                             element.MinCardinality = 1;
                             element.MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (uint)dataElement.Options.Count : (uint)1;
                             element.Unit = dataElement.Unit ?? string.Empty;
-                            element.Question = dataElement.Question ?? dataElement.Name;
+                            element.Question = dataElement.Question ?? dataElement.Label;
                             element.Instructions = dataElement.Instructions ?? string.Empty;
                             element.References = dataElement.References ?? string.Empty;
                             element.Version = dataElement.Version ?? "";
@@ -405,10 +458,10 @@ namespace RadElement.Service
             {
                 if (IsValidSetId(setId) && IsValidElementId(elementId))
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    int elemId = Convert.ToInt32(elementId.Remove(0, 3));
+                    int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
+                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
                     var elementSetRefs = radElementDbContext.ElementSetRef.ToList();
-                    var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == id && x.ElementId == elemId);
+                    var elementSetRef = elementSetRefs.Find(x => x.ElementSetId == setInternalId && x.ElementId == elementInternalId);
 
                     if (elementSetRef != null)
                     {

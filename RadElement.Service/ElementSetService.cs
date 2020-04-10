@@ -149,7 +149,7 @@ namespace RadElement.Service
 
                 ElementSet set = new ElementSet()
                 {
-                    Name = content.Name.Trim(),
+                    Name = content.ModuleName.Trim(),
                     Description = content.Description,
                     ContactName = content.ContactName,
                     ParentId = content.ParentId,
@@ -199,7 +199,7 @@ namespace RadElement.Service
 
                     if (elementSet != null)
                     {
-                        elementSet.Name = content.Name.Trim();
+                        elementSet.Name = content.ModuleName.Trim();
                         elementSet.Description = content.Description;
                         elementSet.ContactName = content.ContactName;
                         elementSet.ParentId = content.ParentId;

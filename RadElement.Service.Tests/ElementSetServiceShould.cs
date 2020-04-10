@@ -214,7 +214,7 @@ namespace RadElement.Service.Tests
         public async void CreateSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.Name = moduleName;
+            set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -232,7 +232,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var set = new CreateUpdateSet();
-            set.Name = moduleName;
+            set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -268,7 +268,7 @@ namespace RadElement.Service.Tests
         public async void UpdateSetShouldThrowInternalServerErrorForExceptions(string setId, string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.Name = moduleName;
+            set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -286,7 +286,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var set = new CreateUpdateSet();
-            set.Name = moduleName;
+            set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 

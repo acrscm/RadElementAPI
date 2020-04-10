@@ -111,6 +111,14 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
+        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,System.String)">
+            <summary>
+            Creates the element.
+            </summary>
+            <param name="setId">The set identifier.</param>
+            <param name="elementId">The element identifier.</param>
+            <returns></returns>
+        </member>
         <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.String,System.String,RadElement.Core.DTO.CreateUpdateElement)">
             <summary>
             Updates the element based on set identifier and element identifier.

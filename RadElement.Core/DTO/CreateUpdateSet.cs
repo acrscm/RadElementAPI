@@ -6,10 +6,10 @@ namespace RadElement.Core.DTO
     public class CreateUpdateSet
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets or sets the module name.
         /// </summary>
         [Required]
-        public string Name { get; set; }
+        public string ModuleName { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
