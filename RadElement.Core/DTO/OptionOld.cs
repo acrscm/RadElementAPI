@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RadElement.Core.Domain
+﻿namespace RadElement.Core.DTO
 {
     /// <summary>
     /// Represents the option
     /// </summary>
-    public class Option
+    public class OptionOld
     {
         /// <summary>
         /// Gets or sets the label

@@ -30,6 +30,7 @@ namespace RadElement.Service.Tests
         /// The mock logger
         /// </summary>
         private readonly Mock<ILogger> mockLogger;
+
         /// <summary>
         /// The mapper
         /// </summary>
@@ -37,11 +38,10 @@ namespace RadElement.Service.Tests
 
         private const string setNotFoundMessage = "No such set with id '{0}'.";
         private const string setNotFoundMessageWithSearchMessage = "No such set with keyword '{0}'.";
-        private const string setInvalidMessage = "Element set is invalid";
-        private const string invalidSearchMessage = "Keyword '{0}' given is invalid";
-        private const string setIdInvalidMessage = "No such element with set id {0}.";
-        private const string setUpdatedMessage = "Set with id {0} is updated.";
-        private const string setDeletedMessage = "Set with id {0} is deleted.";
+        private const string setInvalidMessage = "Set fileds are invalid.";
+        private const string invalidSearchMessage = "Keyword '{0}' given is invalid.";
+        private const string setUpdatedMessage = "Set with id '{0}' is updated.";
+        private const string setDeletedMessage = "Set with id '{0}' is deleted.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementSetServiceShould"/> class.
@@ -67,7 +67,7 @@ namespace RadElement.Service.Tests
         public async void GetSetsShouldThrowInternalServerErrorForExceptions()
         {
             var result = await service.GetSets();
-
+            
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
@@ -163,7 +163,7 @@ namespace RadElement.Service.Tests
             Assert.Equal(HttpStatusCode.NotFound, result.Code);
             Assert.Equal(string.Format(setNotFoundMessageWithSearchMessage, searchKeyword), result.Value);
         }
-
+    
         [Theory]
         [InlineData("Pulmonary")]
         [InlineData("Kimberly")]
@@ -199,26 +199,6 @@ namespace RadElement.Service.Tests
         public async void CreateSetShouldReturnBadRequestIfSetIsInvalid(CreateUpdateSet set)
         {
             IntializeMockData();
-            var result = await service.CreateSet(set);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(setInvalidMessage, result.Value);
-        }
-
-        [Theory]
-        [InlineData(null, null, null)]
-        [InlineData("", "", "")]
-        public async void CreateSetShouldReturnBadRequestIfSetContentsAreInvalid(string moduleName, string contactName, string description)
-        {
-            IntializeMockData();
-            var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-
             var result = await service.CreateSet(set);
 
             Assert.NotNull(result);
@@ -280,26 +260,6 @@ namespace RadElement.Service.Tests
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(setInvalidMessage, result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDES1", "Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("RDES2", "Sinus1", "Sinus2", "Sinus3")]
-        public async void UpdateSetShouldReturnBadRequestIfSetContentsAreInvalid(string setId, string moduleName, string contactName, string description)
-        {
-            IntializeMockData();
-            var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-
-            var result = await service.UpdateSet(setId, set);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
         }
 
         [Theory]
@@ -419,6 +379,7 @@ namespace RadElement.Service.Tests
             mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
             mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
             mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+
         }
 
         #endregion

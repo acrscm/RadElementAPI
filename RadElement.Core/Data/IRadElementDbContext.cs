@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace RadElement.Core.Data
 {
@@ -60,6 +61,12 @@ namespace RadElement.Core.Data
         /// Gets the image reference.
         /// </summary>
         DbSet<ImageRef> ImageRef { get; }
+
+        /// <summary>
+        /// Databases this instance.
+        /// </summary>
+        /// <returns></returns>
+        DatabaseFacade Database { get; }
 
         /// <summary>
         /// Saves the changes.

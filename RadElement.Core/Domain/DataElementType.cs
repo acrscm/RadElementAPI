@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using System.Text.Json.Serialization;
 
 namespace RadElement.Core.Domain
 {
     /// <summary>
     /// Gets or sets the Data element type
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DataElementType
     {
         /// <summary>
@@ -33,20 +32,10 @@ namespace RadElement.Core.Domain
         /// Data Element Type is DateTime
         /// </summary>
         DateTime,
-
-        ///// <summary>
-        ///// Data Element Type is Duration
-        ///// </summary>
-        //Duration,
-
+        
         /// <summary>
         /// Data Element Type is String
         /// </summary>
-        String,
-
-        /// <summary>
-        /// Data Element Type is Global
-        /// </summary>
-        Global,
+        String
     }
 }

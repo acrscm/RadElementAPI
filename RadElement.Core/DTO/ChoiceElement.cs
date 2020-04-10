@@ -19,17 +19,6 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the list of choices
         /// </summary>
-        public List<Option> Options { get; set; }     
-
-        /// <summary>
-        /// Gets or sets the name of the image map diagram
-        /// </summary>
-        public Diagram ImageMapLocation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the allow free text.
-        /// </summary>
-        /// <value>
-        public bool? AllowFreeText { get; set; }
+        public List<Option> Options { get; set; }
     }
 }

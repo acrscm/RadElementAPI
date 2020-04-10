@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -71,6 +72,7 @@ namespace RadElement.API
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
+
             var authConfig = Configuration.GetSection("AuthorizationConfig").Get<AuthorizationConfig>();
             var accountsConfig = Configuration.GetSection("AccountsConfig").Get<UserAccounts>();
 
@@ -108,6 +110,7 @@ namespace RadElement.API
                      config.Filters.Add(new RequireHttpsAttribute());
                  }
             );
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddDbContext<RadElementDbContext>(options => options.UseMySql(Configuration.GetConnectionString("Database")));
 
@@ -146,10 +149,10 @@ namespace RadElement.API
             services.AddSingleton<AuthorizationConfig>(authConfig);
             services.AddSingleton<UserAccounts>(accountsConfig);
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddScoped<IRadElementDbContext, RadElementDbContext>();
             services.AddTransient<IConfigurationManager, ConfigurationManager>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementSetService, ElementSetService>();
-            services.AddScoped<IRadElementDbContext, RadElementDbContext>();
             services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();
             services.AddSingleton<ILogger>(Log.Logger);
 
@@ -163,8 +166,7 @@ namespace RadElement.API
 
             services.AddMvc().AddNewtonsoftJson();
             services.AddMvcCore().AddApiExplorer();
-
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         }
 
         /// <summary>

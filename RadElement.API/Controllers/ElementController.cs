@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using RadElement.Core.Domain;
 
 namespace RadElement.API.Controllers
 {
@@ -87,9 +87,22 @@ namespace RadElement.API.Controllers
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPost("sets/{setId}/elements/{elementType}")]
-        public async Task<IActionResult> CreateElement(string setId, ElementType elementType, [FromBody]CreateUpdateElement content)
+        public async Task<IActionResult> CreateElement(string setId, ElementType elementType, [FromBody]CreateUpdateElementOld content)
         {
             var result = await radElementService.CreateElement(setId, (DataElementType)elementType, content);
+            return StatusCode((int)result.Code, result.Value);
+        }
+
+        /// <summary>
+        /// Creates a element under specific set identifier.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        [HttpPost("sets/{setId}/elements")]
+        public async Task<IActionResult> CreateElement(string setId, [FromBody]CreateUpdateElement content)
+        {
+            var result = await radElementService.CreateElement(setId, content);
             return StatusCode((int)result.Code, result.Value);
         }
 
@@ -102,9 +115,23 @@ namespace RadElement.API.Controllers
         /// <param name="content">The content.</param>
         /// <returns></returns>
         [HttpPut("sets/{setId}/elements/{elementId}/{elementType}")]
-        public async Task<IActionResult> UpdateElement(string setId, string elementId, ElementType elementType, [FromBody]CreateUpdateElement content)
+        public async Task<IActionResult> UpdateElement(string setId, string elementId, ElementType elementType, [FromBody]CreateUpdateElementOld content)
         {
             var result = await radElementService.UpdateElement(setId, elementId, (DataElementType)elementType, content);
+            return StatusCode((int)result.Code, result.Value);
+        }
+
+        /// <summary>
+        /// Updates the element based on set identifier and element identifier.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="elementId">The element identifier.</param>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        [HttpPut("sets/{setId}/elements/{elementId}")]
+        public async Task<IActionResult> UpdateElement(string setId, string elementId, [FromBody]CreateUpdateElement content)
+        {
+            var result = await radElementService.UpdateElement(setId, elementId, content);
             return StatusCode((int)result.Code, result.Value);
         }
 

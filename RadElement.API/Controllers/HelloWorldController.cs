@@ -34,16 +34,5 @@ namespace RadElement.API.Controllers
         {
             return Ok("POST Hello World without Route Success");
         }
-
-        /// <summary>
-        /// Method used to check if service is running
-        /// </summary>
-        /// <returns>Returns "Hello World" </returns>
-        [AllowAnonymous]
-        [HttpPost("test")]
-        public IActionResult PostHelloWorldWithRoute()
-        {
-            return Ok("POST Hello World with Route Success");
-        }
     }
 }

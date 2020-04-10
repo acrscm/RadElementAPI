@@ -10,7 +10,7 @@ namespace RadElement.Core.Profile
         /// </summary>
         public ElementSetProfile()
         {
-            CreateMap<ElementSet, ElementSetDetails>().ForMember(dto => dto.SetId , opt => opt.MapFrom(src => string.Concat("RDES", src.Id)));
+            CreateMap<ElementSet, ElementSetDetails>().ForMember(dto => dto.SetId, opt => opt.MapFrom(src => string.Concat("RDES", src.Id)));
         }
     }
 }

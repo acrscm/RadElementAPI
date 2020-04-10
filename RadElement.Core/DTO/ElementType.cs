@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using System.Text.Json.Serialization;
 
 namespace RadElement.Core.DTO
 {
     /// <summary>
     /// Gets or sets the Data element type
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ElementType
     {
         /// <summary>
