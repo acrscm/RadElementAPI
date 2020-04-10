@@ -183,7 +183,22 @@ namespace RadElement.Service.Tests
         #endregion
 
         #region SearchElement
-        
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
+        {
+            IntializeMockData();
+            var result = await service.SearchElement(new SearchKeyword { Keyword = searchKeyword });
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
+            Assert.Equal(string.Format(invalidSearchMessage, searchKeyword ), result.Value);
+        }
+
         [Theory]
         [InlineData("test")]
         [InlineData("test1")]
@@ -279,6 +294,24 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
+        [InlineData("RDES74", "RDE1500", DataElementType.Integer)]
+        public async void CreateElementShouldReturnBadRequestIfElementIdIsInvalid(string setId, string elementId, DataElementType elementType)
+        {
+            IntializeMockData();
+            var dataElement = new CreateUpdateElement();
+            dataElement.ElementId = elementId;
+            dataElement.Label = "Tumuor";
+            dataElement.ValueType = elementType;
+
+            var result = await service.CreateElement(setId, dataElement);
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(elemenIdInvalidMessage, elementId), result.Value);
+        }
+
+        [Theory]
         [InlineData("RDES74", DataElementType.Choice)]
         [InlineData("RDES72", DataElementType.Numeric)]
         [InlineData("RDES66", DataElementType.Integer)]
@@ -361,6 +394,51 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<ElementIdDetails>(result.Value);
+            Assert.Equal(HttpStatusCode.Created, result.Code);
+        }
+
+        [Theory]
+        [InlineData("RDES74", "RDE340", DataElementType.Choice)]
+        [InlineData("RDES72", "RDE338", DataElementType.Numeric)]
+        [InlineData("RDES66", "RDE307", DataElementType.Integer)]
+        [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
+        public async void CreateElementShouldReturnElementIdIfDataElementIsValid1(string setId, string elementId, DataElementType elementType)
+        {
+            IntializeMockData();
+            var dataElement = new CreateUpdateElement();
+            dataElement.ElementId = elementId;
+            dataElement.Label = "Tumuor";
+            dataElement.Definition = "Tumuor vein";
+            dataElement.ValueType = elementType;
+
+            if (dataElement.ValueType == DataElementType.Integer)
+            {
+                dataElement.ValueMin = 1;
+                dataElement.ValueMax = 3;
+            }
+            else if (dataElement.ValueType == DataElementType.Numeric)
+            {
+                dataElement.ValueMin = 1f;
+                dataElement.ValueMax = 3f;
+            }
+            else if (dataElement.ValueType == DataElementType.Choice || dataElement.ValueType == DataElementType.MultiChoice)
+            {
+                dataElement.Options = new List<Option>();
+                dataElement.Options.AddRange(
+                    new List<Option>()
+                    {
+                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
+                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
+                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
+                    }
+                );
+            }
+
+            var result = await service.CreateElement(setId, dataElement);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(string.Format(elemenIdMappedMessage, setId, elementId), result.Value);
             Assert.Equal(HttpStatusCode.Created, result.Code);
         }
 
