@@ -264,7 +264,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
             var result = await service.CreateElement(setId, dataElement);
@@ -282,7 +282,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
             var result = await service.CreateElement(setId, dataElement);
@@ -300,7 +300,7 @@ namespace RadElement.Service.Tests
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
             dataElement.ElementId = elementId;
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
             var result = await service.CreateElement(setId, dataElement);
@@ -319,7 +319,7 @@ namespace RadElement.Service.Tests
         public async void CreateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, DataElementType elementType)
         {
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
 
@@ -362,7 +362,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
 
@@ -407,7 +407,7 @@ namespace RadElement.Service.Tests
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
             dataElement.ElementId = elementId;
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
 
@@ -468,7 +468,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -487,7 +487,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -507,7 +507,7 @@ namespace RadElement.Service.Tests
         public async void UpdateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, string elementId, DataElementType elementType)
         {
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
 
@@ -550,7 +550,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
 
@@ -599,7 +599,7 @@ namespace RadElement.Service.Tests
         {
             IntializeMockData();
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
 
             var result = await service.DeleteElement(setId, elementId);
             Assert.NotNull(result);
@@ -614,7 +614,7 @@ namespace RadElement.Service.Tests
         public async void DeleteElementShouldThrowInternalServerErrorForExceptions(string setId, string elementId)
         {
             var dataElement = new CreateUpdateElement();
-            dataElement.Label = "Tumuor";
+            dataElement.Name = "Tumuor";
 
             var result = await service.DeleteElement(setId, elementId);
 

@@ -41,6 +41,6 @@ namespace RadElement.Core.DTO
         /// <value>
         /// The options.
         /// </value>
-        public List<Option> Options { get; set; }
+        public List<OptionOld> Options { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace RadElement.Core.DTO
         /// </summary>
         [Required]
         [MaxLength(255)]
-        public string Label { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the short name.

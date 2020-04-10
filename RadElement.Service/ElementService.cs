@@ -284,7 +284,18 @@ namespace RadElement.Service
 
                         if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
                         {
-                            AddElementValues(dataElement.Options, element.Id);
+                            foreach (OptionOld option in dataElement.Options)
+                            {
+                                ElementValue elementvalue = new ElementValue()
+                                {
+                                    Name = option.Label,
+                                    Value = string.Empty,
+                                    Definition = option.Label,
+                                    ElementId = element.Id
+                                };
+
+                                radElementDbContext.ElementValue.Add(elementvalue);
+                            }
                         }
                     }
 
@@ -339,14 +350,14 @@ namespace RadElement.Service
                         {
                             Element element = new Element()
                             {
-                                Name = dataElement.Label,
+                                Name = dataElement.Name,
                                 ShortName = dataElement.ShortName ?? string.Empty,
                                 Definition = dataElement.Definition ?? string.Empty,
                                 ValueType = GetElementValueType(dataElement.ValueType),
                                 MinCardinality = 1,
                                 MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (uint)dataElement.Options.Count : 1,
                                 Unit = dataElement.Unit ?? string.Empty,
-                                Question = dataElement.Question ?? dataElement.Label,
+                                Question = dataElement.Question ?? dataElement.Name,
                                 Instructions = dataElement.Instructions ?? string.Empty,
                                 References = dataElement.References ?? string.Empty,
                                 Version = dataElement.Version ?? "",
@@ -558,7 +569,18 @@ namespace RadElement.Service
 
                             if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
                             {
-                                AddElementValues(dataElement.Options, element.Id);
+                                foreach (OptionOld option in dataElement.Options)
+                                {
+                                    ElementValue elementvalue = new ElementValue()
+                                    {
+                                        Name = option.Label,
+                                        Value = string.Empty,
+                                        Definition = option.Label,
+                                        ElementId = element.Id
+                                    };
+
+                                    radElementDbContext.ElementValue.Add(elementvalue);
+                                }
                             }
 
                             radElementDbContext.SaveChanges();
@@ -620,14 +642,14 @@ namespace RadElement.Service
                                 radElementDbContext.ElementValue.RemoveRange(elementValues);
                             }
 
-                            element.Name = dataElement.Label;
+                            element.Name = dataElement.Name;
                             element.ShortName = dataElement.ShortName ?? string.Empty;
                             element.Definition = dataElement.Definition ?? string.Empty;
                             element.ValueType = GetElementValueType(dataElement.ValueType);
                             element.MinCardinality = 1;
                             element.MaxCardinality = (dataElement.ValueType == DataElementType.MultiChoice) ? (uint)dataElement.Options.Count : (uint)1;
                             element.Unit = dataElement.Unit ?? string.Empty;
-                            element.Question = dataElement.Question ?? dataElement.Label;
+                            element.Question = dataElement.Question ?? dataElement.Name;
                             element.Instructions = dataElement.Instructions ?? string.Empty;
                             element.References = dataElement.References ?? string.Empty;
                             element.Version = dataElement.Version ?? "";
