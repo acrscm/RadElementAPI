@@ -35,15 +35,18 @@ namespace RadElement.Service.Tests
         /// </summary>
         private readonly IMapper mapper;
 
-        private const string elementNotFoundMessage = "No such element with id '{0}'";
+        private const string elementNotFoundMessage = "No such element with id '{0}'.";
         private const string elementSetIdNotFoundMessage = "No such elements with set id '{0}'.";
         private const string elementNotFoundMessageWithSearchMessage = "No such element with keyword '{0}'.";
-        private const string dataElementInvalidMessage = "Dataelement fields are invalid in request";
-        private const string choiceInvalidMessage = "'Options' field is missing for Choice type elements in request";
-        private const string elemenIdandSetIdInvalidMessage = "No such element with set id {0} and element id {1}.";
-        private const string setIdInvalidMessage = "No such element with set id {0}.";
-        private const string elementUpdateMessage = "Element with set id {0} and element id {1} is updated.";
-        private const string elemenIdDeletedMessage = "Element with set id {0} and element id {1} is deleted.";
+        private const string invalidSearchMessage = "Keyword '{0}' given is invalid.";
+        private const string dataElementInvalidMessage = "Element fields are invalid.";
+        private const string choiceInvalidMessage = "'Options' field are missing for Choice type elements.";
+        private const string elemenIdandSetIdInvalidMessage = "No such element with set id '{0}' and element id '{1}'.";
+        private const string elemenIdInvalidMessage = "No such element with element id '{0}'.";
+        private const string elementUpdateMessage = "Element with set id '{0}' and element id '{1}' is updated.";
+        private const string elemenIdDeletedMessage = "Element with set id '{0}' and element id '{1}' is deleted.";
+        private const string elemenIdMappedMessage = "Element with set id '{0}' and element id '{1}' is mapped.";
+        private const string setIdInvalidMessage = "No such set with set id {0}.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementServiceShould"/> class.

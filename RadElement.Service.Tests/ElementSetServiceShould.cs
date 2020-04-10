@@ -30,6 +30,7 @@ namespace RadElement.Service.Tests
         /// The mock logger
         /// </summary>
         private readonly Mock<ILogger> mockLogger;
+
         /// <summary>
         /// The mapper
         /// </summary>
@@ -37,11 +38,10 @@ namespace RadElement.Service.Tests
 
         private const string setNotFoundMessage = "No such set with id '{0}'.";
         private const string setNotFoundMessageWithSearchMessage = "No such set with keyword '{0}'.";
-        private const string setInvalidMessage = "Element set is invalid";
-        private const string invalidSearchMessage = "Keyword '{0}' given is invalid";
-        private const string setIdInvalidMessage = "No such element with set id {0}.";
-        private const string setUpdatedMessage = "Set with id {0} is updated.";
-        private const string setDeletedMessage = "Set with id {0} is deleted.";
+        private const string setInvalidMessage = "Set fileds are invalid.";
+        private const string invalidSearchMessage = "Keyword '{0}' given is invalid.";
+        private const string setUpdatedMessage = "Set with id '{0}' is updated.";
+        private const string setDeletedMessage = "Set with id '{0}' is deleted.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementSetServiceShould"/> class.

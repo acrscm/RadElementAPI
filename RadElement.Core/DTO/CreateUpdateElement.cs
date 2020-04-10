@@ -8,6 +8,11 @@ namespace RadElement.Core.DTO
     public class CreateUpdateElement
     {
         /// <summary>
+        /// Gets or sets the element identifier.
+        /// </summary>
+        public string ElementId { get; set; }
+
+        /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
         [Required]

@@ -120,10 +120,8 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                     }
                 }
-                else
-                {
-                    return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid", searchKeyword), HttpStatusCode.BadRequest));
-                }
+
+                return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid.", searchKeyword), HttpStatusCode.BadRequest));
             }
             catch (Exception ex)
             {
@@ -144,7 +142,7 @@ namespace RadElement.Service
             {
                 if (content == null)
                 {
-                    return await Task.FromResult(new JsonResult("Element set is invalid", HttpStatusCode.BadRequest));
+                    return await Task.FromResult(new JsonResult("Set fileds are invalid.", HttpStatusCode.BadRequest));
                 }
 
                 ElementSet set = new ElementSet()
@@ -191,7 +189,7 @@ namespace RadElement.Service
 
                     if (content == null)
                     {
-                        return await Task.FromResult(new JsonResult("Element set is invalid", HttpStatusCode.BadRequest));
+                        return await Task.FromResult(new JsonResult("Set fileds are invalid.", HttpStatusCode.BadRequest));
                     }
 
                     var elementSets = radElementDbContext.ElementSet.ToList();
@@ -211,7 +209,7 @@ namespace RadElement.Service
 
                         radElementDbContext.SaveChanges();
 
-                        return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is updated.", setId), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is updated.", setId), HttpStatusCode.OK));
                     }
                 }
 
@@ -247,7 +245,7 @@ namespace RadElement.Service
                         radElementDbContext.ElementSet.Remove(elementSet);
                         radElementDbContext.SaveChanges();
 
-                        return await Task.FromResult(new JsonResult(string.Format("Set with id {0} is deleted.", setId), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is deleted.", setId), HttpStatusCode.OK));
                     }
                 }
                 return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
