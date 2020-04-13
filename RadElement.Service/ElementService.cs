@@ -848,6 +848,12 @@ namespace RadElement.Service
                 var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
                 elements.ForEach(element =>
                 {
+                    var setDetails = GetSetDetails((element as Element).Id);
+                    if (setDetails != null)
+                    {
+                        element.SetId = string.Concat("RDES", setDetails.Id);
+                        element.SetName = setDetails.Name;
+                    }
                     if (element.ValueType == "valueSet")
                     {
                         element.ElementValues = GetElementValues((element as Element).Id);
@@ -859,6 +865,12 @@ namespace RadElement.Service
             else if (element.GetType() == typeof(Element))
             {
                 var elementDetails = mapper.Map<ElementDetails>(element as Element);
+                var setDetails = GetSetDetails((element as Element).Id);
+                if (setDetails != null)
+                {
+                    elementDetails.SetId = string.Concat("RDES", setDetails.Id);
+                    elementDetails.SetName = setDetails.Name;
+                }
                 if (elementDetails.ValueType == "valueSet")
                 {
                     elementDetails.ElementValues = GetElementValues((element as Element).Id);
@@ -877,6 +889,23 @@ namespace RadElement.Service
         private List<ElementValue> GetElementValues(uint elementId)
         {
             return radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == elementId).ToList();
+        }
+
+        /// <summary>
+        /// Gets the set details.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        private ElementSet GetSetDetails(uint elementId)
+        {
+            var elementSetRefs = radElementDbContext.ElementSetRef.ToList().Where(x => x.ElementId == elementId);
+            if (elementSetRefs != null && elementSetRefs.Any())
+            {
+                var setRef = elementSetRefs.First();
+                return radElementDbContext.ElementSet.ToList().Where(x => x.Id == setRef.ElementSetId).FirstOrDefault();
+            }
+
+            return null;
         }
 
         /// <summary>
