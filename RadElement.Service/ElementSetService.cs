@@ -240,7 +240,7 @@ namespace RadElement.Service
 
                     if (elementSet != null)
                     {
-                        RemoveSetElements(elementSet);
+                        RemoveSetElementsReferences(elementSet);
 
                         radElementDbContext.ElementSet.Remove(elementSet);
                         radElementDbContext.SaveChanges();
@@ -280,27 +280,11 @@ namespace RadElement.Service
         /// Removes the set elements.
         /// </summary>
         /// <param name="elementSet">The element set.</param>
-        private void RemoveSetElements(ElementSet elementSet)
+        private void RemoveSetElementsReferences(ElementSet elementSet)
         {
             var elementSetRefs = radElementDbContext.ElementSetRef.ToList().Where(x => x.ElementSetId == elementSet.Id);
             if (elementSetRefs != null && elementSetRefs.Any())
             {
-                foreach (var setref in elementSetRefs)
-                {
-                    var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == setref.ElementId);
-                    var elements = radElementDbContext.Element.ToList().Where(x => x.Id == setref.ElementId);
-
-                    if (elementValues != null && elementValues.Any())
-                    {
-                        radElementDbContext.ElementValue.RemoveRange(elementValues);
-                    }
-
-                    if (elements != null && elements.Any())
-                    {
-                        radElementDbContext.Element.RemoveRange(elements);
-                    }
-                }
-
                 radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
             }
         }

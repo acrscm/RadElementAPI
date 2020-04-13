@@ -848,7 +848,10 @@ namespace RadElement.Service
                 var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
                 elements.ForEach(element =>
                 {
-                    element.ElementValues = element.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id).ToList() : null;
+                    if (element.ValueType == "valueSet")
+                    {
+                        element.ElementValues = GetElementValues((element as Element).Id);
+                    }
                 });
 
                 return elements;
@@ -856,12 +859,24 @@ namespace RadElement.Service
             else if (element.GetType() == typeof(Element))
             {
                 var elementDetails = mapper.Map<ElementDetails>(element as Element);
-                elementDetails.ElementValues = elementDetails.ValueType == "valueSet" ? radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == (element as Element).Id).ToList() : null;
-
+                if (elementDetails.ValueType == "valueSet")
+                {
+                    elementDetails.ElementValues = GetElementValues((element as Element).Id);
+                }
                 return elementDetails;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the element values.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        private List<ElementValue> GetElementValues(uint elementId)
+        {
+            return radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == elementId).ToList();
         }
 
         /// <summary>

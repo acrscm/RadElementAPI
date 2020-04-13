@@ -11,6 +11,16 @@ namespace RadElement.Core.DTO
         public string ElementId { get; set; }
 
         /// <summary>
+        /// Gets or sets the set identifier.
+        /// </summary>
+        public string SetId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the set.
+        /// </summary>
+        public string SetName { get; set; }
+
+        /// <summary>
         /// Gets or sets the element values.
         /// </summary>
         public List<ElementValue> ElementValues { get; set; }
