@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RadElement.Core.DTO
 {
-    public class ElementDetails: Element
+    public class ElementDetails : Element
     {
         /// <summary>
         /// Gets or sets the element identifier.
@@ -15,13 +15,7 @@ namespace RadElement.Core.DTO
         /// Gets or sets the set identifier.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string SetId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the set.
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string SetName { get; set; }
+        public List<SetBasicAttributes> SetInformation { get; set; }
 
         /// <summary>
         /// Gets or sets the element values.
