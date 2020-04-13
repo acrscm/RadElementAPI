@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace RadElement.Core.Domain
 {
@@ -12,6 +13,7 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; }
 
         /// <summary>
@@ -33,21 +35,24 @@ namespace RadElement.Core.Domain
         /// Gets or sets the size of the value.
         /// </summary>
         public int ValueSize { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the value minimum.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public float? ValueMin { get; set; }
 
         /// <summary>
         /// Gets or sets the value maximum.
         /// </summary>
         /// <value>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public float? ValueMax { get; set; }
 
         /// <summary>
         /// Gets or sets the step value.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public float? StepValue { get; set; }
 
         /// <summary>
@@ -103,6 +108,7 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Gets or sets the status.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Status { get; set; }
 
         /// <summary>
@@ -118,21 +124,25 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Gets or sets the modality.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Modality { get; set; }
 
         /// <summary>
         /// Gets or sets the Biological sex.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string BiologicalSex { get; set; }
 
         /// <summary>
         /// Gets or sets the age upper bound.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public float? AgeUpperBound { get; set; }
 
         /// <summary>
         /// Gets or sets the age lower bound.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public float? AgeLowerBound { get; set; }
     }
 }
