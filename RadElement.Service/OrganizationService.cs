@@ -24,16 +24,6 @@ namespace RadElement.Service
         private RadElementDbContext radElementDbContext;
 
         /// <summary>
-        /// The element set service
-        /// </summary>
-        private IElementSetService elementSetService;
-
-        /// <summary>
-        /// The element service
-        /// </summary>
-        private IElementService elementService;
-
-        /// <summary>
         /// The mapper
         /// </summary>
         private readonly IMapper mapper;
@@ -47,20 +37,14 @@ namespace RadElement.Service
         /// Initializes a new instance of the <see cref="ElementSetService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        /// <param name="elementSetService">The element set service.</param>
-        /// <param name="elementService">The element service.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
         public OrganizationService(
             RadElementDbContext radElementDbContext,
-            IElementSetService elementSetService,
-            IElementService elementService,
             IMapper mapper,
             ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
-            this.elementSetService = elementSetService;
-            this.elementService = elementService;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -122,7 +106,7 @@ namespace RadElement.Service
         {
             try
             {
-                if (await IsValidSetId(setId))
+                if (IsValidSetId(setId))
                 {
                     int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
                     var organizationSetRefs = radElementDbContext.OrganizationRoleElementSetRef.ToList();
@@ -157,7 +141,7 @@ namespace RadElement.Service
         {
             try
             {
-                if (await IsValidElementId(elementId))
+                if (IsValidElementId(elementId))
                 {
                     int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
                     var organizationELementRefs = radElementDbContext.OrganizationRoleElementRef.ToList();
@@ -233,7 +217,7 @@ namespace RadElement.Service
 
                 if (!string.IsNullOrEmpty(organization.SetId))
                 {
-                    if (!await IsValidSetId(organization.SetId))
+                    if (!IsValidSetId(organization.SetId))
                     {
                         return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
                     }
@@ -241,7 +225,7 @@ namespace RadElement.Service
 
                 if (!string.IsNullOrEmpty(organization.ElementId))
                 {
-                    if (!await IsValidElementId(organization.ElementId))
+                    if (!IsValidElementId(organization.ElementId))
                     {
                         return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
                     }
@@ -312,7 +296,7 @@ namespace RadElement.Service
 
                 if (!string.IsNullOrEmpty(organization.SetId))
                 {
-                    if (!await IsValidSetId(organization.SetId))
+                    if (!IsValidSetId(organization.SetId))
                     {
                         return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
                     }
@@ -320,7 +304,7 @@ namespace RadElement.Service
 
                 if (!string.IsNullOrEmpty(organization.ElementId))
                 {
-                    if (!await IsValidElementId(organization.ElementId))
+                    if (!IsValidElementId(organization.ElementId))
                     {
                         return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
                     }
@@ -422,22 +406,48 @@ namespace RadElement.Service
         /// Determines whether [is valid element identifier] [the specified element identifier].
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        private async Task<bool> IsValidElementId(string elementId)
+        /// <returns>
+        ///   <c>true</c> if [is valid element identifier] [the specified element identifier]; otherwise, <c>false</c>.
+        /// </returns>
+        private bool IsValidElementId(string elementId)
         {
-            var element = await elementService.GetElement(elementId);
-            return element != null && element.Code == HttpStatusCode.OK ? true : false;
+            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
+            {
+                bool result = int.TryParse(elementId.Remove(0, 3), out _);
+                if (result)
+                {
+                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
+                    var elements = radElementDbContext.Element.ToList();
+                    var element = elements.Find(x => x.Id == elementInternalId);
+                    return element != null;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Determines whether [is valid set identifier] [the specified set identifier].
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        private async Task<bool> IsValidSetId(string setId)
+        /// <returns>
+        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
+        /// </returns>
+        private bool IsValidSetId(string setId)
         {
-            var set = await elementSetService.GetSet(setId);
-            return set != null && set.Code == HttpStatusCode.OK ? true : false;
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
+            {
+                bool result = int.TryParse(setId.Remove(0, 4), out _);
+                if (result)
+                {
+                    int id = Convert.ToInt32(setId.Remove(0, 4));
+                    var sets = radElementDbContext.ElementSet.ToList();
+                    var set = sets.Find(x => x.Id == id);
+                    return set != null;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

@@ -22,16 +22,6 @@ namespace RadElement.Service.Tests
         private readonly OrganizationService service;
 
         /// <summary>
-        /// The mock element service
-        /// </summary>
-        private readonly ElementService elementService;
-
-        /// <summary>
-        /// The mock element set service
-        /// </summary>
-        private readonly ElementSetService elementSetService;
-
-        /// <summary>
         /// The mock RAD element context
         /// </summary>
         private readonly Mock<RadElementDbContext> mockRadElementContext;
@@ -76,9 +66,7 @@ namespace RadElement.Service.Tests
             });
 
             mapper = new Mapper(mapperConfig);
-            elementService = new ElementService(mockRadElementContext.Object, mapper, mockLogger.Object);
-            elementSetService = new ElementSetService(mockRadElementContext.Object, mapper, mockLogger.Object);
-            service = new OrganizationService(mockRadElementContext.Object, elementSetService, elementService, mapper, mockLogger.Object);
+            service = new OrganizationService(mockRadElementContext.Object, mapper, mockLogger.Object);
         }
 
         #region GetOrganizations
