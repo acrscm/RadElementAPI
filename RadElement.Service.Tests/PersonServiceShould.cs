@@ -74,7 +74,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<PersonDetails>>(result.Value);
+            Assert.IsType<List<Person>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
@@ -120,7 +120,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<PersonDetails>(result.Value);
+            Assert.IsType<Person>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
@@ -179,7 +179,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<PersonDetails>>(result.Value);
+            Assert.IsType<List<Person>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 

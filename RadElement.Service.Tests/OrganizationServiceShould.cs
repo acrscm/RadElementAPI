@@ -256,14 +256,14 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationExists(int organizationId)
+        [InlineData(2, "American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
+        [InlineData(4, "American College of Radiology", "ACR", "http://www.acr.org")]
+        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationExists(int organizationId, string name, string abbreviation, string url)
         {
             var organization = new CreateUpdateOrganization();
-            organization.Name = "American College of Radiology - Data Science Institute";
-            organization.Abbreviation = "ACR-DSI";
-            organization.Url = "http://www.acrdsi.org";
+            organization.Name = name;
+            organization.Abbreviation = abbreviation;
+            organization.Url = url;
 
             IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
