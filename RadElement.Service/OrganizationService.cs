@@ -114,7 +114,7 @@ namespace RadElement.Service
                     var organizations = radElementDbContext.Organization.ToList();
 
                     var selectedOrganizations = from organizationId in organizationIds
-                                                join organization in organizations on organizationId.OrganizationID equals (int)organization.Id
+                                                join organization in organizations on organizationId.OrganizationID equals organization.Id
                                                 select organization;
 
                     if (selectedOrganizations != null && selectedOrganizations.Any())
@@ -149,7 +149,7 @@ namespace RadElement.Service
                     var organizations = radElementDbContext.Organization.ToList();
 
                     var selectedOrganizations = from organizationId in organizationIds
-                                                join organization in organizations on organizationId.OrganizationID equals (int)organization.Id
+                                                join organization in organizations on organizationId.OrganizationID equals organization.Id
                                                 select organization;
 
                     if (selectedOrganizations != null && selectedOrganizations.Any())

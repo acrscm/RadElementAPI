@@ -8,7 +8,7 @@ namespace RadElement.Core.DTO
         /// Gets or sets the keyword.
         /// </summary>
         [Required]
-        [MinLength(3, ErrorMessage = "The Keyword field must be a string with a minimum length of '3'.")]
+        [MinLength(1, ErrorMessage = "The Keyword field must be a string with a minimum length of '1'.")]
         public string Keyword { get; set; }
     }
 }

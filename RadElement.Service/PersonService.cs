@@ -114,7 +114,7 @@ namespace RadElement.Service
                     var persons = radElementDbContext.Person.ToList();
 
                     var selectedPersons = from personId in personIds
-                                          join person in persons on personId.PersonID equals (int)person.Id
+                                          join person in persons on personId.PersonID equals person.Id
                                           select person;
 
                     if (selectedPersons != null && selectedPersons.Any())
@@ -144,12 +144,12 @@ namespace RadElement.Service
                 if (IsValidElementId(elementId))
                 {
                     int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var personELementRefs = radElementDbContext.PersonRoleElementRef.ToList();
-                    var personIds = personELementRefs.Where(x => x.ElementID == elementInternalId);
+                    var personElementRefs = radElementDbContext.PersonRoleElementRef.ToList();
+                    var personIds = personElementRefs.Where(x => x.ElementID == elementInternalId);
                     var persons = radElementDbContext.Person.ToList();
 
                     var selectedPersons = from personId in personIds
-                                          join person in persons on personId.PersonID equals (int)person.Id
+                                          join person in persons on personId.PersonID equals person.Id
                                           select person;
 
                     if (selectedPersons != null && selectedPersons.Any())
@@ -234,9 +234,9 @@ namespace RadElement.Service
                     }
 
                     var isMatchingPerson = radElementDbContext.Person.ToList().Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                         string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                                         string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                         string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                                                                                           string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
+                                                                                           string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                                           string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
                     if (isMatchingPerson)
                     {
                         return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
@@ -268,6 +268,7 @@ namespace RadElement.Service
 
                     radElementDbContext.SaveChanges();
                     transaction.Commit();
+
                     return await Task.FromResult(new JsonResult(new PersonIdDetails() { PersonId = personData.Id.ToString() }, HttpStatusCode.Created));
                 }
                 catch (Exception ex)
@@ -312,13 +313,14 @@ namespace RadElement.Service
                             return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
                         }
                     }
+
                     if (personId != 0)
                     {
                         var persons = radElementDbContext.Person.ToList();
                         var isMatchingPerson = persons.Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                         string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                                         string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                         string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                                                                   string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
+                                                                   string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                   string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
 
                         if (isMatchingPerson)
                         {
