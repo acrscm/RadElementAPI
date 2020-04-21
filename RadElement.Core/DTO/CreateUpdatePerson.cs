@@ -29,10 +29,5 @@ namespace RadElement.Core.DTO
         /// </summary>
         [MaxLength(255)]
         public string TwitterHandle { get; set; }
-
-        /// <summary>
-        /// Gets or sets the roles.
-        /// </summary>
-        public List<PersonRole> Roles { get; set; }
     }
 }

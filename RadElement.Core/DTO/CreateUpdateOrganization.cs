@@ -42,10 +42,5 @@ namespace RadElement.Core.DTO
         [MaxLength(255)]
         public string Email { get; set; }
 
-        /// <summary>
-        /// Gets or sets the roles.
-        /// </summary>
-        public List<OrganizationRole> Roles { get; set; }
-
     }
 }
