@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
+using RadElement.Core.Data;
 using RadElement.Core.Profile;
 using RadElement.Service.Tests.Mocks.Data;
 using Serilog;
@@ -30,11 +30,11 @@ namespace RadElement.Service.Tests
         /// The mock element set service
         /// </summary>
         private readonly ElementSetService elementSetService;
-
+        
         /// <summary>
         /// The mock RAD element context
         /// </summary>
-        private readonly Mock<IRadElementDbContext> mockRadElementContext;
+        private readonly Mock<RadElementDbContext> mockRadElementContext;
 
         /// <summary>
         /// The mock logger
@@ -62,7 +62,7 @@ namespace RadElement.Service.Tests
         /// </summary>
         public PersonServiceShould()
         {
-            mockRadElementContext = new Mock<IRadElementDbContext>();
+            mockRadElementContext = new Mock<RadElementDbContext>();
             mockLogger = new Mock<ILogger>();
 
             var elementProfile = new ElementProfile();

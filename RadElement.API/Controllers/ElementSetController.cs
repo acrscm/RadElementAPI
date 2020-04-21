@@ -28,7 +28,9 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="elementSetService">The element set service.</param>
         /// <param name="logger">The logger.</param>
-        public ElementSetController(IElementSetService elementSetService, ILogger<ElementSetController> logger)
+        public ElementSetController(
+            IElementSetService elementSetService, 
+            ILogger<ElementSetController> logger)
         {
             this.elementSetService = elementSetService;
             LoggerInstance = logger;

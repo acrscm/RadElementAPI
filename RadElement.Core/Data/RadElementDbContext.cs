@@ -1,16 +1,14 @@
-﻿using RadElement.Core.Data;
-using RadElement.Core.Domain;
+﻿using RadElement.Core.Domain;
 using RadElement.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace RadElement.Data
+namespace RadElement.Core.Data
 {
     /// <summary>
     /// Repository class for data related operations
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    /// <seealso cref="RadElement.Core.Data.IRadElementDbContext" />
-    public partial class RadElementDbContext : DbContext, IRadElementDbContext
+    public partial class RadElementDbContext : DbContext
     {
         /// <summary>
         /// The configuration manager
@@ -30,84 +28,98 @@ namespace RadElement.Data
         }
 
         /// <summary>
+        /// Values the tuple.
+        /// </summary>
+        /// <typeparam name="DbContextOptions`1">The type of the b context options`1.</typeparam>
+        /// <returns></returns>
+        public RadElementDbContext(DbContextOptions<RadElementDbContext> options)
+            : base(options)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RadElementDbContext"/> class.
+        /// </summary>
+        public RadElementDbContext() { }
+
+        /// <summary>
         /// Gets the code.
         /// </summary>
-        public DbSet<Code> Code { get; set; }
+        public virtual DbSet<Code> Code { get; set; }
 
         /// <summary>
         /// Gets the code reference.
         /// </summary>
-        public DbSet<CodeRef> CodeRef { get; set; }
+        public virtual DbSet<CodeRef> CodeRef { get; set; }
 
         /// <summary>
         /// Gets the code system.
         /// </summary>
-        public DbSet<CodeSystem> CodeSystem { get; set; }
+        public virtual DbSet<CodeSystem> CodeSystem { get; set; }
 
         /// <summary>
         /// Gets the editor.
         /// </summary>
-        public DbSet<Editor> Editor { get; set; }
+        public virtual DbSet<Editor> Editor { get; set; }
 
         /// <summary>
         /// Gets the element.
         /// </summary>
-        public DbSet<Element> Element { get; set; }
+        public virtual DbSet<Element> Element { get; set; }
 
         /// <summary>
         /// Gets the element set.
         /// </summary>
-        public DbSet<ElementSet> ElementSet { get; set; }
+        public virtual DbSet<ElementSet> ElementSet { get; set; }
 
         /// <summary>
         /// Gets the element set reference.
         /// </summary>
-        public DbSet<ElementSetRef> ElementSetRef { get; set; }
+        public virtual DbSet<ElementSetRef> ElementSetRef { get; set; }
 
         /// <summary>
         /// Gets the element value.
         /// </summary>
-        public DbSet<ElementValue> ElementValue { get; set; }
+        public virtual DbSet<ElementValue> ElementValue { get; set; }
 
         /// <summary>
         /// Gets the image.
         /// </summary>
-        public DbSet<Image> Image { get; set; }
+        public virtual DbSet<Image> Image { get; set; }
 
         /// <summary>
         /// Gets the image reference.
         /// </summary>
-        public DbSet<ImageRef> ImageRef { get; set; }
+        public virtual DbSet<ImageRef> ImageRef { get; set; }
 
         /// <summary>
         /// Gets the person.
         /// </summary>
-        public DbSet<Person> Person { get; set; }
+        public virtual DbSet<Person> Person { get; set; }
 
         /// <summary>
         /// Gets the person role element reference.
         /// </summary>
-        public DbSet<PersonRoleElementRef> PersonRoleElementRef { get; set; }
+        public virtual DbSet<PersonRoleElementRef> PersonRoleElementRef { get; set; }
 
         /// <summary>
         /// Gets the person role element set reference.
         /// </summary>
-        public DbSet<PersonRoleElementSetRef> PersonRoleElementSetRef { get; set; }
+        public virtual DbSet<PersonRoleElementSetRef> PersonRoleElementSetRef { get; set; }
 
         /// <summary>
         /// Gets the organization.
         /// </summary>
-        public DbSet<Organization> Organization { get; set; }
+        public virtual DbSet<Organization> Organization { get; set; }
 
         /// <summary>
         /// Gets the organization role element reference.
         /// </summary>
-        public DbSet<OrganizationRoleElementRef> OrganizationRoleElementRef { get; set; }
+        public virtual DbSet<OrganizationRoleElementRef> OrganizationRoleElementRef { get; set; }
 
         /// <summary>
         /// Gets the organization role element set reference.
         /// </summary>
-        public DbSet<OrganizationRoleElementSetRef> OrganizationRoleElementSetRef { get; set; }
+        public virtual DbSet<OrganizationRoleElementSetRef> OrganizationRoleElementSetRef { get; set; }
 
         /// <summary>
         /// <para>

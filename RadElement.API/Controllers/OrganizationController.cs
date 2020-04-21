@@ -14,7 +14,7 @@ namespace RadElement.API.Controllers
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
-    //[Authorize(Policy = "UserIdExists")]
+    [Authorize(Policy = "UserIdExists")]
     [ApiController]
     public class OrganizationController : BaseController
     {
@@ -28,7 +28,9 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="organizationService">The organization service.</param>
         /// <param name="logger">The logger.</param>
-        public OrganizationController(IOrganizationService organizationService, ILogger<OrganizationController> logger)
+        public OrganizationController(
+            IOrganizationService organizationService, 
+            ILogger<OrganizationController> logger)
         {
             this.organizationService = organizationService;
             LoggerInstance = logger;

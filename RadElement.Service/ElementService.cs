@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RadElement.Core.Data;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using System.Net;
 using Serilog;
 using AutoMapper;
+using RadElement.Core.Data;
 
 namespace RadElement.Service
 {
@@ -21,7 +21,7 @@ namespace RadElement.Service
         /// <summary>
         /// The RAD element database context
         /// </summary>
-        private IRadElementDbContext radElementDbContext;
+        private RadElementDbContext radElementDbContext;
 
         /// <summary>
         /// The mapper
@@ -40,7 +40,7 @@ namespace RadElement.Service
         /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
         public ElementService(
-            IRadElementDbContext radElementDbContext,
+            RadElementDbContext radElementDbContext,
             IMapper mapper,
             ILogger logger)
         {

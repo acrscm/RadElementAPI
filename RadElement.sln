@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Core", "RadElement.Core\RadElement.Core.csproj", "{973256E1-51A7-4993-99F4-95262568EC4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Data", "RadElement.Data\RadElement.Data.csproj", "{43B799F6-9AE1-4BBA-A85F-D731ADAC9649}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Infrastructure", "RadElement.Infrastructure\RadElement.Infrastructure.csproj", "{7AF13984-AB10-426B-A813-E4CE9556EAE7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service", "RadElement.Service\RadElement.Service.csproj", "{D14C7550-85EE-48E8-ACDC-260748BE3AAA}"
@@ -33,10 +31,6 @@ Global
 		{973256E1-51A7-4993-99F4-95262568EC4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{973256E1-51A7-4993-99F4-95262568EC4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{973256E1-51A7-4993-99F4-95262568EC4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{43B799F6-9AE1-4BBA-A85F-D731ADAC9649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43B799F6-9AE1-4BBA-A85F-D731ADAC9649}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43B799F6-9AE1-4BBA-A85F-D731ADAC9649}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43B799F6-9AE1-4BBA-A85F-D731ADAC9649}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7AF13984-AB10-426B-A813-E4CE9556EAE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7AF13984-AB10-426B-A813-E4CE9556EAE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AF13984-AB10-426B-A813-E4CE9556EAE7}.Release|Any CPU.ActiveCfg = Release|Any CPU

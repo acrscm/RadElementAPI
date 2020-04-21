@@ -19,15 +19,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RadElement.API.AuthorizationRequirements;
 using RadElement.API.Filters;
-using RadElement.Core.Data;
 using RadElement.Core.Infrastructure;
 using RadElement.Core.Services;
-using RadElement.Data;
 using RadElement.Infrastructure;
 using RadElement.Service;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using AutoMapper;
+using RadElement.Core.Data;
 
 namespace RadElement.API
 {   
@@ -149,7 +148,6 @@ namespace RadElement.API
             services.AddSingleton<AuthorizationConfig>(authConfig);
             services.AddSingleton<UserAccounts>(accountsConfig);
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddScoped<IRadElementDbContext, RadElementDbContext>();
             services.AddTransient<IConfigurationManager, ConfigurationManager>();
             services.AddTransient<IElementService, ElementService>();
             services.AddTransient<IElementSetService, ElementSetService>();

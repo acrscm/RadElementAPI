@@ -29,7 +29,9 @@ namespace RadElement.API.Controllers
         /// </summary>
         /// <param name="radElementService"></param>
         /// <param name="logger"></param>
-        public ElementController(IElementService radElementService, ILogger<ElementController> logger)
+        public ElementController(
+            IElementService radElementService, 
+            ILogger<ElementController> logger)
         {
             this.radElementService = radElementService;
             LoggerInstance = logger;
