@@ -17,7 +17,7 @@ namespace RadElement.Service.Tests
     public class ElementSetServiceShould
     {
         /// <summary>
-        /// The sut
+        /// The service
         /// </summary>
         private readonly ElementSetService service;
 

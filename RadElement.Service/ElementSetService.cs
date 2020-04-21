@@ -92,7 +92,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'GetSet(int setId)'");
+                logger.Error(ex, "Exception in method 'GetSet(string setId)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -125,7 +125,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'SearchSet(string searchKeyword)'");
+                logger.Error(ex, "Exception in method 'SearchSets(string searchKeyword)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -217,7 +217,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'CreateSet(CreateUpdaUpdateSet(int setId, CreateUpdateSet content)'");
+                logger.Error(ex, "Exception in method 'UpdateSet(string setId, CreateUpdateSet content)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -252,7 +252,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'DeleteSet(int setId)'");
+                logger.Error(ex, "Exception in method 'DeleteSet(string setId)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }

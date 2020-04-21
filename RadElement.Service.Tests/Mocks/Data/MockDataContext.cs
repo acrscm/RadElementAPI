@@ -1,4 +1,5 @@
 ﻿using RadElement.Core.Domain;
+using RadElement.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,58 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new ElementValue { Id = 1007, ElementId = 304, Value = "0", Name = "0 No change in size", Definition = "0 No change in size" },
                 new ElementValue { Id = 1008, ElementId = 340, Value = "1", Name = "1 Increase in size", Definition = "1 Increase in size" },
                 new ElementValue { Id = 1009, ElementId = 340, Value = "2", Name = "2 Decrease in size", Definition = "2 Decrease in size" },
+        }.AsQueryable();
+
+        public static IQueryable<Person> personDb = new List<Person>()
+            {
+                new Person { Id = 1, Name = "Charles E. Kahn, Jr., MD, MS" },
+                new Person { Id = 2, Name = "Adam Flanders, MD, MS" },
+                new Person { Id = 3, Name = "Woojin Kim, MD" },
+                new Person { Id = 4, Name = "Sumit Niogi, MD" }
+        }.AsQueryable();
+
+        public static IQueryable<PersonRoleElementRef> personElementRefDb = new List<PersonRoleElementRef>()
+            {
+                new PersonRoleElementRef { Id = 1, PersonID = 1, ElementID = 338, Role = PersonRole.Author },
+                new PersonRoleElementRef { Id = 1, PersonID = 1, ElementID = 338, Role = PersonRole.Editor },
+                new PersonRoleElementRef { Id = 2, PersonID = 2, ElementID = 340, Role = PersonRole.Contributor },
+                new PersonRoleElementRef { Id = 3, PersonID = 3, ElementID = 307, Role = PersonRole.Editor },
+                new PersonRoleElementRef { Id = 4, PersonID = 4, ElementID = 283, Role = PersonRole.Reviewer },
+        }.AsQueryable();
+
+        public static IQueryable<PersonRoleElementSetRef> personElementSetRefDb = new List<PersonRoleElementSetRef>()
+            {
+                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Author },
+                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Editor },
+                new PersonRoleElementSetRef { Id = 2, PersonID = 2, ElementSetID = 66, Role = PersonRole.Contributor },
+                new PersonRoleElementSetRef { Id = 3, PersonID = 3, ElementSetID = 72, Role = PersonRole.Editor },
+                new PersonRoleElementSetRef { Id = 4, PersonID = 4, ElementSetID = 74, Role = PersonRole.Reviewer },
+        }.AsQueryable();
+
+        public static IQueryable<Organization> organizationDb = new List<Organization>()
+            {
+                new Organization { Id = 1, Name = "American College of Radiology - Data Science Institute", Abbreviation = "ACR-DSI", Url = "http://www.acrdsi.org" },
+                new Organization { Id = 2, Name = "American Society of Neuroradiology", Abbreviation = "ASNR" },
+                new Organization { Id = 3, Name = "American College of Radiology", Abbreviation = "ACR", Url = "http://www.acr.org" },
+                new Organization { Id = 4, Name = "Radiological Society of North America", Abbreviation = "RSNA" },
+        }.AsQueryable();
+
+        public static IQueryable<OrganizationRoleElementRef> organizationElementRefDb = new List<OrganizationRoleElementRef>()
+            {
+                new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Author },
+                new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Translator },
+                new OrganizationRoleElementRef { Id = 2, OrganizationID = 2, ElementID = 340, Role = OrganizationRole.Contributor },
+                new OrganizationRoleElementRef { Id = 3, OrganizationID = 3, ElementID = 307, Role = OrganizationRole.Translator },
+                new OrganizationRoleElementRef { Id = 4, OrganizationID = 4, ElementID = 283, Role = OrganizationRole.Reviewer },
+        }.AsQueryable();
+
+        public static IQueryable<OrganizationRoleElementSetRef> organizationElementSetRefDb = new List<OrganizationRoleElementSetRef>()
+            {
+                new OrganizationRoleElementSetRef { Id = 1, OrganizationID = 1, ElementSetID = 53, Role = OrganizationRole.Author },
+                new OrganizationRoleElementSetRef { Id = 1, OrganizationID = 1, ElementSetID = 53, Role = OrganizationRole.Translator },
+                new OrganizationRoleElementSetRef { Id = 2, OrganizationID = 2, ElementSetID = 66, Role = OrganizationRole.Contributor },
+                new OrganizationRoleElementSetRef { Id = 3, OrganizationID = 3, ElementSetID = 72, Role = OrganizationRole.Translator },
+                new OrganizationRoleElementSetRef { Id = 4, OrganizationID = 4, ElementSetID = 74, Role = OrganizationRole.Reviewer },
         }.AsQueryable();
 
         #endregion

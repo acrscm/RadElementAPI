@@ -63,6 +63,36 @@ namespace RadElement.Core.Data
         DbSet<ImageRef> ImageRef { get; }
 
         /// <summary>
+        /// Gets the person.
+        /// </summary>
+        DbSet<Person> Person { get; }
+
+        /// <summary>
+        /// Gets the person role element reference.
+        /// </summary>
+        DbSet<PersonRoleElementRef> PersonRoleElementRef { get; }
+
+        /// <summary>
+        /// Gets the person role element set reference.
+        /// </summary>
+        DbSet<PersonRoleElementSetRef> PersonRoleElementSetRef { get; }
+
+        /// <summary>
+        /// Gets the organization.
+        /// </summary>
+        DbSet<Organization> Organization { get; }
+
+        /// <summary>
+        /// Gets the organization role element reference.
+        /// </summary>
+        DbSet<OrganizationRoleElementRef> OrganizationRoleElementRef { get; }
+
+        /// <summary>
+        /// Gets the organization role element set reference.
+        /// </summary>
+        DbSet<OrganizationRoleElementSetRef> OrganizationRoleElementSetRef { get; }
+               
+        /// <summary>
         /// Databases this instance.
         /// </summary>
         /// <returns></returns>

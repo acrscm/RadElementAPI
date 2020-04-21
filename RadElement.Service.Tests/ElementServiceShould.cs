@@ -17,7 +17,7 @@ namespace RadElement.Service.Tests
     public class ElementServiceShould
     {
         /// <summary>
-        /// The sut
+        /// The service
         /// </summary>
         private readonly ElementService service;
 
@@ -598,8 +598,6 @@ namespace RadElement.Service.Tests
         public async void DeleteElementShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(string setId, string elementId)
         {
             IntializeMockData();
-            var dataElement = new CreateUpdateElement();
-            dataElement.Name = "Tumuor";
 
             var result = await service.DeleteElement(setId, elementId);
             Assert.NotNull(result);
@@ -613,9 +611,6 @@ namespace RadElement.Service.Tests
         [InlineData("RDES74", "RDE340")]
         public async void DeleteElementShouldThrowInternalServerErrorForExceptions(string setId, string elementId)
         {
-            var dataElement = new CreateUpdateElement();
-            dataElement.Name = "Tumuor";
-
             var result = await service.DeleteElement(setId, elementId);
 
             Assert.NotNull(result);

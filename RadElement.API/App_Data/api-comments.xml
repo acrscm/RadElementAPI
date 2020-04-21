@@ -69,6 +69,11 @@
             </summary>
             <seealso cref="T:RadElement.API.Controllers.BaseController" />
         </member>
+        <member name="F:RadElement.API.Controllers.ElementController.radElementService">
+            <summary>
+            The RAD element service
+            </summary>
+        </member>
         <member name="M:RadElement.API.Controllers.ElementController.#ctor(RadElement.Core.Services.IElementService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ElementController})">
             <summary>
             Intializes Rad element service and logger.
@@ -96,7 +101,7 @@
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.SearchElement(RadElement.Core.DTO.SearchKeyword)">
+        <member name="M:RadElement.API.Controllers.ElementController.SearchElements(RadElement.Core.DTO.SearchKeyword)">
             <summary>
             Searches the element with provided keyword.
             </summary>
@@ -153,6 +158,11 @@
             </summary>
             <seealso cref="T:RadElement.API.Controllers.BaseController" />
         </member>
+        <member name="F:RadElement.API.Controllers.ElementSetController.elementSetService">
+            <summary>
+            The element set service
+            </summary>
+        </member>
         <member name="M:RadElement.API.Controllers.ElementSetController.#ctor(RadElement.Core.Services.IElementSetService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ElementSetController})">
             <summary>
             Initializes a new instance of the <see cref="T:RadElement.API.Controllers.ElementSetController"/> class.
@@ -173,7 +183,7 @@
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementSetController.SearchSet(System.String)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.SearchSets(System.String)">
             <summary>
             Searches the set with provided keyword.
             </summary>
@@ -219,6 +229,154 @@
             Method used to check if service is running
             </summary>
             <returns>Returns "Hello World" </returns>
+        </member>
+        <member name="T:RadElement.API.Controllers.OrganizationController">
+            <summary>
+            Endpoint for elements set controller
+            </summary>
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
+        </member>
+        <member name="F:RadElement.API.Controllers.OrganizationController.organizationService">
+            <summary>
+            The organization service
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.#ctor(RadElement.Core.Services.IOrganizationService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.OrganizationController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.OrganizationController" /> class.
+            </summary>
+            <param name="organizationService">The organization service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.GetOrganizations">
+            <summary>
+            Gets the organizations.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.GetOrganization(System.Int32)">
+            <summary>
+            Gets the organization.
+            </summary>
+            <param name="organizationId">The organization identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.GetOrganizationBySetId(System.String)">
+            <summary>
+            Gets the organizations by set identifier.
+            </summary>
+            <param name="setId">The set identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.GetOrganizationByElementId(System.String)">
+            <summary>
+            Gets the organizations by element identifier.
+            </summary>
+            <param name="elementId">The element identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.SearchOrganization(RadElement.Core.DTO.SearchKeyword)">
+            <summary>
+            Searches the organizations.
+            </summary>
+            <param name="searchKeyword">The search keyword.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.CreateOrganization(RadElement.Core.DTO.CreateUpdateOrganization)">
+            <summary>
+            Creates the organization.
+            </summary>
+            <param name="organization">The organization.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.UpdateOrganization(System.Int32,RadElement.Core.DTO.CreateUpdateOrganization)">
+            <summary>
+            Updates the organization.
+            </summary>
+            <param name="organizationId">The organization identifier.</param>
+            <param name="organization">The organization.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.OrganizationController.DeleteOrganization(System.Int32)">
+            <summary>
+            Deletes the organization.
+            </summary>
+            <param name="organizationId">The organization identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="T:RadElement.API.Controllers.PersonController">
+            <summary>
+            Endpoint for elements set controller
+            </summary>
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
+        </member>
+        <member name="F:RadElement.API.Controllers.PersonController.personService">
+            <summary>
+            The person service
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.#ctor(RadElement.Core.Services.IPersonService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.PersonController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.PersonController" /> class.
+            </summary>
+            <param name="personService">The person service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.GetPersons">
+            <summary>
+            Gets the persons.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.GetPerson(System.Int32)">
+            <summary>
+            Gets the person.
+            </summary>
+            <param name="personId">The person identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.GetPersonBySetId(System.String)">
+            <summary>
+            Gets the persons by set identifier.
+            </summary>
+            <param name="setId">The set identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.GetPersonByElementId(System.String)">
+            <summary>
+            Gets the persons by element identifier.
+            </summary>
+            <param name="elementId">The element identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.SearchPerson(RadElement.Core.DTO.SearchKeyword)">
+            <summary>
+            Searches the persons.
+            </summary>
+            <param name="searchKeyword">The search keyword.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.CreatePerson(RadElement.Core.DTO.CreateUpdatePerson)">
+            <summary>
+            Creates the person.
+            </summary>
+            <param name="person">The person.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.UpdatePerson(System.Int32,RadElement.Core.DTO.CreateUpdatePerson)">
+            <summary>
+            Updates the person.
+            </summary>
+            <param name="personId">The person identifier.</param>
+            <param name="person">The person.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.PersonController.DeletePerson(System.Int32)">
+            <summary>
+            Deletes the person.
+            </summary>
+            <param name="personId">The person identifier.</param>
+            <returns></returns>
         </member>
         <member name="T:RadElement.API.Filters.AuthorizationHeaderOperationFilter">
             <summary>

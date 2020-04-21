@@ -79,9 +79,9 @@ namespace RadElement.Service
             {
                 if (IsValidElementId(elementId))
                 {
-                    int setInternalId = Convert.ToInt32(elementId.Remove(0, 3));
+                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
                     var elements = radElementDbContext.Element.ToList();
-                    var element = elements.Find(x => x.Id == setInternalId);
+                    var element = elements.Find(x => x.Id == elementInternalId);
 
                     if (element != null)
                     {
@@ -93,7 +93,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'GetElement(int elementId)'");
+                logger.Error(ex, "Exception in method 'GetElement(string elementId)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -128,7 +128,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'GetElementsBySetId(int setId)'");
+                logger.Error(ex, "Exception in method 'GetElementsBySetId(string setId)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -162,7 +162,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'SearchElement(string searchKeyword)'");
+                logger.Error(ex, "Exception in method 'SearchElements(SearchKeyword searchKeyword)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -305,7 +305,7 @@ namespace RadElement.Service
                     return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = "RDE" + elementId.ToString() }, HttpStatusCode.Created));
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0}.", setId), HttpStatusCode.NotFound));
+                return await Task.FromResult(new JsonResult(string.Format("No such set with set id {0}.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
             {
@@ -443,7 +443,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                logger.Error(ex, "Exception in method 'CreateElement(string setId, CreateUpdateElement dataElement)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -708,7 +708,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
+                logger.Error(ex, "Exception in method 'UpdateElement(string setId, string elementId, CreateUpdateElement dataElement)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
@@ -756,7 +756,7 @@ namespace RadElement.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Exception in method 'DeleteElement(int setId, int elementId)'");
+                logger.Error(ex, "Exception in method 'DeleteElement(string setId, string elementId)'");
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }

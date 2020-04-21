@@ -18,6 +18,9 @@ namespace RadElement.API.Controllers
     [ApiController]
     public class ElementSetController : BaseController
     {
+        /// <summary>
+        /// The element set service
+        /// </summary>
         private readonly IElementSetService elementSetService;
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace RadElement.API.Controllers
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
         [HttpGet("sets/search")]
-         public async Task<IActionResult> SearchSet(string searchKeyword)
+         public async Task<IActionResult> SearchSets(string searchKeyword)
         {
             var result = await elementSetService.SearchSet(searchKeyword);
             return StatusCode((int)result.Code, result.Value);

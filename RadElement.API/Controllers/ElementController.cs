@@ -19,6 +19,9 @@ namespace RadElement.API.Controllers
     [ApiController]
     public class ElementController : BaseController
     {
+        /// <summary>
+        /// The RAD element service
+        /// </summary>
         private readonly IElementService radElementService;
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace RadElement.API.Controllers
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
         [HttpGet("elements/search")]
-        public async Task<IActionResult> SearchElement([FromQuery]SearchKeyword searchKeyword)
+        public async Task<IActionResult> SearchElements([FromQuery]SearchKeyword searchKeyword)
         {
             var result = await radElementService.SearchElement(searchKeyword);
             return StatusCode((int)result.Code, result.Value);
