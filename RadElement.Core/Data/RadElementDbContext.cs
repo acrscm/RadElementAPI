@@ -26,6 +26,7 @@ namespace RadElement.Core.Data
         {
             this.configurationManager = configurationManager;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RadElementDbContext"/> class.
         /// </summary>

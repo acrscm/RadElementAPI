@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using Xunit;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using RadElement.Core.Infrastructure;
 
 namespace RadElement.Service.Tests
 {
@@ -391,8 +392,10 @@ namespace RadElement.Service.Tests
                 mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
             }
 
+            var mockConfigurationManager = new Mock<IConfigurationManager>();
             var options = new DbContextOptionsBuilder<RadElementDbContext>().UseMySql(connectionString).Options;
-            mockRadElementContext.Setup(c => c.Database).Returns(new DatabaseFacade(new RadElementDbContext(options, null)));
+
+            mockRadElementContext.Setup(c => c.Database).Returns(new DatabaseFacade(new RadElementDbContext(options, mockConfigurationManager.Object)));
         }
 
         #endregion
