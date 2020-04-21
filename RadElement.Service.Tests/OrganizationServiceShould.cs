@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Xunit;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace RadElement.Service.Tests
 {
@@ -35,6 +36,7 @@ namespace RadElement.Service.Tests
         /// </summary>
         private readonly IMapper mapper;
 
+        private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string organizationNotFoundMessage = "No such organization with id '{0}'.";
         private const string organizationWithSetIdNotFoundMessage = "No such organization with set id '{0}'.";
         private const string organizationWithElementIdNotFoundMessage = "No such organization with element id '{0}'.";
@@ -74,6 +76,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetOrganizationsShouldThrowInternalServerErrorForExceptions()
         {
+            IntializeMockData(false);
             var result = await service.GetOrganizations();
 
             Assert.NotNull(result);
@@ -84,7 +87,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetOrganizationsShouldReturnAllOrganization()
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganizations();
 
             Assert.NotNull(result);
@@ -102,6 +105,7 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void GetOrganizationShouldThrowInternalServerErrorForExceptions(int organizationId)
         {
+            IntializeMockData(false);
             var result = await service.GetOrganization(organizationId);
 
             Assert.NotNull(result);
@@ -114,7 +118,7 @@ namespace RadElement.Service.Tests
         [InlineData(8)]
         public async void GetOrganizationShouldReturnNotFoundIfDoesnotExists(int organizationId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganization(organizationId);
 
             Assert.NotNull(result);
@@ -129,7 +133,7 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void GetOrganizationShouldReturnOrganizationBasedOnOrganizationId(int organizationId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganization(organizationId);
 
             Assert.NotNull(result);
@@ -147,7 +151,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetOrganizationsBySetIdShouldReturnNotFoundIfDoesnotExists(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganizationBySetId(setId);
 
             Assert.NotNull(result);
@@ -162,7 +166,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void GetOrganizationsBySetIdShouldReturnOrganizationBasedOnElementId(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganizationBySetId(setId);
 
             Assert.NotNull(result);
@@ -180,7 +184,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetOrganizationsByElementIdShouldReturnNotFoundIfDoesnotExists(string elementId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganizationByElementId(elementId);
 
             Assert.NotNull(result);
@@ -195,7 +199,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDE340")]
         public async void GetOrganizationsByElementIdShouldReturnOrganizationBasedOnElementId(string elementId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetOrganizationByElementId(elementId);
 
             Assert.NotNull(result);
@@ -213,7 +217,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void SearchOrganizationShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -228,7 +232,7 @@ namespace RadElement.Service.Tests
         [InlineData("test1")]
         public async void SearchOrganizationShouldReturnEmpyOrganizationIfSearchKeywordDoesnotExists(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -242,6 +246,7 @@ namespace RadElement.Service.Tests
         [InlineData("Tumuor")]
         public async void SearchOrganizationShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
+            IntializeMockData(false);
             var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -253,7 +258,7 @@ namespace RadElement.Service.Tests
         [InlineData("American College of Radiology - Data Science Institute")]
         public async void SearchOrganizationShouldReturnOrganizationIfSearchedOrganizationExists(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -270,7 +275,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void CreateOrganizationShouldReturnBadRequestIfOrganizationIsInvalid(CreateUpdateOrganization organization)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
 
             Assert.NotNull(result);
@@ -279,18 +284,19 @@ namespace RadElement.Service.Tests
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(organizationInvalidMessage, result.Value);
         }
-        
+
         [Theory]
         [InlineData("RDES100")]
         public async void CreateOrganizationShouldReturnNotFoundIfSetIdIsInvalid(string setId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR";
             organization.Abbreviation = "ACR";
             organization.SetId = setId;
 
+            IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -302,13 +308,14 @@ namespace RadElement.Service.Tests
         [InlineData("RDE1500")]
         public async void CreateOrganizationShouldReturnNotFoundIfElementIdIsInvalid(string elementId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR";
             organization.Abbreviation = "ACR";
             organization.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -323,7 +330,6 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283")]
         public async void CreateOrganizationShouldReturnBadRequestIfOrganizationExists(string setId, string elementId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "American College of Radiology - Data Science Institute";
             organization.Abbreviation = "ACR-DSI";
@@ -331,8 +337,9 @@ namespace RadElement.Service.Tests
             organization.SetId = setId;
             organization.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
-            
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
@@ -346,13 +353,13 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283")]
         public async void CreateOrganizationShouldReturnElementIdIOrganizationIsValid(string setId, string elementId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR";
             organization.Abbreviation = "ACR";
             organization.SetId = setId;
             organization.ElementId = elementId;
-            
+
+            IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
 
             Assert.NotNull(result);
@@ -370,7 +377,7 @@ namespace RadElement.Service.Tests
         [InlineData(2, null)]
         public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationIsInvalid(int organizationId, CreateUpdateOrganization organization)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
 
             Assert.NotNull(result);
@@ -384,13 +391,14 @@ namespace RadElement.Service.Tests
         [InlineData(1, "RDES100")]
         public async void UpdateOrganizationShouldReturnNotFoundIfSetIdIsInvalid(int organizationId, string setId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR";
             organization.Abbreviation = "ACR";
             organization.SetId = setId;
 
+            IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -402,13 +410,14 @@ namespace RadElement.Service.Tests
         [InlineData(1, "RDE1500")]
         public async void UpdateOrganizationShouldReturnNotFoundIfElementIdIsInvalid(int organizationId, string elementId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR";
             organization.Abbreviation = "ACR";
             organization.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -423,7 +432,6 @@ namespace RadElement.Service.Tests
         [InlineData(2, "RDES53", "RDE283")]
         public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationExists(int organizationId, string setId, string elementId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "American College of Radiology - Data Science Institute";
             organization.Abbreviation = "ACR-DSI";
@@ -431,6 +439,7 @@ namespace RadElement.Service.Tests
             organization.SetId = setId;
             organization.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
 
             Assert.NotNull(result);
@@ -443,11 +452,11 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void UpdateOrganizationShouldReturnOrganizationIdIfOrganizationIsValid(int organizationId)
         {
-            IntializeMockData();
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR New";
             organization.Abbreviation = "ACR New";
 
+            IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
 
             Assert.NotNull(result);
@@ -468,9 +477,9 @@ namespace RadElement.Service.Tests
         [InlineData(8)]
         public async void DeleteOrganizationShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(int organizationId)
         {
-            IntializeMockData();
-
+            IntializeMockData(true);
             var result = await service.DeleteOrganization(organizationId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -485,6 +494,7 @@ namespace RadElement.Service.Tests
         [InlineData(8)]
         public async void DeleteOrganizationShouldThrowInternalServerErrorForExceptions(int organizationId)
         {
+            IntializeMockData(false);
             var result = await service.DeleteOrganization(organizationId);
 
             Assert.NotNull(result);
@@ -499,7 +509,7 @@ namespace RadElement.Service.Tests
         [InlineData(4)]
         public async void DeleteOrganizationShouldDeleteOrganizationIfOrganizationIdIsValid(int organizationId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.DeleteOrganization(organizationId);
 
             Assert.NotNull(result);
@@ -513,64 +523,70 @@ namespace RadElement.Service.Tests
 
         #region Private Methods
 
-        private void IntializeMockData()
+        private void IntializeMockData(bool mockDatabaseData)
         {
-            var mockElement = new Mock<DbSet<Element>>();
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
-            mockElement.Setup(d => d.Add(It.IsAny<Element>())).Callback<Element>((s) => MockDataContext.elementsDB.ToList().Add(s));
+            if (mockDatabaseData)
+            {
+                var mockElement = new Mock<DbSet<Element>>();
+                mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
+                mockElement.Setup(d => d.Add(It.IsAny<Element>())).Callback<Element>((s) => MockDataContext.elementsDB.ToList().Add(s));
 
-            var mockSet = new Mock<DbSet<ElementSet>>();
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
-            mockSet.Setup(d => d.Add(It.IsAny<ElementSet>())).Callback<ElementSet>((s) => MockDataContext.elementSetDb.ToList().Add(s));
+                var mockSet = new Mock<DbSet<ElementSet>>();
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
+                mockSet.Setup(d => d.Add(It.IsAny<ElementSet>())).Callback<ElementSet>((s) => MockDataContext.elementSetDb.ToList().Add(s));
 
-            var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
-            mockElementSetRef.Setup(d => d.Add(It.IsAny<ElementSetRef>())).Callback<ElementSetRef>((s) => MockDataContext.elementSetRefDb.ToList().Add(s));
+                var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
+                mockElementSetRef.Setup(d => d.Add(It.IsAny<ElementSetRef>())).Callback<ElementSetRef>((s) => MockDataContext.elementSetRefDb.ToList().Add(s));
 
-            var mockElementValue = new Mock<DbSet<ElementValue>>();
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
-            mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
-            mockElementValue.Setup(d => d.Add(It.IsAny<ElementValue>())).Callback<ElementValue>((s) => MockDataContext.elementValueDb.ToList().Add(s));
+                var mockElementValue = new Mock<DbSet<ElementValue>>();
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
+                mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
+                mockElementValue.Setup(d => d.Add(It.IsAny<ElementValue>())).Callback<ElementValue>((s) => MockDataContext.elementValueDb.ToList().Add(s));
 
-            var mockOrganization = new Mock<DbSet<Organization>>();
-            mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Provider).Returns(MockDataContext.organizationDb.Provider);
-            mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Expression).Returns(MockDataContext.organizationDb.Expression);
-            mockOrganization.As<IQueryable<Organization>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationDb.ElementType);
-            mockOrganization.As<IQueryable<Organization>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationDb.GetEnumerator());
-            mockOrganization.Setup(d => d.Add(It.IsAny<Organization>())).Callback<Organization>((s) => MockDataContext.organizationDb.ToList().Add(s));
-            
-            var mockOrganizationElementRef = new Mock<DbSet<OrganizationRoleElementRef>>();
-            mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementRefDb.Provider);
-            mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementRefDb.Expression);
-            mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementRefDb.ElementType);
-            mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementRefDb.GetEnumerator());
-            mockOrganizationElementRef.Setup(d => d.Add(It.IsAny<OrganizationRoleElementRef>())).Callback<OrganizationRoleElementRef>((s) => MockDataContext.organizationElementRefDb.ToList().Add(s));
+                var mockOrganization = new Mock<DbSet<Organization>>();
+                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Provider).Returns(MockDataContext.organizationDb.Provider);
+                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Expression).Returns(MockDataContext.organizationDb.Expression);
+                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationDb.ElementType);
+                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationDb.GetEnumerator());
+                mockOrganization.Setup(d => d.Add(It.IsAny<Organization>())).Callback<Organization>((s) => MockDataContext.organizationDb.ToList().Add(s));
 
-            var mockOrganizationElementSetRef = new Mock<DbSet<OrganizationRoleElementSetRef>>();
-            mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementSetRefDb.Provider);
-            mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementSetRefDb.Expression);
-            mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementSetRefDb.ElementType);
-            mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementSetRefDb.GetEnumerator());
-            mockOrganizationElementSetRef.Setup(d => d.Add(It.IsAny<OrganizationRoleElementSetRef>())).Callback<OrganizationRoleElementSetRef>((s) => MockDataContext.organizationElementSetRefDb.ToList().Add(s));
+                var mockOrganizationElementRef = new Mock<DbSet<OrganizationRoleElementRef>>();
+                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementRefDb.Provider);
+                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementRefDb.Expression);
+                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementRefDb.ElementType);
+                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementRefDb.GetEnumerator());
+                mockOrganizationElementRef.Setup(d => d.Add(It.IsAny<OrganizationRoleElementRef>())).Callback<OrganizationRoleElementRef>((s) => MockDataContext.organizationElementRefDb.ToList().Add(s));
 
-            mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
-            mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
-            mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
-            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
-            mockRadElementContext.Setup(c => c.Organization).Returns(mockOrganization.Object);
-            mockRadElementContext.Setup(c => c.OrganizationRoleElementRef).Returns(mockOrganizationElementRef.Object);
-            mockRadElementContext.Setup(c => c.OrganizationRoleElementSetRef).Returns(mockOrganizationElementSetRef.Object);
+                var mockOrganizationElementSetRef = new Mock<DbSet<OrganizationRoleElementSetRef>>();
+                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementSetRefDb.Provider);
+                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementSetRefDb.Expression);
+                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementSetRefDb.ElementType);
+                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementSetRefDb.GetEnumerator());
+                mockOrganizationElementSetRef.Setup(d => d.Add(It.IsAny<OrganizationRoleElementSetRef>())).Callback<OrganizationRoleElementSetRef>((s) => MockDataContext.organizationElementSetRefDb.ToList().Add(s));
+
+                mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
+                mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
+                mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
+                mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+                mockRadElementContext.Setup(c => c.Organization).Returns(mockOrganization.Object);
+                mockRadElementContext.Setup(c => c.OrganizationRoleElementRef).Returns(mockOrganizationElementRef.Object);
+                mockRadElementContext.Setup(c => c.OrganizationRoleElementSetRef).Returns(mockOrganizationElementSetRef.Object);
+            }
+
+            var options = new DbContextOptionsBuilder<RadElementDbContext>().UseMySql(connectionString).Options;
+            mockRadElementContext.Setup(c => c.Database).Returns(new DatabaseFacade(new RadElementDbContext(options, null)));
         }
 
         #endregion

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Xunit;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace RadElement.Service.Tests
 {
@@ -36,6 +37,7 @@ namespace RadElement.Service.Tests
         /// </summary>
         private readonly IMapper mapper;
 
+        private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string setNotFoundMessage = "No such set with id '{0}'.";
         private const string setNotFoundMessageWithSearchMessage = "No such set with keyword '{0}'.";
         private const string setInvalidMessage = "Set fileds are invalid.";
@@ -66,6 +68,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetSetsShouldThrowInternalServerErrorForExceptions()
         {
+            IntializeMockData(false);
             var result = await service.GetSets();
             
             Assert.NotNull(result);
@@ -76,7 +79,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetSetssShouldReturnAllSets()
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetSets();
 
             Assert.NotNull(result);
@@ -94,6 +97,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void GetSetByIdShouldThrowInternalServerErrorForExceptions(string setId)
         {
+            IntializeMockData(false);
             var result = await service.GetSet(setId);
 
             Assert.NotNull(result);
@@ -106,7 +110,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetSetByIdShouldReturnNotFoundIfDoesnotExists(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetSet(setId);
 
             Assert.NotNull(result);
@@ -121,7 +125,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void GetSetByIdShouldReturnSetsBasedOnSetId(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetSet(setId);
 
             Assert.NotNull(result);
@@ -139,7 +143,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchSet(searchKeyword);
 
             Assert.NotNull(result);
@@ -154,7 +158,7 @@ namespace RadElement.Service.Tests
         [InlineData("test1")]
         public async void SearchSetShouldReturnEmpySetIfSearchKeywordDoesnotExists(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchSet(searchKeyword);
 
             Assert.NotNull(result);
@@ -169,6 +173,7 @@ namespace RadElement.Service.Tests
         [InlineData("Kimberly")]
         public async void GetSetShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
+            IntializeMockData(false);
             var result = await service.SearchSet(searchKeyword);
 
             Assert.NotNull(result);
@@ -181,7 +186,7 @@ namespace RadElement.Service.Tests
         [InlineData("Tissue")]
         public async void GetSetShouldReturnSetIfSearchedElementExists(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchSet(searchKeyword);
 
             Assert.NotNull(result);
@@ -198,7 +203,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void CreateSetShouldReturnBadRequestIfSetIsInvalid(CreateUpdateSet set)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.CreateSet(set);
 
             Assert.NotNull(result);
@@ -218,6 +223,7 @@ namespace RadElement.Service.Tests
             set.ContactName = contactName;
             set.Description = description;
 
+            IntializeMockData(false);
             var result = await service.CreateSet(set);
 
             Assert.NotNull(result);
@@ -230,12 +236,12 @@ namespace RadElement.Service.Tests
         [InlineData("Sinus1", "Sinus2", "Sinus3")]
         public async void CreateSetShouldReturnSetIdIfSetIsValid(string moduleName, string contactName, string description)
         {
-            IntializeMockData();
             var set = new CreateUpdateSet();
             set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
+            IntializeMockData(true);
             var result = await service.CreateSet(set);
 
             Assert.NotNull(result);
@@ -252,7 +258,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", null)]
         public async void UpdateSetShouldReturnBadRequestIfSetIsInvalid(string setId, CreateUpdateSet set)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.UpdateSet(setId, set);
 
             Assert.NotNull(result);
@@ -272,6 +278,7 @@ namespace RadElement.Service.Tests
             set.ContactName = contactName;
             set.Description = description;
 
+            IntializeMockData(false);
             var result = await service.UpdateSet(setId, set);
 
             Assert.NotNull(result);
@@ -284,12 +291,12 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66", "Sinus1", "Sinus2", "Sinus3")]
         public async void UpdateSetShouldReturnSetIdIfSetIsValid(string setId, string moduleName, string contactName, string description)
         {
-            IntializeMockData();
             var set = new CreateUpdateSet();
             set.ModuleName = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
+            IntializeMockData(true);
             var result = await service.UpdateSet(setId, set);
 
             Assert.NotNull(result);
@@ -308,7 +315,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES200")]
         public async void DeleteSetShouldReturnNotFoundIfSetIdDoesNotExists(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.DeleteSet(setId);
 
             Assert.NotNull(result);
@@ -323,6 +330,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void DeleteSetShouldThrowInternalServerErrorForExceptions(string setId)
         {
+            IntializeMockData(false);
             var result = await service.DeleteSet(setId);
 
             Assert.NotNull(result);
@@ -335,7 +343,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void DeleteSetShouldDeleteSetIfSetIdIsValid(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.DeleteSet(setId);
 
             Assert.NotNull(result);
@@ -349,37 +357,42 @@ namespace RadElement.Service.Tests
 
         #region Private Methods
 
-        private void IntializeMockData()
+        private void IntializeMockData(bool mockDatabaseData)
         {
-            var mockElement = new Mock<DbSet<Element>>();
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
+            if (mockDatabaseData)
+            {
+                var mockElement = new Mock<DbSet<Element>>();
+                mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
 
-            var mockSet = new Mock<DbSet<ElementSet>>();
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
+                var mockSet = new Mock<DbSet<ElementSet>>();
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
 
-            var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
+                var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
 
-            var mockElementValue = new Mock<DbSet<ElementValue>>();
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
-            mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
+                var mockElementValue = new Mock<DbSet<ElementValue>>();
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
+                mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
 
-            mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
-            mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
-            mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
-            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+                mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
+                mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
+                mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
+                mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+            }
 
+            var options = new DbContextOptionsBuilder<RadElementDbContext>().UseMySql(connectionString).Options;
+            mockRadElementContext.Setup(c => c.Database).Returns(new DatabaseFacade(new RadElementDbContext(options, null)));
         }
 
         #endregion

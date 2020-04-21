@@ -26,16 +26,6 @@ namespace RadElement.Core.Data
         {
             this.configurationManager = configurationManager;
         }
-
-        /// <summary>
-        /// Values the tuple.
-        /// </summary>
-        /// <typeparam name="DbContextOptions`1">The type of the b context options`1.</typeparam>
-        /// <returns></returns>
-        public RadElementDbContext(DbContextOptions<RadElementDbContext> options)
-            : base(options)
-        { }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RadElementDbContext"/> class.
         /// </summary>
@@ -161,7 +151,6 @@ namespace RadElement.Core.Data
             modelBuilder.Entity<CodeSystem>(entity =>
             {
                 entity.HasKey(e => e.Abbrev);
-
             });
         }
     }

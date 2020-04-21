@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Xunit;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace RadElement.Service.Tests
 {
@@ -35,6 +36,7 @@ namespace RadElement.Service.Tests
         /// </summary>
         private readonly IMapper mapper;
 
+        private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string personNotFoundMessage = "No such person with id '{0}'.";
         private const string personWithSetIdNotFoundMessage = "No such person with set id '{0}'.";
         private const string personWithElementIdNotFoundMessage = "No such person with element id '{0}'.";
@@ -76,6 +78,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetPersonsShouldThrowInternalServerErrorForExceptions()
         {
+            IntializeMockData(false);
             var result = await service.GetPersons();
 
             Assert.NotNull(result);
@@ -86,7 +89,7 @@ namespace RadElement.Service.Tests
         [Fact]
         public async void GetPersonsShouldReturnAllPersons()
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPersons();
 
             Assert.NotNull(result);
@@ -104,6 +107,7 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void GetPersonShouldThrowInternalServerErrorForExceptions(int personId)
         {
+            IntializeMockData(false);
             var result = await service.GetPerson(personId);
 
             Assert.NotNull(result);
@@ -116,7 +120,7 @@ namespace RadElement.Service.Tests
         [InlineData(8)]
         public async void GetPersonShouldReturnNotFoundIfDoesnotExists(int personId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPerson(personId);
 
             Assert.NotNull(result);
@@ -131,7 +135,7 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void GetPersonShouldReturnPersonBasedOnPersonId(int personId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPerson(personId);
 
             Assert.NotNull(result);
@@ -149,7 +153,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetPersonBySetIdShouldReturnNotFoundIfDoesnotExists(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPersonBySetId(setId);
 
             Assert.NotNull(result);
@@ -164,7 +168,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES66")]
         public async void GetPersonBySetIdShouldReturnPersonsBasedOnElementId(string setId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPersonBySetId(setId);
 
             Assert.NotNull(result);
@@ -182,7 +186,7 @@ namespace RadElement.Service.Tests
         [InlineData("RD2")]
         public async void GetPersonByElementIdShouldReturnNotFoundIfDoesnotExists(string elementId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPersonByElementId(elementId);
 
             Assert.NotNull(result);
@@ -197,7 +201,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDE340")]
         public async void GetPersonByElementIdShouldReturnPersonsBasedOnElementId(string elementId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.GetPersonByElementId(elementId);
 
             Assert.NotNull(result);
@@ -215,7 +219,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void SearchPersonShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchPerson(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -230,7 +234,7 @@ namespace RadElement.Service.Tests
         [InlineData("test1")]
         public async void SearchPersonShouldReturnEmpyPersonsIfSearchKeywordDoesnotExists(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchPerson(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -244,6 +248,7 @@ namespace RadElement.Service.Tests
         [InlineData("Tumuor")]
         public async void SearchPersonShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
+            IntializeMockData(false);
             var result = await service.SearchPerson(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -255,7 +260,7 @@ namespace RadElement.Service.Tests
         [InlineData("Adam")]
         public async void SearchPersonShouldReturnPersonssIfSearchedPersonExists(string searchKeyword)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.SearchPerson(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
@@ -272,7 +277,7 @@ namespace RadElement.Service.Tests
         [InlineData(null)]
         public async void CreatePersonShouldReturnBadRequestIfPersonIsInvalid(CreateUpdatePerson person)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.CreatePerson(person);
 
             Assert.NotNull(result);
@@ -286,13 +291,14 @@ namespace RadElement.Service.Tests
         [InlineData("RDES100")]
         public async void CreatePersonShouldReturnNotFoundIfSetIdIsInvalid(string setId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
             person.Orcid = "Orcidr";
             person.SetId = setId;
 
+            IntializeMockData(true);
             var result = await service.CreatePerson(person);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -304,13 +310,14 @@ namespace RadElement.Service.Tests
         [InlineData("RDE1500")]
         public async void CreatePersonShouldReturnNotFoundIfElementIdIsInvalid(string elementId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
             person.Orcid = "Orcidr";
             person.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.CreatePerson(person);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -325,12 +332,12 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283")]
         public async void CreatePersonShouldReturnBadRequestIfPersonExists(string setId, string elementId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Adam Flanders, MD, MS";
             person.SetId = setId;
             person.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.CreatePerson(person);
             
             Assert.NotNull(result);
@@ -346,13 +353,13 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283")]
         public async void CreatePersonShouldReturnElementIdIfPersonsAreValid(string setId, string elementId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
             person.Orcid = "Orcidr";
             person.SetId = setId;
             person.ElementId = elementId;
-            
+
+            IntializeMockData(true);
             var result = await service.CreatePerson(person);
 
             Assert.NotNull(result);
@@ -370,7 +377,7 @@ namespace RadElement.Service.Tests
         [InlineData(2, null)]
         public async void UpdatePersonShouldReturnBadRequestIfPersonIsInvalid(int personId, CreateUpdatePerson person)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
 
             Assert.NotNull(result);
@@ -384,13 +391,14 @@ namespace RadElement.Service.Tests
         [InlineData(1, "RDES100")]
         public async void UpdatePersonShouldReturnNotFoundIfSetIdIsInvalid(int personId, string setId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
             person.Orcid = "Orcidr";
             person.SetId = setId;
 
+            IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -402,13 +410,14 @@ namespace RadElement.Service.Tests
         [InlineData(1, "RDE1500")]
         public async void UpdatePersonShouldReturnNotFoundIfElementIdIsInvalid(int personId, string elementId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
             person.Orcid = "Orcidr";
             person.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -423,12 +432,12 @@ namespace RadElement.Service.Tests
         [InlineData(2, "RDES53", "RDE283")]
         public async void UpdatePersonShouldReturnBadRequestIfPersonExists(int personId, string setId, string elementId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Woojin Kim, MD";
             person.SetId = setId;
             person.ElementId = elementId;
 
+            IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
 
             Assert.NotNull(result);
@@ -441,11 +450,11 @@ namespace RadElement.Service.Tests
         [InlineData(2)]
         public async void UpdatePersonShouldReturnPersonIdIfPersonsAreValid(int personId)
         {
-            IntializeMockData();
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
             person.Orcid = "Orcidr";
 
+            IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
 
             Assert.NotNull(result);
@@ -466,9 +475,9 @@ namespace RadElement.Service.Tests
         [InlineData(8)]
         public async void DeletePersonShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(int personId)
         {
-            IntializeMockData();
-
+            IntializeMockData(true);
             var result = await service.DeletePerson(personId);
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
@@ -483,6 +492,7 @@ namespace RadElement.Service.Tests
         [InlineData(8)]
         public async void DeletePersonShouldThrowInternalServerErrorForExceptions(int personId)
         {
+            IntializeMockData(false);
             var result = await service.DeletePerson(personId);
 
             Assert.NotNull(result);
@@ -497,7 +507,7 @@ namespace RadElement.Service.Tests
         [InlineData(4)]
         public async void DeletePersonShouldDeletePersonIfPersonIdIsValid(int personId)
         {
-            IntializeMockData();
+            IntializeMockData(true);
             var result = await service.DeletePerson(personId);
 
             Assert.NotNull(result);
@@ -511,64 +521,63 @@ namespace RadElement.Service.Tests
 
         #region Private Methods
 
-        private void IntializeMockData()
+        private void IntializeMockData(bool mockDatabaseData)
         {
-            var mockElement = new Mock<DbSet<Element>>();
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
-            mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
-            mockElement.Setup(d => d.Add(It.IsAny<Element>())).Callback<Element>((s) => MockDataContext.elementsDB.ToList().Add(s));
+            if (mockDatabaseData)
+            {
+                var mockElement = new Mock<DbSet<Element>>();
+                mockElement.As<IQueryable<Element>>().Setup(m => m.Provider).Returns(MockDataContext.elementsDB.Provider);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.Expression).Returns(MockDataContext.elementsDB.Expression);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.ElementType).Returns(MockDataContext.elementsDB.ElementType);
+                mockElement.As<IQueryable<Element>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementsDB.GetEnumerator());
 
-            var mockSet = new Mock<DbSet<ElementSet>>();
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
-            mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
-            mockSet.Setup(d => d.Add(It.IsAny<ElementSet>())).Callback<ElementSet>((s) => MockDataContext.elementSetDb.ToList().Add(s));
+                var mockSet = new Mock<DbSet<ElementSet>>();
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetDb.Provider);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetDb.Expression);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetDb.ElementType);
+                mockSet.As<IQueryable<ElementSet>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetDb.GetEnumerator());
 
-            var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
-            mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
-            mockElementSetRef.Setup(d => d.Add(It.IsAny<ElementSetRef>())).Callback<ElementSetRef>((s) => MockDataContext.elementSetRefDb.ToList().Add(s));
+                var mockElementSetRef = new Mock<DbSet<ElementSetRef>>();
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.elementSetRefDb.Provider);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.elementSetRefDb.Expression);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.elementSetRefDb.ElementType);
+                mockElementSetRef.As<IQueryable<ElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementSetRefDb.GetEnumerator());
 
-            var mockElementValue = new Mock<DbSet<ElementValue>>();
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
-            mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
-            mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
-            mockElementValue.Setup(d => d.Add(It.IsAny<ElementValue>())).Callback<ElementValue>((s) => MockDataContext.elementValueDb.ToList().Add(s));
+                var mockElementValue = new Mock<DbSet<ElementValue>>();
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
+                mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
 
-            var mockPerson = new Mock<DbSet<Person>>();
-            mockPerson.As<IQueryable<Person>>().Setup(m => m.Provider).Returns(MockDataContext.personDb.Provider);
-            mockPerson.As<IQueryable<Person>>().Setup(m => m.Expression).Returns(MockDataContext.personDb.Expression);
-            mockPerson.As<IQueryable<Person>>().Setup(m => m.ElementType).Returns(MockDataContext.personDb.ElementType);
-            mockPerson.As<IQueryable<Person>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personDb.GetEnumerator());
-            mockPerson.Setup(d => d.Add(It.IsAny<Person>())).Callback<Person>((s) => MockDataContext.personDb.ToList().Add(s));
-            
-            var mockPersonElementRef = new Mock<DbSet<PersonRoleElementRef>>();
-            mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.personElementRefDb.Provider);
-            mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.personElementRefDb.Expression);
-            mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.personElementRefDb.ElementType);
-            mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personElementRefDb.GetEnumerator());
-            mockPersonElementRef.Setup(d => d.Add(It.IsAny<PersonRoleElementRef>())).Callback<PersonRoleElementRef>((s) => MockDataContext.personElementRefDb.ToList().Add(s));
+                var mockPerson = new Mock<DbSet<Person>>();
+                mockPerson.As<IQueryable<Person>>().Setup(m => m.Provider).Returns(MockDataContext.personDb.Provider);
+                mockPerson.As<IQueryable<Person>>().Setup(m => m.Expression).Returns(MockDataContext.personDb.Expression);
+                mockPerson.As<IQueryable<Person>>().Setup(m => m.ElementType).Returns(MockDataContext.personDb.ElementType);
+                mockPerson.As<IQueryable<Person>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personDb.GetEnumerator());
 
-            var mockPersonElementSetRef = new Mock<DbSet<PersonRoleElementSetRef>>();
-            mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.personElementSetRefDb.Provider);
-            mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.personElementSetRefDb.Expression);
-            mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.personElementSetRefDb.ElementType);
-            mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personElementSetRefDb.GetEnumerator());
-            mockPersonElementSetRef.Setup(d => d.Add(It.IsAny<PersonRoleElementSetRef>())).Callback<PersonRoleElementSetRef>((s) => MockDataContext.personElementSetRefDb.ToList().Add(s));
+                var mockPersonElementRef = new Mock<DbSet<PersonRoleElementRef>>();
+                mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.personElementRefDb.Provider);
+                mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.personElementRefDb.Expression);
+                mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.personElementRefDb.ElementType);
+                mockPersonElementRef.As<IQueryable<PersonRoleElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personElementRefDb.GetEnumerator());
 
-            mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
-            mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
-            mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
-            mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
-            mockRadElementContext.Setup(c => c.Person).Returns(mockPerson.Object);
-            mockRadElementContext.Setup(c => c.PersonRoleElementRef).Returns(mockPersonElementRef.Object);
-            mockRadElementContext.Setup(c => c.PersonRoleElementSetRef).Returns(mockPersonElementSetRef.Object);
+                var mockPersonElementSetRef = new Mock<DbSet<PersonRoleElementSetRef>>();
+                mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.personElementSetRefDb.Provider);
+                mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.personElementSetRefDb.Expression);
+                mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.personElementSetRefDb.ElementType);
+                mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personElementSetRefDb.GetEnumerator());
+
+                mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
+                mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
+                mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
+                mockRadElementContext.Setup(c => c.ElementValue).Returns(mockElementValue.Object);
+                mockRadElementContext.Setup(c => c.Person).Returns(mockPerson.Object);
+                mockRadElementContext.Setup(c => c.PersonRoleElementRef).Returns(mockPersonElementRef.Object);
+                mockRadElementContext.Setup(c => c.PersonRoleElementSetRef).Returns(mockPersonElementSetRef.Object);
+            }
+
+            var options = new DbContextOptionsBuilder<RadElementDbContext>().UseMySql(connectionString).Options;
+            mockRadElementContext.Setup(c => c.Database).Returns(new DatabaseFacade(new RadElementDbContext(options, null)));
         }
 
         #endregion

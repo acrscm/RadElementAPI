@@ -138,38 +138,43 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> CreateSet(CreateUpdateSet content)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (content == null)
+                try
                 {
-                    return await Task.FromResult(new JsonResult("Set fileds are invalid.", HttpStatusCode.BadRequest));
+                    if (content == null)
+                    {
+                        return await Task.FromResult(new JsonResult("Set fileds are invalid.", HttpStatusCode.BadRequest));
+                    }
+
+                    ElementSet set = new ElementSet()
+                    {
+                        Name = content.ModuleName.Trim(),
+                        Description = content.Description,
+                        ContactName = content.ContactName,
+                        ParentId = content.ParentId,
+                        Status = "Proposed",
+                        StatusDate = DateTime.UtcNow,
+                        Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null,
+                        BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null,
+                        AgeLowerBound = content.AgeLowerBound,
+                        AgeUpperBound = content.AgeUpperBound,
+                        Version = content.Version
+                    };
+
+                    radElementDbContext.ElementSet.Add(set);
+                    radElementDbContext.SaveChanges();
+                    transaction.Commit();
+
+                    return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = "RDES" + set.Id.ToString() }, HttpStatusCode.Created));
                 }
-
-                ElementSet set = new ElementSet()
+                catch (Exception ex)
                 {
-                    Name = content.ModuleName.Trim(),
-                    Description = content.Description,
-                    ContactName = content.ContactName,
-                    ParentId = content.ParentId,
-                    Status = "Proposed",
-                    StatusDate = DateTime.UtcNow,
-                    Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null,
-                    BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null,
-                    AgeLowerBound = content.AgeLowerBound,
-                    AgeUpperBound = content.AgeUpperBound,
-                    Version = content.Version
-                };
-
-                radElementDbContext.ElementSet.Add(set);
-                radElementDbContext.SaveChanges();
-
-                return await Task.FromResult(new JsonResult(new SetIdDetails() { SetId = "RDES" + set.Id.ToString() }, HttpStatusCode.Created));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'CreateSet(CreateUpdateSet content)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'CreateSet(CreateUpdateSet content)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
@@ -181,45 +186,50 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> UpdateSet(string setId, CreateUpdateSet content)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (IsValidSetId(setId))
+                try
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-
-                    if (content == null)
+                    if (IsValidSetId(setId))
                     {
-                        return await Task.FromResult(new JsonResult("Set fileds are invalid.", HttpStatusCode.BadRequest));
+                        int id = Convert.ToInt32(setId.Remove(0, 4));
+
+                        if (content == null)
+                        {
+                            return await Task.FromResult(new JsonResult("Set fileds are invalid.", HttpStatusCode.BadRequest));
+                        }
+
+                        var elementSets = radElementDbContext.ElementSet.ToList();
+                        var elementSet = elementSets.Find(x => x.Id == id);
+
+                        if (elementSet != null)
+                        {
+                            elementSet.Name = content.ModuleName.Trim();
+                            elementSet.Description = content.Description;
+                            elementSet.ContactName = content.ContactName;
+                            elementSet.ParentId = content.ParentId;
+                            elementSet.Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null;
+                            elementSet.BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null;
+                            elementSet.AgeLowerBound = content.AgeLowerBound;
+                            elementSet.AgeUpperBound = content.AgeUpperBound;
+                            elementSet.Version = content.Version;
+
+                            radElementDbContext.SaveChanges();
+                            transaction.Commit();
+
+                            return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is updated.", setId), HttpStatusCode.OK));
+                        }
                     }
 
-                    var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == id);
-
-                    if (elementSet != null)
-                    {
-                        elementSet.Name = content.ModuleName.Trim();
-                        elementSet.Description = content.Description;
-                        elementSet.ContactName = content.ContactName;
-                        elementSet.ParentId = content.ParentId;
-                        elementSet.Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null;
-                        elementSet.BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null;
-                        elementSet.AgeLowerBound = content.AgeLowerBound;
-                        elementSet.AgeUpperBound = content.AgeUpperBound;
-                        elementSet.Version = content.Version;
-
-                        radElementDbContext.SaveChanges();
-
-                        return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is updated.", setId), HttpStatusCode.OK));
-                    }
+                    return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
                 }
-
-                return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'UpdateSet(string setId, CreateUpdateSet content)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'UpdateSet(string setId, CreateUpdateSet content)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
@@ -230,31 +240,36 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> DeleteSet(string setId)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (IsValidSetId(setId))
+                try
                 {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    var elementSets = radElementDbContext.ElementSet.ToList();
-                    var elementSet = elementSets.Find(x => x.Id == id);
-
-                    if (elementSet != null)
+                    if (IsValidSetId(setId))
                     {
-                        RemoveSetElementsReferences(elementSet);
+                        int id = Convert.ToInt32(setId.Remove(0, 4));
+                        var elementSets = radElementDbContext.ElementSet.ToList();
+                        var elementSet = elementSets.Find(x => x.Id == id);
 
-                        radElementDbContext.ElementSet.Remove(elementSet);
-                        radElementDbContext.SaveChanges();
+                        if (elementSet != null)
+                        {
+                            RemoveSetElementsReferences(elementSet);
 
-                        return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is deleted.", setId), HttpStatusCode.OK));
+                            radElementDbContext.ElementSet.Remove(elementSet);
+                            radElementDbContext.SaveChanges();
+                            transaction.Commit();
+
+                            return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is deleted.", setId), HttpStatusCode.OK));
+                        }
                     }
+                    return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
                 }
-                return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'DeleteSet(string setId)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'DeleteSet(string setId)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 

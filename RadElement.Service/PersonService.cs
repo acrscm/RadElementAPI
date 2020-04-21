@@ -114,8 +114,8 @@ namespace RadElement.Service
                     var persons = radElementDbContext.Person.ToList();
 
                     var selectedPersons = from personId in personIds
-                                           join person in persons on personId.PersonID equals (int)person.Id
-                                           select person;
+                                          join person in persons on personId.PersonID equals (int)person.Id
+                                          select person;
 
                     if (selectedPersons != null && selectedPersons.Any())
                     {
@@ -208,71 +208,75 @@ namespace RadElement.Service
         /// <exception cref="NotImplementedException"></exception>
         public async Task<JsonResult> CreatePerson(CreateUpdatePerson person)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (person == null)
+                try
                 {
-                    return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
-                }
-
-                if (!string.IsNullOrEmpty(person.SetId))
-                {
-                    if (!IsValidSetId(person.SetId))
+                    if (person == null)
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", person.SetId), HttpStatusCode.NotFound));
+                        return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
-                }
 
-                if (!string.IsNullOrEmpty(person.ElementId))
-                {
-                    if (!IsValidElementId(person.ElementId))
+                    if (!string.IsNullOrEmpty(person.SetId))
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
+                        if (!IsValidSetId(person.SetId))
+                        {
+                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", person.SetId), HttpStatusCode.NotFound));
+                        }
                     }
+
+                    if (!string.IsNullOrEmpty(person.ElementId))
+                    {
+                        if (!IsValidElementId(person.ElementId))
+                        {
+                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
+                        }
+                    }
+
+                    var isMatchingPerson = radElementDbContext.Person.ToList().Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
+                                                                                         string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
+                                                                                         string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                                         string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                    if (isMatchingPerson)
+                    {
+                        return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
+                    }
+
+
+                    int setId = !string.IsNullOrEmpty(person.SetId) ? Convert.ToInt32(person.SetId.Remove(0, 4)) : 0;
+                    int elementId = !string.IsNullOrEmpty(person.ElementId) ? Convert.ToInt32(person.ElementId.Remove(0, 4)) : 0;
+
+                    var personData = new Person()
+                    {
+                        Name = person.Name,
+                        Orcid = person.Orcid,
+                        Url = person.Url,
+                        TwitterHandle = person.TwitterHandle,
+                    };
+
+                    radElementDbContext.Person.Add(personData);
+                    radElementDbContext.SaveChanges();
+
+                    if (elementId != 0)
+                    {
+                        AddPersonElementReferences(elementId, personData.Id, person.Roles);
+                    }
+                    if (setId != 0)
+                    {
+                        AddPersonElementSetReferences(setId, personData.Id, person.Roles);
+                    }
+
+                    radElementDbContext.SaveChanges();
+                    transaction.Commit();
+                    return await Task.FromResult(new JsonResult(new PersonIdDetails() { PersonId = personData.Id.ToString() }, HttpStatusCode.Created));
                 }
-
-                var isMatchingPerson = radElementDbContext.Person.ToList().Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                     string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                                     string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                     string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-                if (isMatchingPerson)
+                catch (Exception ex)
                 {
-                    return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'CreatePerson(CreateUpdatePerson person)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
                 }
-
-
-                int setId = !string.IsNullOrEmpty(person.SetId) ? Convert.ToInt32(person.SetId.Remove(0, 4)) : 0;
-                int elementId = !string.IsNullOrEmpty(person.ElementId) ? Convert.ToInt32(person.ElementId.Remove(0, 4)) : 0;
-
-                var personData = new Person()
-                {
-                    Name = person.Name,
-                    Orcid = person.Orcid,
-                    Url = person.Url,
-                    TwitterHandle = person.TwitterHandle,
-                };
-
-                radElementDbContext.Person.Add(personData);
-                radElementDbContext.SaveChanges();
-
-                if (elementId != 0)
-                {
-                    AddPersonElementReferences(elementId, personData.Id, person.Roles);
-                }
-                if (setId != 0)
-                {
-                    AddPersonElementSetReferences(setId, personData.Id, person.Roles);
-                }
-
-                radElementDbContext.SaveChanges();
-
-                return await Task.FromResult(new JsonResult(new PersonIdDetails() { PersonId = personData.Id.ToString() }, HttpStatusCode.Created));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'CreatePerson(CreateUpdatePerson person)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -284,80 +288,85 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> UpdatePerson(int personId, CreateUpdatePerson person)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (person == null)
+                try
                 {
-                    return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
-                }
-
-                if (!string.IsNullOrEmpty(person.SetId))
-                {
-                    if (!IsValidSetId(person.SetId))
+                    if (person == null)
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", person.SetId), HttpStatusCode.NotFound));
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(person.ElementId))
-                {
-                    if (!IsValidElementId(person.ElementId))
-                    {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
-                    }
-                }
-                if (personId != 0)
-                {
-                    var persons = radElementDbContext.Person.ToList();
-                    var isMatchingPerson = persons.Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                     string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                                     string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                     string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-
-                    if (isMatchingPerson)
-                    {
-                        return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
+                        return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var personDetails = persons.Find(x => x.Id == personId);
-
-                    if (personDetails != null)
+                    if (!string.IsNullOrEmpty(person.SetId))
                     {
-                        int setId = !string.IsNullOrEmpty(person.SetId) ? Convert.ToInt32(person.SetId.Remove(0, 4)) : 0;
-                        int elementId = !string.IsNullOrEmpty(person.ElementId) ? Convert.ToInt32(person.ElementId.Remove(0, 4)) : 0;
-
-                        personDetails.Name = person.Name;
-                        personDetails.Orcid = person.Orcid;
-                        personDetails.Url = person.Url;
-                        personDetails.TwitterHandle = person.TwitterHandle;
-
-                        radElementDbContext.SaveChanges();
-
-                        RemovePersonElementReferences(personDetails);
-                        RemovePersonElementReferences(personDetails);
-
-                        if (elementId != 0)
+                        if (!IsValidSetId(person.SetId))
                         {
-                            AddPersonElementReferences(elementId, personDetails.Id, person.Roles);
+                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", person.SetId), HttpStatusCode.NotFound));
                         }
-                        if (setId != 0)
+                    }
+
+                    if (!string.IsNullOrEmpty(person.ElementId))
+                    {
+                        if (!IsValidElementId(person.ElementId))
                         {
-                            AddPersonElementSetReferences(setId, personDetails.Id, person.Roles);
+                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
+                        }
+                    }
+                    if (personId != 0)
+                    {
+                        var persons = radElementDbContext.Person.ToList();
+                        var isMatchingPerson = persons.Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
+                                                                                         string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
+                                                                                         string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                                         string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+
+                        if (isMatchingPerson)
+                        {
+                            return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
                         }
 
-                        radElementDbContext.SaveChanges();
+                        var personDetails = persons.Find(x => x.Id == personId);
 
-                        return await Task.FromResult(new JsonResult(string.Format("Person with id '{0}' is updated.", personId), HttpStatusCode.OK));
+                        if (personDetails != null)
+                        {
+                            int setId = !string.IsNullOrEmpty(person.SetId) ? Convert.ToInt32(person.SetId.Remove(0, 4)) : 0;
+                            int elementId = !string.IsNullOrEmpty(person.ElementId) ? Convert.ToInt32(person.ElementId.Remove(0, 4)) : 0;
+
+                            personDetails.Name = person.Name;
+                            personDetails.Orcid = person.Orcid;
+                            personDetails.Url = person.Url;
+                            personDetails.TwitterHandle = person.TwitterHandle;
+
+                            radElementDbContext.SaveChanges();
+
+                            RemovePersonElementReferences(personDetails);
+                            RemovePersonElementReferences(personDetails);
+
+                            if (elementId != 0)
+                            {
+                                AddPersonElementReferences(elementId, personDetails.Id, person.Roles);
+                            }
+                            if (setId != 0)
+                            {
+                                AddPersonElementSetReferences(setId, personDetails.Id, person.Roles);
+                            }
+
+                            radElementDbContext.SaveChanges();
+                            transaction.Commit();
+
+                            return await Task.FromResult(new JsonResult(string.Format("Person with id '{0}' is updated.", personId), HttpStatusCode.OK));
+                        }
                     }
-                }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such person with id '{0}'.", personId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method ' UpdatePerson(int personId, CreateUpdatePerson person)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                    return await Task.FromResult(new JsonResult(string.Format("No such person with id '{0}'.", personId), HttpStatusCode.NotFound));
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method ' UpdatePerson(int personId, CreateUpdatePerson person)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
@@ -368,31 +377,36 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> DeletePerson(int personId)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (personId != 0)
+                try
                 {
-                    var persons = radElementDbContext.Person.ToList();
-                    var person = persons.Find(x => x.Id == personId);
-
-                    if (person != null)
+                    if (personId != 0)
                     {
-                        RemovePersonElementReferences(person);
-                        RemovePersonElementSetReferences(person);
+                        var persons = radElementDbContext.Person.ToList();
+                        var person = persons.Find(x => x.Id == personId);
 
-                        radElementDbContext.Person.Remove(person);
-                        radElementDbContext.SaveChanges();
+                        if (person != null)
+                        {
+                            RemovePersonElementReferences(person);
+                            RemovePersonElementSetReferences(person);
 
-                        return await Task.FromResult(new JsonResult(string.Format("Person with id '{0}' is deleted.", personId), HttpStatusCode.OK));
+                            radElementDbContext.Person.Remove(person);
+                            radElementDbContext.SaveChanges();
+                            transaction.Commit();
+
+                            return await Task.FromResult(new JsonResult(string.Format("Person with id '{0}' is deleted.", personId), HttpStatusCode.OK));
+                        }
                     }
+                    return await Task.FromResult(new JsonResult(string.Format("No such person with id '{0}'.", personId), HttpStatusCode.NotFound));
                 }
-                return await Task.FromResult(new JsonResult(string.Format("No such person with id '{0}'.", personId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'DeletePerson(int personId)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'DeletePerson(int personId)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 

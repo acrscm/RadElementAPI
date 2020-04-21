@@ -208,74 +208,79 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> CreateOrganization(CreateUpdateOrganization organization)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (organization == null)
+                try
                 {
-                    return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
-                }
-
-                if (!string.IsNullOrEmpty(organization.SetId))
-                {
-                    if (!IsValidSetId(organization.SetId))
+                    if (organization == null)
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
+                        return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
-                }
 
-                if (!string.IsNullOrEmpty(organization.ElementId))
-                {
-                    if (!IsValidElementId(organization.ElementId))
+                    if (!string.IsNullOrEmpty(organization.SetId))
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
+                        if (!IsValidSetId(organization.SetId))
+                        {
+                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
+                        }
                     }
+
+                    if (!string.IsNullOrEmpty(organization.ElementId))
+                    {
+                        if (!IsValidElementId(organization.ElementId))
+                        {
+                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
+                        }
+                    }
+
+                    var isMatchingOrganization = radElementDbContext.Organization.ToList().Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                    if (isMatchingOrganization)
+                    {
+                        return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
+                    }
+
+                    int setId = !string.IsNullOrEmpty(organization.SetId) ? Convert.ToInt32(organization.SetId.Remove(0, 4)) : 0;
+                    int elementId = !string.IsNullOrEmpty(organization.ElementId) ? Convert.ToInt32(organization.ElementId.Remove(0, 4)) : 0;
+
+                    var organizationData = new Organization()
+                    {
+                        Name = organization.Name,
+                        Abbreviation = organization.Abbreviation,
+                        Url = organization.Url,
+                        Comment = organization.Comment,
+                        Email = organization.Email,
+                        TwitterHandle = organization.TwitterHandle,
+                    };
+
+                    radElementDbContext.Organization.Add(organizationData);
+                    radElementDbContext.SaveChanges();
+
+                    if (elementId != 0)
+                    {
+                        AddOrganizationElementReferences(elementId, organizationData.Id, organization.Roles);
+                    }
+                    if (setId != 0)
+                    {
+                        AddOrganizationElementSetReferences(setId, organizationData.Id, organization.Roles);
+                    }
+
+                    radElementDbContext.SaveChanges();
+                    transaction.Commit();
+
+                    return await Task.FromResult(new JsonResult(new OrganizationIdDetails() { OrganizationId = organizationData.Id.ToString() }, HttpStatusCode.Created));
                 }
-
-                var isMatchingOrganization = radElementDbContext.Organization.ToList().Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-                if (isMatchingOrganization)
+                catch (Exception ex)
                 {
-                    return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'CreateOrganization(CreateUpdateOrganization organization)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
                 }
-
-                int setId = !string.IsNullOrEmpty(organization.SetId) ? Convert.ToInt32(organization.SetId.Remove(0, 4)) : 0;
-                int elementId = !string.IsNullOrEmpty(organization.ElementId) ? Convert.ToInt32(organization.ElementId.Remove(0, 4)) : 0;
-
-                var organizationData = new Organization()
-                {
-                    Name = organization.Name,
-                    Abbreviation = organization.Abbreviation,
-                    Url = organization.Url,
-                    Comment = organization.Comment,
-                    Email = organization.Email,
-                    TwitterHandle = organization.TwitterHandle,
-                };
-
-                radElementDbContext.Organization.Add(organizationData);
-                radElementDbContext.SaveChanges();
-
-                if (elementId != 0)
-                {
-                    AddOrganizationElementReferences(elementId, organizationData.Id, organization.Roles);
-                }
-                if (setId != 0)
-                {
-                    AddOrganizationElementSetReferences(setId, organizationData.Id, organization.Roles);
-                }
-
-                radElementDbContext.SaveChanges();
-
-                return await Task.FromResult(new JsonResult(new OrganizationIdDetails() { OrganizationId = organizationData.Id.ToString() }, HttpStatusCode.Created));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'CreateOrganization(CreateUpdateOrganization organization)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
 
@@ -287,83 +292,88 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> UpdateOrganization(int organizationId, CreateUpdateOrganization organization)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (organization == null)
+                try
                 {
-                    return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
-                }
-
-                if (!string.IsNullOrEmpty(organization.SetId))
-                {
-                    if (!IsValidSetId(organization.SetId))
+                    if (organization == null)
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(organization.ElementId))
-                {
-                    if (!IsValidElementId(organization.ElementId))
-                    {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
-                    }
-                }
-                if (organizationId != 0)
-                {
-                    var organizations = radElementDbContext.Organization.ToList();
-                    var isMatchingOrganization = organizations.Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                   string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-                    if (isMatchingOrganization)
-                    {
-                        return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
+                        return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var organizationDetails = organizations.Find(x => x.Id == organizationId);
-
-                    if (organizationDetails != null)
+                    if (!string.IsNullOrEmpty(organization.SetId))
                     {
-                        int setId = !string.IsNullOrEmpty(organization.SetId) ? Convert.ToInt32(organization.SetId.Remove(0, 4)) : 0;
-                        int elementId = !string.IsNullOrEmpty(organization.ElementId) ? Convert.ToInt32(organization.ElementId.Remove(0, 4)) : 0;
-
-                        organizationDetails.Name = organization.Name;
-                        organizationDetails.Abbreviation = organization.Abbreviation;
-                        organizationDetails.Url = organization.Url;
-                        organizationDetails.Comment = organization.Comment;
-                        organizationDetails.Email = organization.Email;
-                        organizationDetails.TwitterHandle = organization.TwitterHandle;
-
-                        radElementDbContext.SaveChanges();
-
-                        RemoveOrganizationElementReferences(organizationDetails);
-                        RemoveOrganizationElementReferences(organizationDetails);
-
-                        if (elementId != 0)
+                        if (!IsValidSetId(organization.SetId))
                         {
-                            AddOrganizationElementReferences(elementId, organizationDetails.Id, organization.Roles);
+                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
                         }
-                        if (setId != 0)
+                    }
+
+                    if (!string.IsNullOrEmpty(organization.ElementId))
+                    {
+                        if (!IsValidElementId(organization.ElementId))
                         {
-                            AddOrganizationElementSetReferences(setId, organizationDetails.Id, organization.Roles);
+                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
+                        }
+                    }
+                    if (organizationId != 0)
+                    {
+                        var organizations = radElementDbContext.Organization.ToList();
+                        var isMatchingOrganization = organizations.Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                        if (isMatchingOrganization)
+                        {
+                            return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
                         }
 
-                        radElementDbContext.SaveChanges();
+                        var organizationDetails = organizations.Find(x => x.Id == organizationId);
 
-                        return await Task.FromResult(new JsonResult(string.Format("Organization with id '{0}' is updated.", organizationId), HttpStatusCode.OK));
+                        if (organizationDetails != null)
+                        {
+                            int setId = !string.IsNullOrEmpty(organization.SetId) ? Convert.ToInt32(organization.SetId.Remove(0, 4)) : 0;
+                            int elementId = !string.IsNullOrEmpty(organization.ElementId) ? Convert.ToInt32(organization.ElementId.Remove(0, 4)) : 0;
+
+                            organizationDetails.Name = organization.Name;
+                            organizationDetails.Abbreviation = organization.Abbreviation;
+                            organizationDetails.Url = organization.Url;
+                            organizationDetails.Comment = organization.Comment;
+                            organizationDetails.Email = organization.Email;
+                            organizationDetails.TwitterHandle = organization.TwitterHandle;
+
+                            radElementDbContext.SaveChanges();
+
+                            RemoveOrganizationElementReferences(organizationDetails);
+                            RemoveOrganizationElementReferences(organizationDetails);
+
+                            if (elementId != 0)
+                            {
+                                AddOrganizationElementReferences(elementId, organizationDetails.Id, organization.Roles);
+                            }
+                            if (setId != 0)
+                            {
+                                AddOrganizationElementSetReferences(setId, organizationDetails.Id, organization.Roles);
+                            }
+
+                            radElementDbContext.SaveChanges();
+                            transaction.Commit();
+
+                            return await Task.FromResult(new JsonResult(string.Format("Organization with id '{0}' is updated.", organizationId), HttpStatusCode.OK));
+                        }
                     }
-                }
 
-                return await Task.FromResult(new JsonResult(string.Format("No such organization with id '{0}'.", organizationId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'UpdateOrganization(int organizationId, CreateUpdateOrganization organization)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                    return await Task.FromResult(new JsonResult(string.Format("No such organization with id '{0}'.", organizationId), HttpStatusCode.NotFound));
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'UpdateOrganization(int organizationId, CreateUpdateOrganization organization)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
@@ -374,31 +384,36 @@ namespace RadElement.Service
         /// <returns></returns>
         public async Task<JsonResult> DeleteOrganization(int organizationId)
         {
-            try
+            using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
-                if (organizationId != 0)
+                try
                 {
-                    var organizations = radElementDbContext.Organization.ToList();
-                    var organization = organizations.Find(x => x.Id == organizationId);
-
-                    if (organization != null)
+                    if (organizationId != 0)
                     {
-                        RemoveOrganizationElementReferences(organization);
-                        RemoveOrganizationElementSetReferences(organization);
+                        var organizations = radElementDbContext.Organization.ToList();
+                        var organization = organizations.Find(x => x.Id == organizationId);
 
-                        radElementDbContext.Organization.Remove(organization);
-                        radElementDbContext.SaveChanges();
+                        if (organization != null)
+                        {
+                            RemoveOrganizationElementReferences(organization);
+                            RemoveOrganizationElementSetReferences(organization);
 
-                        return await Task.FromResult(new JsonResult(string.Format("Organization with id '{0}' is deleted.", organizationId), HttpStatusCode.OK));
+                            radElementDbContext.Organization.Remove(organization);
+                            radElementDbContext.SaveChanges();
+                            transaction.Commit();
+
+                            return await Task.FromResult(new JsonResult(string.Format("Organization with id '{0}' is deleted.", organizationId), HttpStatusCode.OK));
+                        }
                     }
+                    return await Task.FromResult(new JsonResult(string.Format("No such organization with id '{0}'.", organizationId), HttpStatusCode.NotFound));
                 }
-                return await Task.FromResult(new JsonResult(string.Format("No such organization with id '{0}'.", organizationId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'DeleteOrganization(int organizationId)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    logger.Error(ex, "Exception in method 'DeleteOrganization(int organizationId)'");
+                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+                }
             }
         }
 
