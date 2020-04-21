@@ -874,7 +874,7 @@ namespace RadElement.Service
                     {
                         if (personRef.Roles != null && personRef.Roles.Any())
                         {
-                            foreach (var role in personRef.Roles)
+                            foreach (var role in personRef.Roles.Distinct())
                             {
                                 var setRef = new PersonRoleElementRef()
                                 {
@@ -920,7 +920,7 @@ namespace RadElement.Service
                     {
                         if (orgRef.Roles != null && orgRef.Roles.Any())
                         {
-                            foreach (var role in orgRef.Roles)
+                            foreach (var role in orgRef.Roles.Distinct())
                             {
                                 var setRef = new OrganizationRoleElementRef()
                                 {
