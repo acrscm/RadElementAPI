@@ -51,7 +51,7 @@ namespace RadElement.Core.Services
         /// <param name="setId">The set identifier.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        Task<JsonResult> CreateElement(string setId, CreateUpdateElement dataElement);
+        Task<JsonResult> CreateElement(string setId, CreateElement dataElement);
 
         /// <summary>
         /// Updates the set.
@@ -70,7 +70,7 @@ namespace RadElement.Core.Services
         /// <param name="elementId">The element identifier.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        Task<JsonResult> UpdateElement(string setId, string elementId, CreateUpdateElement dataElement);
+        Task<JsonResult> UpdateElement(string setId, string elementId, UpdateElement dataElement);
 
         /// <summary>
         /// Deletes the set.

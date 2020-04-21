@@ -39,8 +39,6 @@ namespace RadElement.Service.Tests
 
         private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string personNotFoundMessage = "No such person with id '{0}'.";
-        private const string personWithSetIdNotFoundMessage = "No such person with set id '{0}'.";
-        private const string personWithElementIdNotFoundMessage = "No such person with element id '{0}'.";
         private const string elemenIdInvalidMessage = "No such element with element id '{0}'.";
         private const string setIdInvalidMessage = "No such set with set id '{0}'.";
         private const string personNotFoundMessageWithSearchMessage = "No such person with keyword '{0}'.";
@@ -142,72 +140,6 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<PersonDetails>(result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-        }
-
-        #endregion
-
-        #region GetPersonBySetId
-        
-        [Theory]
-        [InlineData("RD1")]
-        [InlineData("RD2")]
-        public async void GetPersonBySetIdShouldReturnNotFoundIfDoesnotExists(string setId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetPersonBySetId(setId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(personWithSetIdNotFoundMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void GetPersonBySetIdShouldReturnPersonsBasedOnElementId(string setId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetPersonBySetId(setId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<List<PersonDetails>>(result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-        }
-
-        #endregion
-
-        #region GetPersonByElementId
-
-        [Theory]
-        [InlineData("RD1")]
-        [InlineData("RD2")]
-        public async void GetPersonByElementIdShouldReturnNotFoundIfDoesnotExists(string elementId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetPersonByElementId(elementId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(personWithElementIdNotFoundMessage, elementId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDE338")]
-        [InlineData("RDE340")]
-        public async void GetPersonByElementIdShouldReturnPersonsBasedOnElementId(string elementId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetPersonByElementId(elementId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<List<PersonDetails>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 

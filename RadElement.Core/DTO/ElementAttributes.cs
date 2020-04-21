@@ -5,13 +5,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RadElement.Core.DTO
 {
-    public class CreateUpdateElement
+    public class ElementAttributes
     {
-        /// <summary>
-        /// Gets or sets the element identifier.
-        /// </summary>
-        public string ElementId { get; set; }
-
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
@@ -24,7 +19,7 @@ namespace RadElement.Core.DTO
         /// </summary>
         [MaxLength(24)]
         public string ShortName { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the definition.
         /// </summary>

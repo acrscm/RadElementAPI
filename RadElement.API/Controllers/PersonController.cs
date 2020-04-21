@@ -58,30 +58,6 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Gets the persons by set identifier.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        [HttpGet("persons/{setId}")]
-        public async Task<IActionResult> GetPersonBySetId(string setId)
-        {
-            var result = await personService.GetPersonBySetId(setId);
-            return StatusCode((int)result.Code, result.Value);
-        }
-
-        /// <summary>
-        /// Gets the persons by element identifier.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        [HttpGet("persons/{elementId}")]
-        public async Task<IActionResult> GetPersonByElementId(string elementId)
-        {
-            var result = await personService.GetPersonByElementId(elementId);
-            return StatusCode((int)result.Code, result.Value);
-        }
-
-        /// <summary>
         /// Searches the persons.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>

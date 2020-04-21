@@ -326,7 +326,7 @@ namespace RadElement.Service
         /// <param name="setId">The set identifier.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        public async Task<JsonResult> CreateElement(string setId, CreateUpdateElement dataElement)
+        public async Task<JsonResult> CreateElement(string setId, CreateElement dataElement)
         {
             using (var transaction = radElementDbContext.Database.BeginTransaction())
             {
@@ -624,7 +624,7 @@ namespace RadElement.Service
         /// <param name="elementId">The element identifier.</param>
         /// <param name="dataElement">The data element.</param>
         /// <returns></returns>
-        public async Task<JsonResult> UpdateElement(string setId, string elementId, CreateUpdateElement dataElement)
+        public async Task<JsonResult> UpdateElement(string setId, string elementId, UpdateElement dataElement)
         {
             using (var transaction = radElementDbContext.Database.BeginTransaction())
             {

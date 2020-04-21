@@ -252,7 +252,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("RDES1", null)]
         [InlineData("RDES2", null)]
-        public async void CreateElementShouldReturnBadRequestIfDataElementIsInvalid(string setId, CreateUpdateElement dataElement)
+        public async void CreateElementShouldReturnBadRequestIfDataElementIsInvalid(string setId, CreateElement dataElement)
         {
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -269,7 +269,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES2", DataElementType.Choice)]
         public async void CreateElementShouldReturnBadRequestIfDataElementChoiceIsInvalid(string setId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
@@ -288,7 +288,7 @@ namespace RadElement.Service.Tests
         public async void CreateElementShouldReturnBadRequestIfSetIdIsInvalid(string setId, DataElementType elementType)
         {
             IntializeMockData(true);
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
@@ -304,7 +304,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES74", "RDE1500", DataElementType.Integer)]
         public async void CreateElementShouldReturnBadRequestIfElementIdIsInvalid(string setId, string elementId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new CreateElement();
             dataElement.ElementId = elementId;
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
@@ -326,7 +326,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", DataElementType.MultiChoice)]
         public async void CreateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
@@ -369,7 +369,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", DataElementType.MultiChoice)]
         public async void CreateElementShouldReturnElementIdIfDataElementIsValid(string setId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
@@ -413,7 +413,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
         public async void CreateElementShouldReturnElementIdIfDataElementIsValid1(string setId, string elementId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new CreateElement();
             dataElement.ElementId = elementId;
             dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
@@ -458,7 +458,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("RDES1", "RDE1", null)]
         [InlineData("RDES2", "RDE2", null)]
-        public async void UpdateElementShouldReturnBadRequestIfDataElementIsInvalid(string setId, string elementId, CreateUpdateElement dataElement)
+        public async void UpdateElementShouldReturnBadRequestIfDataElementIsInvalid(string setId, string elementId, UpdateElement dataElement)
         {
             IntializeMockData(true);
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -476,7 +476,7 @@ namespace RadElement.Service.Tests
         public async void UpdateElementShouldReturnBadRequestIfDataElementChoiceIsInvalid(string setId, string elementId, DataElementType elementType)
         {
             IntializeMockData(true);
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new UpdateElement();
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
@@ -494,7 +494,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES100", "RDE100", DataElementType.Numeric)]
         public async void UpdateElementShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(string setId, string elementId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new UpdateElement();
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
 
@@ -515,7 +515,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
         public async void UpdateElementShouldReturnThrowInternalServerErrorForExceptions(string setId, string elementId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new UpdateElement();
             dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
@@ -558,7 +558,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
         public async void UpdateElementShouldReturnElementIdIfDataElementIsValid(string setId, string elementId, DataElementType elementType)
         {
-            var dataElement = new CreateUpdateElement();
+            var dataElement = new UpdateElement();
             dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;

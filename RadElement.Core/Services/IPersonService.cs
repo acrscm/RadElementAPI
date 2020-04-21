@@ -23,20 +23,6 @@ namespace RadElement.Core.Services
         Task<JsonResult> GetPerson(int personId);
 
         /// <summary>
-        /// Gets the persons by set identifier.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        Task<JsonResult> GetPersonBySetId(string setId);
-
-        /// <summary>
-        /// Gets the persons by element identifier.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        Task<JsonResult> GetPersonByElementId(string elementId);
-
-        /// <summary>
         /// Searches the person.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>

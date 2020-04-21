@@ -60,30 +60,6 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Gets the organizations by set identifier.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        [HttpGet("organizations/{setId}")]
-        public async Task<IActionResult> GetOrganizationBySetId(string setId)
-        {
-            var result = await organizationService.GetOrganizationBySetId(setId);
-            return StatusCode((int)result.Code, result.Value);
-        }
-
-        /// <summary>
-        /// Gets the organizations by element identifier.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        [HttpGet("organizations/{elementId}")]
-        public async Task<IActionResult> GetOrganizationByElementId(string elementId)
-        {
-            var result = await organizationService.GetOrganizationByElementId(elementId);
-            return StatusCode((int)result.Code, result.Value);
-        }
-
-        /// <summary>
         /// Searches the organizations.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>

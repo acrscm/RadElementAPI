@@ -117,7 +117,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,RadElement.Core.DTO.CreateElement)">
             <summary>
             Creates a element under specific set identifier.
             </summary>
@@ -135,7 +135,7 @@
             <param name="content">The content.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.String,System.String,RadElement.Core.DTO.CreateUpdateElement)">
+        <member name="M:RadElement.API.Controllers.ElementController.UpdateElement(System.String,System.String,RadElement.Core.DTO.UpdateElement)">
             <summary>
             Updates the element based on set identifier and element identifier.
             </summary>
@@ -261,20 +261,6 @@
             <param name="organizationId">The organization identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.OrganizationController.GetOrganizationBySetId(System.String)">
-            <summary>
-            Gets the organizations by set identifier.
-            </summary>
-            <param name="setId">The set identifier.</param>
-            <returns></returns>
-        </member>
-        <member name="M:RadElement.API.Controllers.OrganizationController.GetOrganizationByElementId(System.String)">
-            <summary>
-            Gets the organizations by element identifier.
-            </summary>
-            <param name="elementId">The element identifier.</param>
-            <returns></returns>
-        </member>
         <member name="M:RadElement.API.Controllers.OrganizationController.SearchOrganization(RadElement.Core.DTO.SearchKeyword)">
             <summary>
             Searches the organizations.
@@ -333,20 +319,6 @@
             Gets the person.
             </summary>
             <param name="personId">The person identifier.</param>
-            <returns></returns>
-        </member>
-        <member name="M:RadElement.API.Controllers.PersonController.GetPersonBySetId(System.String)">
-            <summary>
-            Gets the persons by set identifier.
-            </summary>
-            <param name="setId">The set identifier.</param>
-            <returns></returns>
-        </member>
-        <member name="M:RadElement.API.Controllers.PersonController.GetPersonByElementId(System.String)">
-            <summary>
-            Gets the persons by element identifier.
-            </summary>
-            <param name="elementId">The element identifier.</param>
             <returns></returns>
         </member>
         <member name="M:RadElement.API.Controllers.PersonController.SearchPerson(RadElement.Core.DTO.SearchKeyword)">

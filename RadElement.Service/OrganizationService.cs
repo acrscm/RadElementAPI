@@ -96,77 +96,7 @@ namespace RadElement.Service
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
-
-        /// <summary>
-        /// Gets the organization by set identifier.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> GetOrganizationBySetId(string setId)
-        {
-            try
-            {
-                if (IsValidSetId(setId))
-                {
-                    int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
-                    var organizationSetRefs = radElementDbContext.OrganizationRoleElementSetRef.ToList();
-                    var organizationIds = organizationSetRefs.Where(x => x.ElementSetID == setInternalId);
-                    var organizations = radElementDbContext.Organization.ToList();
-
-                    var selectedOrganizations = from organizationId in organizationIds
-                                                join organization in organizations on organizationId.OrganizationID equals organization.Id
-                                                select organization;
-
-                    if (selectedOrganizations != null && selectedOrganizations.Any())
-                    {
-                        return await Task.FromResult(new JsonResult(GetOrganizationDetailsDto(selectedOrganizations.ToList()), HttpStatusCode.OK));
-                    }
-                }
-                return await Task.FromResult(new JsonResult(string.Format("No such organization with set id '{0}'.", setId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'GetOrganizationsBySetId(string setId)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Gets the organization by element identifier.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> GetOrganizationByElementId(string elementId)
-        {
-            try
-            {
-                if (IsValidElementId(elementId))
-                {
-                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var organizationELementRefs = radElementDbContext.OrganizationRoleElementRef.ToList();
-                    var organizationIds = organizationELementRefs.Where(x => x.ElementID == elementInternalId);
-                    var organizations = radElementDbContext.Organization.ToList();
-
-                    var selectedOrganizations = from organizationId in organizationIds
-                                                join organization in organizations on organizationId.OrganizationID equals organization.Id
-                                                select organization;
-
-                    if (selectedOrganizations != null && selectedOrganizations.Any())
-                    {
-                        return await Task.FromResult(new JsonResult(GetOrganizationDetailsDto(selectedOrganizations.ToList()), HttpStatusCode.OK));
-                    }
-                }
-                return await Task.FromResult(new JsonResult(string.Format("No such organization with element id '{0}'.", elementId), HttpStatusCode.NotFound));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'GetOrganizationsByElementId(string elementId)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-            }
-        }
-
+        
         /// <summary>
         /// Searches the organization.
         /// </summary>

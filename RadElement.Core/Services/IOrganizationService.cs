@@ -23,20 +23,6 @@ namespace RadElement.Core.Services
         Task<JsonResult> GetOrganization(int organizationId);
 
         /// <summary>
-        /// Gets the organization by set identifier.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        Task<JsonResult> GetOrganizationBySetId(string setId);
-
-        /// <summary>
-        /// Gets the organization by element identifier.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        Task<JsonResult> GetOrganizationByElementId(string elementId);
-
-        /// <summary>
         /// Searches the organization.
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>

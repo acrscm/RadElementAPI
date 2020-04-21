@@ -39,8 +39,6 @@ namespace RadElement.Service.Tests
 
         private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string organizationNotFoundMessage = "No such organization with id '{0}'.";
-        private const string organizationWithSetIdNotFoundMessage = "No such organization with set id '{0}'.";
-        private const string organizationWithElementIdNotFoundMessage = "No such organization with element id '{0}'.";
         private const string elemenIdInvalidMessage = "No such element with element id '{0}'.";
         private const string setIdInvalidMessage = "No such set with set id '{0}'.";
         private const string organizationNotFoundMessageWithSearchMessage = "No such organization with keyword '{0}'.";
@@ -140,72 +138,6 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<OrganizationDetails>(result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-        }
-
-        #endregion
-
-        #region GetOrganizationsBySetId
-
-        [Theory]
-        [InlineData("RD1")]
-        [InlineData("RD2")]
-        public async void GetOrganizationsBySetIdShouldReturnNotFoundIfDoesnotExists(string setId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetOrganizationBySetId(setId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(organizationWithSetIdNotFoundMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void GetOrganizationsBySetIdShouldReturnOrganizationBasedOnElementId(string setId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetOrganizationBySetId(setId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<List<OrganizationDetails>>(result.Value);
-            Assert.Equal(HttpStatusCode.OK, result.Code);
-        }
-
-        #endregion
-
-        #region GetOrganizationsByElementId
-
-        [Theory]
-        [InlineData("RD1")]
-        [InlineData("RD2")]
-        public async void GetOrganizationsByElementIdShouldReturnNotFoundIfDoesnotExists(string elementId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetOrganizationByElementId(elementId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(organizationWithElementIdNotFoundMessage, elementId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDE338")]
-        [InlineData("RDE340")]
-        public async void GetOrganizationsByElementIdShouldReturnOrganizationBasedOnElementId(string elementId)
-        {
-            IntializeMockData(true);
-            var result = await service.GetOrganizationByElementId(elementId);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<List<OrganizationDetails>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
