@@ -147,22 +147,6 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    if (!string.IsNullOrEmpty(person.SetId))
-                    {
-                        if (!IsValidSetId(person.SetId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", person.SetId), HttpStatusCode.NotFound));
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(person.ElementId))
-                    {
-                        if (!IsValidElementId(person.ElementId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
-                        }
-                    }
-
                     var isMatchingPerson = radElementDbContext.Person.ToList().Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                                            string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
                                                                                            string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
@@ -171,11 +155,7 @@ namespace RadElement.Service
                     {
                         return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
                     }
-
-
-                    int setId = !string.IsNullOrEmpty(person.SetId) ? Convert.ToInt32(person.SetId.Remove(0, 4)) : 0;
-                    int elementId = !string.IsNullOrEmpty(person.ElementId) ? Convert.ToInt32(person.ElementId.Remove(0, 4)) : 0;
-
+                    
                     var personData = new Person()
                     {
                         Name = person.Name,
@@ -185,17 +165,6 @@ namespace RadElement.Service
                     };
 
                     radElementDbContext.Person.Add(personData);
-                    radElementDbContext.SaveChanges();
-
-                    if (elementId != 0)
-                    {
-                        AddPersonElementReferences(elementId, personData.Id, person.Roles);
-                    }
-                    if (setId != 0)
-                    {
-                        AddPersonElementSetReferences(setId, personData.Id, person.Roles);
-                    }
-
                     radElementDbContext.SaveChanges();
                     transaction.Commit();
 
@@ -228,26 +197,11 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    if (!string.IsNullOrEmpty(person.SetId))
-                    {
-                        if (!IsValidSetId(person.SetId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", person.SetId), HttpStatusCode.NotFound));
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(person.ElementId))
-                    {
-                        if (!IsValidElementId(person.ElementId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", person.ElementId), HttpStatusCode.NotFound));
-                        }
-                    }
-
                     if (personId != 0)
                     {
                         var persons = radElementDbContext.Person.ToList();
-                        var isMatchingPerson = persons.Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
+                        var isMatchingPerson = persons.Exists(x => x.Id != personId &&
+                                                                   string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                    string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
                                                                    string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
                                                                    string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
@@ -261,27 +215,12 @@ namespace RadElement.Service
 
                         if (personDetails != null)
                         {
-                            int setId = !string.IsNullOrEmpty(person.SetId) ? Convert.ToInt32(person.SetId.Remove(0, 4)) : 0;
-                            int elementId = !string.IsNullOrEmpty(person.ElementId) ? Convert.ToInt32(person.ElementId.Remove(0, 4)) : 0;
-
                             personDetails.Name = person.Name;
                             personDetails.Orcid = person.Orcid;
                             personDetails.Url = person.Url;
                             personDetails.TwitterHandle = person.TwitterHandle;
 
                             radElementDbContext.SaveChanges();
-
-                            RemovePersonElementReferences(personDetails);
-                            RemovePersonElementReferences(personDetails);
-
-                            if (elementId != 0)
-                            {
-                                AddPersonElementReferences(elementId, personDetails.Id, person.Roles);
-                            }
-                            if (setId != 0)
-                            {
-                                AddPersonElementSetReferences(setId, personDetails.Id, person.Roles);
-                            }
 
                             radElementDbContext.SaveChanges();
                             transaction.Commit();
@@ -339,120 +278,6 @@ namespace RadElement.Service
                     var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                     return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
                 }
-            }
-        }
-
-        /// <summary>
-        /// Determines whether [is valid element identifier] [the specified element identifier].
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns>
-        ///   <c>true</c> if [is valid element identifier] [the specified element identifier]; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsValidElementId(string elementId)
-        {
-            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
-            {
-                bool result = int.TryParse(elementId.Remove(0, 3), out _);
-                if (result)
-                {
-                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var elements = radElementDbContext.Element.ToList();
-                    var element = elements.Find(x => x.Id == elementInternalId);
-                    return element != null;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether [is valid set identifier] [the specified set identifier].
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns>
-        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsValidSetId(string setId)
-        {
-            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
-            {
-                bool result = int.TryParse(setId.Remove(0, 4), out _);
-                if (result)
-                {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    var sets = radElementDbContext.ElementSet.ToList();
-                    var set = sets.Find(x => x.Id == id);
-                    return set != null;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Adds the person element set references.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <param name="personId">The person identifier.</param>
-        /// <param name="roles">The roles.</param>
-        private void AddPersonElementSetReferences(int setId, int personId, List<PersonRole> roles)
-        {
-            if (roles != null && roles.Any())
-            {
-                foreach (var role in roles)
-                {
-                    var setRef = new PersonRoleElementSetRef()
-                    {
-                        ElementSetID = setId,
-                        PersonID = personId,
-                        Role = role
-                    };
-
-                    radElementDbContext.PersonRoleElementSetRef.Add(setRef);
-                }
-            } 
-            else
-            {
-                var setRef = new PersonRoleElementSetRef()
-                {
-                    ElementSetID = setId,
-                    PersonID = personId
-                };
-
-                radElementDbContext.PersonRoleElementSetRef.Add(setRef);
-            }
-        }
-
-        /// <summary>
-        /// Removes the person elements references.
-        /// </summary>
-        /// <param name="person">The person.</param>
-        private void AddPersonElementReferences(int elementId, int personId, List<PersonRole> roles)
-        {
-            if (roles != null && roles.Any())
-            {
-                foreach (var role in roles)
-                {
-                    var elementRef = new PersonRoleElementRef()
-                    {
-                        ElementID = elementId,
-                        PersonID = personId,
-                        Role = role
-                    };
-
-                    radElementDbContext.PersonRoleElementRef.Add(elementRef);
-                }
-            }
-            else
-            {
-                var elementRef = new PersonRoleElementRef()
-                {
-                    ElementID = elementId,
-                    PersonID = personId
-                };
-
-                radElementDbContext.PersonRoleElementRef.Add(elementRef);
             }
         }
 

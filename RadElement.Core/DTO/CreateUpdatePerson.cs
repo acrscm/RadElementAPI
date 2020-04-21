@@ -31,16 +31,6 @@ namespace RadElement.Core.DTO
         public string TwitterHandle { get; set; }
 
         /// <summary>
-        /// Gets or sets the set identifier.
-        /// </summary>
-        public string SetId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the element identifier.
-        /// </summary>
-        public string ElementId { get; set; }
-
-        /// <summary>
         /// Gets or sets the roles.
         /// </summary>
         public List<PersonRole> Roles { get; set; }

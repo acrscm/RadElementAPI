@@ -147,22 +147,6 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    if (!string.IsNullOrEmpty(organization.SetId))
-                    {
-                        if (!IsValidSetId(organization.SetId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(organization.ElementId))
-                    {
-                        if (!IsValidElementId(organization.ElementId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
-                        }
-                    }
-
                     var isMatchingOrganization = radElementDbContext.Organization.ToList().Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                                                        string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
                                                                                                        string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
@@ -173,10 +157,7 @@ namespace RadElement.Service
                     {
                         return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
                     }
-
-                    int setId = !string.IsNullOrEmpty(organization.SetId) ? Convert.ToInt32(organization.SetId.Remove(0, 4)) : 0;
-                    int elementId = !string.IsNullOrEmpty(organization.ElementId) ? Convert.ToInt32(organization.ElementId.Remove(0, 4)) : 0;
-
+                    
                     var organizationData = new Organization()
                     {
                         Name = organization.Name,
@@ -188,17 +169,6 @@ namespace RadElement.Service
                     };
 
                     radElementDbContext.Organization.Add(organizationData);
-                    radElementDbContext.SaveChanges();
-
-                    if (elementId != 0)
-                    {
-                        AddOrganizationElementReferences(elementId, organizationData.Id, organization.Roles);
-                    }
-                    if (setId != 0)
-                    {
-                        AddOrganizationElementSetReferences(setId, organizationData.Id, organization.Roles);
-                    }
-
                     radElementDbContext.SaveChanges();
                     transaction.Commit();
 
@@ -231,30 +201,16 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    if (!string.IsNullOrEmpty(organization.SetId))
-                    {
-                        if (!IsValidSetId(organization.SetId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such set with set id '{0}'.", organization.SetId), HttpStatusCode.NotFound));
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(organization.ElementId))
-                    {
-                        if (!IsValidElementId(organization.ElementId))
-                        {
-                            return await Task.FromResult(new JsonResult(string.Format("No such element with element id '{0}'.", organization.ElementId), HttpStatusCode.NotFound));
-                        }
-                    }
                     if (organizationId != 0)
                     {
                         var organizations = radElementDbContext.Organization.ToList();
-                        var isMatchingOrganization = organizations.Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                        var isMatchingOrganization = organizations.Exists(x => x.Id != organizationId &&
+                                                                               string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
                         if (isMatchingOrganization)
                         {
                             return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
@@ -264,30 +220,13 @@ namespace RadElement.Service
 
                         if (organizationDetails != null)
                         {
-                            int setId = !string.IsNullOrEmpty(organization.SetId) ? Convert.ToInt32(organization.SetId.Remove(0, 4)) : 0;
-                            int elementId = !string.IsNullOrEmpty(organization.ElementId) ? Convert.ToInt32(organization.ElementId.Remove(0, 4)) : 0;
-
                             organizationDetails.Name = organization.Name;
                             organizationDetails.Abbreviation = organization.Abbreviation;
                             organizationDetails.Url = organization.Url;
                             organizationDetails.Comment = organization.Comment;
                             organizationDetails.Email = organization.Email;
                             organizationDetails.TwitterHandle = organization.TwitterHandle;
-
-                            radElementDbContext.SaveChanges();
-
-                            RemoveOrganizationElementReferences(organizationDetails);
-                            RemoveOrganizationElementReferences(organizationDetails);
-
-                            if (elementId != 0)
-                            {
-                                AddOrganizationElementReferences(elementId, organizationDetails.Id, organization.Roles);
-                            }
-                            if (setId != 0)
-                            {
-                                AddOrganizationElementSetReferences(setId, organizationDetails.Id, organization.Roles);
-                            }
-
+                            
                             radElementDbContext.SaveChanges();
                             transaction.Commit();
 
@@ -344,122 +283,6 @@ namespace RadElement.Service
                     var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                     return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
                 }
-            }
-        }
-
-        /// <summary>
-        /// Determines whether [is valid element identifier] [the specified element identifier].
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns>
-        ///   <c>true</c> if [is valid element identifier] [the specified element identifier]; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsValidElementId(string elementId)
-        {
-            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
-            {
-                bool result = int.TryParse(elementId.Remove(0, 3), out _);
-                if (result)
-                {
-                    int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var elements = radElementDbContext.Element.ToList();
-                    var element = elements.Find(x => x.Id == elementInternalId);
-                    return element != null;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether [is valid set identifier] [the specified set identifier].
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns>
-        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsValidSetId(string setId)
-        {
-            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
-            {
-                bool result = int.TryParse(setId.Remove(0, 4), out _);
-                if (result)
-                {
-                    int id = Convert.ToInt32(setId.Remove(0, 4));
-                    var sets = radElementDbContext.ElementSet.ToList();
-                    var set = sets.Find(x => x.Id == id);
-                    return set != null;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Adds the organization element set references.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <param name="organizationId">The organization identifier.</param>
-        /// <param name="roles">The roles.</param>
-        private void AddOrganizationElementSetReferences(int setId, int organizationId, List<OrganizationRole> roles)
-        {
-            if (roles != null && roles.Any())
-            {
-                foreach (var role in roles)
-                {
-                    var setRef = new OrganizationRoleElementSetRef()
-                    {
-                        ElementSetID = setId,
-                        OrganizationID = organizationId,
-                        Role = role
-                    };
-
-                    radElementDbContext.OrganizationRoleElementSetRef.Add(setRef);
-                }
-            }
-            else
-            {
-                var setRef = new OrganizationRoleElementSetRef()
-                {
-                    ElementSetID = setId,
-                    OrganizationID = organizationId
-                };
-
-                radElementDbContext.OrganizationRoleElementSetRef.Add(setRef);
-            }
-        }
-
-        /// <summary>
-        /// Adds the organization element references.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <param name="organizationId">The organization identifier.</param>
-        /// <param name="roles">The roles.</param>
-        private void AddOrganizationElementReferences(int elementId, int organizationId, List<OrganizationRole> roles)
-        {
-            if (roles != null && roles.Any())
-            {
-                foreach (var role in roles)
-                {
-                    var elementRef = new OrganizationRoleElementRef()
-                    {
-                        ElementID = elementId,
-                        OrganizationID = organizationId,
-                        Role = role
-                    };
-
-                    radElementDbContext.OrganizationRoleElementRef.Add(elementRef);
-                }
-            }
-            else
-            {
-                var elementRef = new OrganizationRoleElementRef()
-                {
-                    ElementID = elementId,
-                    OrganizationID = organizationId
-                };
-
-                radElementDbContext.OrganizationRoleElementRef.Add(elementRef);
             }
         }
 

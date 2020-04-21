@@ -219,56 +219,14 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES100")]
-        public async void CreateOrganizationShouldReturnNotFoundIfSetIdIsInvalid(string setId)
+        [InlineData("American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
+        [InlineData("American College of Radiology", "ACR", "http://www.acr.org")]
+        public async void CreateOrganizationShouldReturnBadRequestIfOrganizationExists(string name, string abbreviation, string Url)
         {
             var organization = new CreateUpdateOrganization();
-            organization.Name = "ACR";
-            organization.Abbreviation = "ACR";
-            organization.SetId = setId;
-
-            IntializeMockData(true);
-            var result = await service.CreateOrganization(organization);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setIdInvalidMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDE1500")]
-        public async void CreateOrganizationShouldReturnNotFoundIfElementIdIsInvalid(string elementId)
-        {
-            var organization = new CreateUpdateOrganization();
-            organization.Name = "ACR";
-            organization.Abbreviation = "ACR";
-            organization.ElementId = elementId;
-
-            IntializeMockData(true);
-            var result = await service.CreateOrganization(organization);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(elemenIdInvalidMessage, elementId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDES74", "RDE338")]
-        [InlineData("RDES72", "RDE340")]
-        [InlineData("RDES66", "RDE307")]
-        [InlineData("RDES53", "RDE283")]
-        public async void CreateOrganizationShouldReturnBadRequestIfOrganizationExists(string setId, string elementId)
-        {
-            var organization = new CreateUpdateOrganization();
-            organization.Name = "American College of Radiology - Data Science Institute";
-            organization.Abbreviation = "ACR-DSI";
-            organization.Url = "http://www.acrdsi.org";
-            organization.SetId = setId;
-            organization.ElementId = elementId;
+            organization.Name = name;
+            organization.Abbreviation = abbreviation;
+            organization.Url = Url;
 
             IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
@@ -280,17 +238,13 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES74", "RDE338")]
-        [InlineData("RDES72", "RDE340")]
-        [InlineData("RDES66", "RDE307")]
-        [InlineData("RDES53", "RDE283")]
-        public async void CreateOrganizationShouldReturnElementIdIOrganizationIsValid(string setId, string elementId)
+        [InlineData("ACR", "ACR")]
+        [InlineData("ASNR", "ASNR")]
+        public async void CreateOrganizationShouldReturnElementIdIOrganizationIsValid(string name, string abbreviation)
         {
             var organization = new CreateUpdateOrganization();
-            organization.Name = "ACR";
-            organization.Abbreviation = "ACR";
-            organization.SetId = setId;
-            organization.ElementId = elementId;
+            organization.Name = name;
+            organization.Abbreviation = abbreviation;
 
             IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
@@ -321,56 +275,14 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(1, "RDES100")]
-        public async void UpdateOrganizationShouldReturnNotFoundIfSetIdIsInvalid(int organizationId, string setId)
-        {
-            var organization = new CreateUpdateOrganization();
-            organization.Name = "ACR";
-            organization.Abbreviation = "ACR";
-            organization.SetId = setId;
-
-            IntializeMockData(true);
-            var result = await service.UpdateOrganization(organizationId, organization);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setIdInvalidMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData(1, "RDE1500")]
-        public async void UpdateOrganizationShouldReturnNotFoundIfElementIdIsInvalid(int organizationId, string elementId)
-        {
-            var organization = new CreateUpdateOrganization();
-            organization.Name = "ACR";
-            organization.Abbreviation = "ACR";
-            organization.ElementId = elementId;
-
-            IntializeMockData(true);
-            var result = await service.UpdateOrganization(organizationId, organization);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(elemenIdInvalidMessage, elementId), result.Value);
-        }
-
-        [Theory]
-        [InlineData(1, "RDES74", "RDE338")]
-        [InlineData(2, "RDES72", "RDE340")]
-        [InlineData(1, "RDES66", "RDE307")]
-        [InlineData(2, "RDES53", "RDE283")]
-        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationExists(int organizationId, string setId, string elementId)
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationExists(int organizationId)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = "American College of Radiology - Data Science Institute";
             organization.Abbreviation = "ACR-DSI";
             organization.Url = "http://www.acrdsi.org";
-            organization.SetId = setId;
-            organization.ElementId = elementId;
 
             IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);

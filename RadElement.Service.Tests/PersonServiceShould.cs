@@ -22,7 +22,7 @@ namespace RadElement.Service.Tests
         /// The service
         /// </summary>
         private readonly PersonService service;
-        
+
         /// <summary>
         /// The mock RAD element context
         /// </summary>
@@ -219,60 +219,18 @@ namespace RadElement.Service.Tests
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(personInvalidMessage, result.Value);
         }
-        
+
         [Theory]
-        [InlineData("RDES100")]
-        public async void CreatePersonShouldReturnNotFoundIfSetIdIsInvalid(string setId)
+        [InlineData("Adam Flanders, MD, MS")]
+        [InlineData("Charles E. Kahn, Jr., MD, MS")]
+        public async void CreatePersonShouldReturnBadRequestIfPersonExists(string name)
         {
             var person = new CreateUpdatePerson();
-            person.Name = "Tumuor";
-            person.Orcid = "Orcidr";
-            person.SetId = setId;
+            person.Name = name;
 
             IntializeMockData(true);
             var result = await service.CreatePerson(person);
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setIdInvalidMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDE1500")]
-        public async void CreatePersonShouldReturnNotFoundIfElementIdIsInvalid(string elementId)
-        {
-            var person = new CreateUpdatePerson();
-            person.Name = "Tumuor";
-            person.Orcid = "Orcidr";
-            person.ElementId = elementId;
-
-            IntializeMockData(true);
-            var result = await service.CreatePerson(person);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(elemenIdInvalidMessage, elementId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDES74", "RDE338")]
-        [InlineData("RDES72", "RDE340")]
-        [InlineData("RDES66", "RDE307")]
-        [InlineData("RDES53", "RDE283")]
-        public async void CreatePersonShouldReturnBadRequestIfPersonExists(string setId, string elementId)
-        {
-            var person = new CreateUpdatePerson();
-            person.Name = "Adam Flanders, MD, MS";
-            person.SetId = setId;
-            person.ElementId = elementId;
-
-            IntializeMockData(true);
-            var result = await service.CreatePerson(person);
-            
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
@@ -280,17 +238,13 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES74", "RDE338")]
-        [InlineData("RDES72", "RDE340")]
-        [InlineData("RDES66", "RDE307")]
-        [InlineData("RDES53", "RDE283")]
-        public async void CreatePersonShouldReturnElementIdIfPersonsAreValid(string setId, string elementId)
+        [InlineData("Adam", "Orcidr1")]
+        [InlineData("Mike", "Orcidr2")]
+        public async void CreatePersonShouldReturnElementIdIfPersonsAreValid(string name, string orcid)
         {
             var person = new CreateUpdatePerson();
-            person.Name = "Tumuor";
-            person.Orcid = "Orcidr";
-            person.SetId = setId;
-            person.ElementId = elementId;
+            person.Name = name;
+            person.Orcid = orcid;
 
             IntializeMockData(true);
             var result = await service.CreatePerson(person);
@@ -321,54 +275,12 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(1, "RDES100")]
-        public async void UpdatePersonShouldReturnNotFoundIfSetIdIsInvalid(int personId, string setId)
-        {
-            var person = new CreateUpdatePerson();
-            person.Name = "Tumuor";
-            person.Orcid = "Orcidr";
-            person.SetId = setId;
-
-            IntializeMockData(true);
-            var result = await service.UpdatePerson(personId, person);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setIdInvalidMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData(1, "RDE1500")]
-        public async void UpdatePersonShouldReturnNotFoundIfElementIdIsInvalid(int personId, string elementId)
-        {
-            var person = new CreateUpdatePerson();
-            person.Name = "Tumuor";
-            person.Orcid = "Orcidr";
-            person.ElementId = elementId;
-
-            IntializeMockData(true);
-            var result = await service.UpdatePerson(personId, person);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(elemenIdInvalidMessage, elementId), result.Value);
-        }
-
-        [Theory]
-        [InlineData(1, "RDES74", "RDE338")]
-        [InlineData(2, "RDES72", "RDE340")]
-        [InlineData(1, "RDES66", "RDE307")]
-        [InlineData(2, "RDES53", "RDE283")]
-        public async void UpdatePersonShouldReturnBadRequestIfPersonExists(int personId, string setId, string elementId)
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void UpdatePersonShouldReturnBadRequestIfPersonExists(int personId)
         {
             var person = new CreateUpdatePerson();
             person.Name = "Woojin Kim, MD";
-            person.SetId = setId;
-            person.ElementId = elementId;
 
             IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
