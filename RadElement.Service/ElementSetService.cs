@@ -253,6 +253,8 @@ namespace RadElement.Service
                         if (elementSet != null)
                         {
                             RemoveSetElementsReferences(elementSet);
+                            RemovePersonElementSetReferences(elementSet.Id);
+                            RemoveOrganizationElementSetReferences(elementSet.Id);
 
                             radElementDbContext.ElementSet.Remove(elementSet);
                             radElementDbContext.SaveChanges();
@@ -301,6 +303,32 @@ namespace RadElement.Service
             if (elementSetRefs != null && elementSetRefs.Any())
             {
                 radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
+            }
+        }
+
+        /// <summary>
+        /// Removes the person element set references.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void RemovePersonElementSetReferences(int setId)
+        {
+            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.ToList().Where(x => x.ElementSetID == setId);
+            if (personElementSetRefs != null && personElementSetRefs.Any())
+            {
+                radElementDbContext.PersonRoleElementSetRef.RemoveRange(personElementSetRefs);
+            }
+        }
+
+        /// <summary>
+        /// Removes the organization element set references.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void RemoveOrganizationElementSetReferences(int setId)
+        {
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.ToList().Where(x => x.ElementSetID == setId);
+            if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
+            {
+                radElementDbContext.OrganizationRoleElementSetRef.RemoveRange(organizationElementSetRefs);
             }
         }
 

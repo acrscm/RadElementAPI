@@ -432,10 +432,12 @@ namespace RadElement.Service
 
                                     if (element != null)
                                     {
-                                        if (setInternalId != elementSet.Id)
+                                        var elementsetRefs = radElementDbContext.ElementSetRef.ToList();
+                                        if (!elementsetRefs.Exists(x => x.ElementId == elementInternalId && x.ElementSetId == setInternalId))
                                         {
                                             AddElementSetReferences(setInternalId, elementInternalId);
                                             radElementDbContext.SaveChanges();
+                                            transaction.Commit();
                                         }
 
                                         return await Task.FromResult(new JsonResult(string.Format("Element with set id '{0}' and element id '{1}' is mapped.", setId, dataElement.ElementId), HttpStatusCode.Created));
@@ -758,18 +760,17 @@ namespace RadElement.Service
                         {
                             var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == elementSetRef.ElementId);
                             var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
-
-                            if (elementValues != null && elementValues.Any())
-                            {
-                                radElementDbContext.ElementValue.RemoveRange(elementValues);
-                            }
-
+                            
                             if (element != null)
                             {
                                 radElementDbContext.Element.Remove(element);
                             }
 
-                            radElementDbContext.ElementSetRef.Remove(elementSetRef);
+                            RemoveElementValues(elementValues);
+                            RemoveElementSetReferences(elementSetRef);
+                            RemovePersonElementReferences(elementInternalId);
+                            RemoveOrganizationElementReferences(elementInternalId);
+
                             radElementDbContext.SaveChanges();
                             transaction.Commit();
 
@@ -811,6 +812,18 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Removes the element values.
+        /// </summary>
+        /// <param name="elementValues">The element values.</param>
+        private void RemoveElementValues(IEnumerable<ElementValue> elementValues)
+        {
+            if (elementValues != null && elementValues.Any())
+            {
+                radElementDbContext.ElementValue.RemoveRange(elementValues);
+            };
+        }
+
+        /// <summary>
         /// Adds the element set references.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
@@ -824,6 +837,41 @@ namespace RadElement.Service
             };
 
             radElementDbContext.ElementSetRef.Add(setRef);
+        }
+
+        /// <summary>
+        /// Removes the element set references.
+        /// </summary>
+        /// <param name="setRef">The set reference.</param>
+        private void RemoveElementSetReferences(ElementSetRef setRef)
+        {
+            radElementDbContext.ElementSetRef.Remove(setRef);
+        }
+
+        /// <summary>
+        /// Removes the person elements references.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        private void RemovePersonElementReferences(int elementId)
+        {
+            var personElementsRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.ElementID == elementId);
+            if (personElementsRefs != null && personElementsRefs.Any())
+            {
+                radElementDbContext.PersonRoleElementRef.RemoveRange(personElementsRefs);
+            }
+        }
+
+        /// <summary>
+        /// Removes the organization element references.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        private void RemoveOrganizationElementReferences(int elementId)
+        {
+            var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.ElementID == elementId);
+            if (organizationElementsRefs != null && organizationElementsRefs.Any())
+            {
+                radElementDbContext.OrganizationRoleElementRef.RemoveRange(organizationElementsRefs);
+            }
         }
 
         /// <summary>
