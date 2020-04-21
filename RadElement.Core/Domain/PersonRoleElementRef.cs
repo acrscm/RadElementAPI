@@ -22,6 +22,6 @@ namespace RadElement.Core.Domain
         /// <summary>
         /// Gets or sets the role.
         /// </summary>
-        public PersonRole Role { get; set; }
+        public string Role { get; set; }
     }
 }

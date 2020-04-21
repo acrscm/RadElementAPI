@@ -340,7 +340,7 @@ namespace RadElement.Service
                                 {
                                     ElementSetID = setId,
                                     PersonID = personRef.PersonId,
-                                    Role = role
+                                    Role = role.ToString()
                                 };
 
                                 radElementDbContext.PersonRoleElementSetRef.Add(setRef);
@@ -358,6 +358,7 @@ namespace RadElement.Service
                         }
                     }
                 }
+                radElementDbContext.SaveChanges();
             }
         }
 
@@ -385,7 +386,7 @@ namespace RadElement.Service
                                 {
                                     ElementSetID = setId,
                                     OrganizationID = orgRef.OrganizationId,
-                                    Role = role
+                                    Role = role.ToString()
                                 };
 
                                 radElementDbContext.OrganizationRoleElementSetRef.Add(setRef);
@@ -403,6 +404,7 @@ namespace RadElement.Service
                         }
                     }
                 }
+                radElementDbContext.SaveChanges();
             }
         }
 
@@ -416,6 +418,7 @@ namespace RadElement.Service
             if (personElementSetRefs != null && personElementSetRefs.Any())
             {
                 radElementDbContext.PersonRoleElementSetRef.RemoveRange(personElementSetRefs);
+                radElementDbContext.SaveChanges();
             }
         }
 
@@ -429,6 +432,7 @@ namespace RadElement.Service
             if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
             {
                 radElementDbContext.OrganizationRoleElementSetRef.RemoveRange(organizationElementSetRefs);
+                radElementDbContext.SaveChanges();
             }
         }
 

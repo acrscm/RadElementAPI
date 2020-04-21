@@ -279,6 +279,7 @@ namespace RadElement.Service
             if (personElementSetRefs != null && personElementSetRefs.Any())
             {
                 radElementDbContext.PersonRoleElementSetRef.RemoveRange(personElementSetRefs);
+                radElementDbContext.SaveChanges();
             }
         }
 
@@ -292,6 +293,7 @@ namespace RadElement.Service
             if (personElementsRefs != null && personElementsRefs.Any())
             {
                 radElementDbContext.PersonRoleElementRef.RemoveRange(personElementsRefs);
+                radElementDbContext.SaveChanges();
             }
         }
     }
