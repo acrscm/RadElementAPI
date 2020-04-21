@@ -417,6 +417,9 @@ namespace RadElement.Service
                                 }
 
                                 AddElementSetReferences(setInternalId, (int)element.Id);
+                                AddPersonReferences((int)element.Id, dataElement.Persons);
+                                AddOrganizationReferences((int)element.Id, dataElement.Organizations);
+
                                 radElementDbContext.SaveChanges();
                                 transaction.Commit();
 
@@ -717,6 +720,11 @@ namespace RadElement.Service
                                     AddElementValues(dataElement.Options, element.Id);
                                 }
 
+                                RemovePersonReferences((int)element.Id);
+                                RemoveOrganizationReferences((int)element.Id);
+                                AddPersonReferences((int)element.Id, dataElement.Persons);
+                                AddOrganizationReferences((int)element.Id, dataElement.Organizations);
+
                                 radElementDbContext.SaveChanges();
                                 transaction.Commit();
 
@@ -768,8 +776,8 @@ namespace RadElement.Service
 
                             RemoveElementValues(elementValues);
                             RemoveElementSetReferences(elementSetRef);
-                            RemovePersonElementReferences(elementInternalId);
-                            RemoveOrganizationElementReferences(elementInternalId);
+                            RemovePersonReferences(elementInternalId);
+                            RemoveOrganizationReferences(elementInternalId);
 
                             radElementDbContext.SaveChanges();
                             transaction.Commit();
@@ -849,10 +857,100 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Adds the person references.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <param name="personRefs">The person refs.</param>
+        private void AddPersonReferences(int elementId, List<PersonDetails> personRefs)
+        {
+            if (personRefs != null && personRefs.Any())
+            {
+                var persons = radElementDbContext.Person.ToList();
+
+                foreach (var personRef in personRefs)
+                {
+                    var person = persons.Find(x => x.Id == personRef.PersonId);
+                    if (person != null)
+                    {
+                        if (personRef.Roles != null && personRef.Roles.Any())
+                        {
+                            foreach (var role in personRef.Roles)
+                            {
+                                var setRef = new PersonRoleElementRef()
+                                {
+                                    ElementID = elementId,
+                                    PersonID = personRef.PersonId,
+                                    Role = role
+                                };
+
+                                radElementDbContext.PersonRoleElementRef.Add(setRef);
+                            }
+                        }
+                        else
+                        {
+                            var setRef = new PersonRoleElementRef()
+                            {
+                                ElementID = elementId,
+                                PersonID = personRef.PersonId
+                            };
+
+                            radElementDbContext.PersonRoleElementRef.Add(setRef);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the organization references.
+        /// </summary>
+        /// <param name="elementId">The set identifier.</param>
+        /// <param name="orgRefs">The org refs.</param>
+        private void AddOrganizationReferences(int elementId, List<OrganizationDetails> orgRefs)
+        {
+            if (orgRefs != null && orgRefs.Any())
+            {
+                var organizations = radElementDbContext.Organization.ToList();
+
+                foreach (var orgRef in orgRefs)
+                {
+                    var organization = organizations.Find(x => x.Id == orgRef.OrganizationId);
+                    if (organization != null)
+                    {
+                        if (orgRef.Roles != null && orgRef.Roles.Any())
+                        {
+                            foreach (var role in orgRef.Roles)
+                            {
+                                var setRef = new OrganizationRoleElementRef()
+                                {
+                                    ElementID = elementId,
+                                    OrganizationID = orgRef.OrganizationId,
+                                    Role = role
+                                };
+
+                                radElementDbContext.OrganizationRoleElementRef.Add(setRef);
+                            }
+                        }
+                        else
+                        {
+                            var setRef = new OrganizationRoleElementRef()
+                            {
+                                ElementID = elementId,
+                                OrganizationID = orgRef.OrganizationId
+                            };
+
+                            radElementDbContext.OrganizationRoleElementRef.Add(setRef);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Removes the person elements references.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        private void RemovePersonElementReferences(int elementId)
+        private void RemovePersonReferences(int elementId)
         {
             var personElementsRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.ElementID == elementId);
             if (personElementsRefs != null && personElementsRefs.Any())
@@ -865,7 +963,7 @@ namespace RadElement.Service
         /// Removes the organization element references.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        private void RemoveOrganizationElementReferences(int elementId)
+        private void RemoveOrganizationReferences(int elementId)
         {
             var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.ElementID == elementId);
             if (organizationElementsRefs != null && organizationElementsRefs.Any())

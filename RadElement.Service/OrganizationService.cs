@@ -3,10 +3,8 @@ using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using System.Net;
 using RadElement.Core.Data;
 
@@ -24,11 +22,6 @@ namespace RadElement.Service
         private RadElementDbContext radElementDbContext;
 
         /// <summary>
-        /// The mapper
-        /// </summary>
-        private readonly IMapper mapper;
-
-        /// <summary>
         /// The logger
         /// </summary>
         private readonly ILogger logger;
@@ -37,15 +30,12 @@ namespace RadElement.Service
         /// Initializes a new instance of the <see cref="ElementSetService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
         public OrganizationService(
             RadElementDbContext radElementDbContext,
-            IMapper mapper,
             ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
-            this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -58,7 +48,7 @@ namespace RadElement.Service
             try
             {
                 var organizations = radElementDbContext.Organization.ToList();
-                return await Task.FromResult(new JsonResult(GetOrganizationDetailsDto(organizations), HttpStatusCode.OK));
+                return await Task.FromResult(new JsonResult(organizations, HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -84,7 +74,7 @@ namespace RadElement.Service
 
                     if (organization != null)
                     {
-                        return await Task.FromResult(new JsonResult(GetOrganizationDetailsDto(organization), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(organization, HttpStatusCode.OK));
                     }
                 }
                 return await Task.FromResult(new JsonResult(string.Format("No such organization with id '{0}'.", organizationId), HttpStatusCode.NotFound));
@@ -113,7 +103,7 @@ namespace RadElement.Service
                     var filteredorganizations = organizations.Where(x => x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
                     if (filteredorganizations != null && filteredorganizations.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetOrganizationDetailsDto(filteredorganizations), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(filteredorganizations, HttpStatusCode.OK));
                     }
                     else
                     {
@@ -310,25 +300,6 @@ namespace RadElement.Service
             {
                 radElementDbContext.OrganizationRoleElementRef.RemoveRange(organizationElementsRefs);
             }
-        }
-
-        /// <summary>
-        /// Gets the organization details dto.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        private object GetOrganizationDetailsDto(object value)
-        {
-            if (value.GetType() == typeof(List<Organization>))
-            {
-                return mapper.Map<List<Organization>, List<OrganizationDetails>>(value as List<Organization>);
-            }
-            else if (value.GetType() == typeof(Organization))
-            {
-                return mapper.Map<OrganizationDetails>(value as Organization);
-            }
-
-            return null;
         }
     }
 }

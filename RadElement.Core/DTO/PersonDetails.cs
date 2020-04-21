@@ -1,27 +1,17 @@
-﻿using Newtonsoft.Json;
-using RadElement.Core.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RadElement.Core.DTO
 {
-    public class PersonDetails : Person
+    public class PersonDetails
     {
         /// <summary>
-        /// Gets or sets the set identifier.
+        /// Gets or sets the person identifier.
         /// </summary>
-        /// <value>
-        /// The set information.
-        /// </value>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<SetBasicAttributes> SetInformation { get; set; }
+        public int PersonId { get; set; }
 
         /// <summary>
-        /// Gets or sets the element information.
+        /// Gets or sets the roles.
         /// </summary>
-        /// <value>
-        /// The element information.
-        /// </value>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<ElementBasicAttributes> ElementInformation { get; set; }
+        public List<PersonRole> Roles { get; set; }
     }
 }

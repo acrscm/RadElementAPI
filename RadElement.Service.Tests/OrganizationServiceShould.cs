@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Data;
-using RadElement.Core.Profile;
 using RadElement.Service.Tests.Mocks.Data;
 using Serilog;
 using System.Collections.Generic;
@@ -32,15 +30,9 @@ namespace RadElement.Service.Tests
         /// The mock logger
         /// </summary>
         private readonly Mock<ILogger> mockLogger;
-        /// <summary>
-        /// The mapper
-        /// </summary>
-        private readonly IMapper mapper;
 
         private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string organizationNotFoundMessage = "No such organization with id '{0}'.";
-        private const string elemenIdInvalidMessage = "No such element with element id '{0}'.";
-        private const string setIdInvalidMessage = "No such set with set id '{0}'.";
         private const string organizationNotFoundMessageWithSearchMessage = "No such organization with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword '{0}' given is invalid.";
         private const string organizationInvalidMessage = "Organization fields are invalid.";
@@ -49,25 +41,14 @@ namespace RadElement.Service.Tests
         private const string organizationDeletedMessage = "Organization with id '{0}' is deleted.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OrganizationServiceShould"/> class.
+        /// Initializes a new instance of the <see cref="OrganizationServiceShould" /> class.
         /// </summary>
         public OrganizationServiceShould()
         {
             mockRadElementContext = new Mock<RadElementDbContext>();
             mockLogger = new Mock<ILogger>();
-
-            var elementProfile = new ElementProfile();
-            var elementSetProfile = new ElementSetProfile();
-            var organizationProfile = new OrganizationProfile();
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(elementProfile);
-                cfg.AddProfile(elementSetProfile);
-                cfg.AddProfile(organizationProfile);
-            });
-
-            mapper = new Mapper(mapperConfig);
-            service = new OrganizationService(mockRadElementContext.Object, mapper, mockLogger.Object);
+            
+            service = new OrganizationService(mockRadElementContext.Object, mockLogger.Object);
         }
 
         #region GetOrganizations
@@ -91,7 +72,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<OrganizationDetails>>(result.Value);
+            Assert.IsType<List<Organization>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
@@ -137,7 +118,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<OrganizationDetails>(result.Value);
+            Assert.IsType<Organization>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
@@ -196,7 +177,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<OrganizationDetails>>(result.Value);
+            Assert.IsType<List<Organization>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 

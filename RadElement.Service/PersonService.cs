@@ -3,11 +3,9 @@ using RadElement.Core.DTO;
 using RadElement.Core.Services;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AutoMapper;
 using RadElement.Core.Data;
 
 namespace RadElement.Service
@@ -22,12 +20,7 @@ namespace RadElement.Service
         /// The RAD element database context
         /// </summary>
         private RadElementDbContext radElementDbContext;
-
-        /// <summary>
-        /// The mapper
-        /// </summary>
-        private readonly IMapper mapper;
-
+        
         /// <summary>
         /// The logger
         /// </summary>
@@ -37,15 +30,12 @@ namespace RadElement.Service
         /// Initializes a new instance of the <see cref="ElementSetService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
         public PersonService(
             RadElementDbContext radElementDbContext,
-            IMapper mapper,
             ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
-            this.mapper = mapper;
             this.logger = logger;
         }
 
@@ -58,7 +48,7 @@ namespace RadElement.Service
             try
             {
                 var persons = radElementDbContext.Person.ToList();
-                return await Task.FromResult(new JsonResult(GetPersonDetailsDto(persons), HttpStatusCode.OK));
+                return await Task.FromResult(new JsonResult(persons, HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -84,7 +74,7 @@ namespace RadElement.Service
 
                     if (person != null)
                     {
-                        return await Task.FromResult(new JsonResult(GetPersonDetailsDto(person), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(person, HttpStatusCode.OK));
                     }
                 }
                 return await Task.FromResult(new JsonResult(string.Format("No such person with id '{0}'.", personId), HttpStatusCode.NotFound));
@@ -112,7 +102,7 @@ namespace RadElement.Service
                     var filteredPersons = persons.Where(x => x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
                     if (filteredPersons != null && filteredPersons.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetPersonDetailsDto(filteredPersons), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(filteredPersons, HttpStatusCode.OK));
                     }
                     else
                     {
@@ -221,8 +211,6 @@ namespace RadElement.Service
                             personDetails.TwitterHandle = person.TwitterHandle;
 
                             radElementDbContext.SaveChanges();
-
-                            radElementDbContext.SaveChanges();
                             transaction.Commit();
 
                             return await Task.FromResult(new JsonResult(string.Format("Person with id '{0}' is updated.", personId), HttpStatusCode.OK));
@@ -305,25 +293,6 @@ namespace RadElement.Service
             {
                 radElementDbContext.PersonRoleElementRef.RemoveRange(personElementsRefs);
             }
-        }
-
-        /// <summary>
-        /// Gets the element set details dto.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        private object GetPersonDetailsDto(object value)
-        {
-            if (value.GetType() == typeof(List<Person>))
-            {
-                return mapper.Map<List<Person>, List<PersonDetails>>(value as List<Person>);
-            }
-            else if (value.GetType() == typeof(Person))
-            {
-                return mapper.Map<PersonDetails>(value as Person);
-            }
-
-            return null;
         }
     }
 }

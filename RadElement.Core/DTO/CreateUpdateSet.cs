@@ -53,5 +53,15 @@ namespace RadElement.Core.DTO
         /// </summary>
         [MaxLength(8)]
         public string Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person ids.
+        /// </summary>
+        public List<PersonDetails> Persons { get; set; }
+
+        /// <summary>
+        /// Gets or sets the organization ids.
+        /// </summary>
+        public List<OrganizationDetails> Organizations { get; set; }
     }
 }

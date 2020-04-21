@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Data;
-using RadElement.Core.Profile;
 using RadElement.Service.Tests.Mocks.Data;
 using Serilog;
 using System.Collections.Generic;
@@ -32,10 +30,6 @@ namespace RadElement.Service.Tests
         /// The mock logger
         /// </summary>
         private readonly Mock<ILogger> mockLogger;
-        /// <summary>
-        /// The mapper
-        /// </summary>
-        private readonly IMapper mapper;
 
         private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string personNotFoundMessage = "No such person with id '{0}'.";
@@ -56,20 +50,7 @@ namespace RadElement.Service.Tests
             mockRadElementContext = new Mock<RadElementDbContext>();
             mockLogger = new Mock<ILogger>();
 
-            var elementProfile = new ElementProfile();
-            var elementSetProfile = new ElementSetProfile();
-            var personProfile = new PersonProfile();
-            var organizationProfile = new OrganizationProfile();
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(elementProfile);
-                cfg.AddProfile(elementSetProfile);
-                cfg.AddProfile(personProfile);
-                cfg.AddProfile(organizationProfile);
-            });
-
-            mapper = new Mapper(mapperConfig);
-            service = new PersonService(mockRadElementContext.Object, mapper, mockLogger.Object);
+            service = new PersonService(mockRadElementContext.Object, mockLogger.Object);
         }
 
         #region GetPersons

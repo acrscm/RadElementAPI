@@ -116,5 +116,15 @@ namespace RadElement.Core.DTO
         /// Gets or sets the options.
         /// </summary>
         public List<Option> Options { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person ids.
+        /// </summary>
+        public List<PersonDetails> Persons { get; set; }
+
+        /// <summary>
+        /// Gets or sets the organization ids.
+        /// </summary>
+        public List<OrganizationDetails> Organizations { get; set; }
     }
 }
