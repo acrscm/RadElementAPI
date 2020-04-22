@@ -27,7 +27,7 @@ namespace RadElement.Core.Services
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        Task<JsonResult> SearchSet(string searchKeyword);
+        Task<JsonResult> SearchSets(SearchKeyword searchKeyword);
 
         /// <summary>
         /// Creates the cde set.

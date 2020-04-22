@@ -41,7 +41,7 @@ namespace RadElement.Service.Tests
         private const string elementNotFoundMessage = "No such element with id '{0}'.";
         private const string elementSetIdNotFoundMessage = "No such elements with set id '{0}'.";
         private const string elementNotFoundMessageWithSearchMessage = "No such element with keyword '{0}'.";
-        private const string invalidSearchMessage = "Keyword '{0}' given is invalid.";
+        private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string dataElementInvalidMessage = "Element fields are invalid.";
         private const string choiceInvalidMessage = "'Options' field are missing for Choice type elements.";
         private const string elemenIdandSetIdInvalidMessage = "No such element with set id '{0}' and element id '{1}'.";
@@ -196,7 +196,7 @@ namespace RadElement.Service.Tests
         public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchElement(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -211,7 +211,7 @@ namespace RadElement.Service.Tests
         public async void SearchElementShouldReturnEmpyElementsIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchElement(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -225,7 +225,7 @@ namespace RadElement.Service.Tests
         public async void SearchElementShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
             IntializeMockData(false);
-            var result = await service.SearchElement(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -237,7 +237,7 @@ namespace RadElement.Service.Tests
         public async void GetElementShouldReturnElementsIfSearchedElementExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchElement(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);

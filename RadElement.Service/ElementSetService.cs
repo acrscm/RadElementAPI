@@ -103,25 +103,25 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchSet(string searchKeyword)
+        public async Task<JsonResult> SearchSets(SearchKeyword searchKeyword)
         {
             try
             {
-                if (!string.IsNullOrEmpty(searchKeyword))
+                if (!string.IsNullOrEmpty(searchKeyword.Keyword))
                 {
-                    var sets = radElementDbContext.ElementSet.ToList().Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
-                                                                                  x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var sets = radElementDbContext.ElementSet.ToList().Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.Keyword.ToLower()) ||
+                                                                                  x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
                     if (sets != null && sets.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
                     }
                     else
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
+                        return await Task.FromResult(new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword.Keyword), HttpStatusCode.NotFound));
                     }
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid.", searchKeyword), HttpStatusCode.BadRequest));
+                return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
             }
             catch (Exception ex)
             {

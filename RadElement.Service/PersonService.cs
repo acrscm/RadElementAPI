@@ -92,7 +92,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchPerson(SearchKeyword searchKeyword)
+        public async Task<JsonResult> SearchPersons(SearchKeyword searchKeyword)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace RadElement.Service
                     }
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid.", searchKeyword.Keyword), HttpStatusCode.BadRequest));
+                return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
             }
             catch (Exception ex)
             {

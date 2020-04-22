@@ -34,7 +34,7 @@ namespace RadElement.Service.Tests
         private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
         private const string organizationNotFoundMessage = "No such organization with id '{0}'.";
         private const string organizationNotFoundMessageWithSearchMessage = "No such organization with keyword '{0}'.";
-        private const string invalidSearchMessage = "Keyword '{0}' given is invalid.";
+        private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string organizationInvalidMessage = "Organization fields are invalid.";
         private const string organizationExistsMessage = "Organization with same details already exists.";
         private const string organizationUpdateMessage = "Organization with id '{0}' is updated.";
@@ -132,7 +132,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -147,7 +147,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnEmpyOrganizationIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -161,7 +161,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
             IntializeMockData(false);
-            var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -173,7 +173,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnOrganizationIfSearchedOrganizationExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchOrganization(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);

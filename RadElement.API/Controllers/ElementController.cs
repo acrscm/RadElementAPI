@@ -15,7 +15,7 @@ namespace RadElement.API.Controllers
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("radelement/api/v1")]
-    [Authorize(Policy = "UserIdExists")]
+    //[Authorize(Policy = "UserIdExists")]
     [ApiController]
     public class ElementController : BaseController
     {
@@ -80,7 +80,7 @@ namespace RadElement.API.Controllers
         [HttpGet("elements/search")]
         public async Task<IActionResult> SearchElements([FromQuery]SearchKeyword searchKeyword)
         {
-            var result = await radElementService.SearchElement(searchKeyword);
+            var result = await radElementService.SearchElements(searchKeyword);
             return StatusCode((int)result.Code, result.Value);
         }
 

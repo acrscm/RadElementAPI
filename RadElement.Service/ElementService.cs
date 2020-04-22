@@ -139,12 +139,17 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchElement(SearchKeyword searchKeyword)
+        public async Task<JsonResult> SearchElements(SearchKeyword searchKeyword)
         {
             try
             {
                 if (!string.IsNullOrEmpty(searchKeyword.Keyword))
                 {
+                    if (searchKeyword.Keyword.Length < 3)
+                    {
+                        return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
+                    }
+
                     var elements = radElementDbContext.Element.ToList();
                     var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.Keyword.ToLower()) ||
                                                                x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
@@ -158,7 +163,7 @@ namespace RadElement.Service
                     }
                 }
 
-                return await Task.FromResult(new JsonResult(string.Format("Keyword '{0}' given is invalid.", searchKeyword.Keyword), HttpStatusCode.BadRequest));
+                return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
             }
             catch (Exception ex)
             {

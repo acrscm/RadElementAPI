@@ -65,9 +65,9 @@ namespace RadElement.API.Controllers
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
         [HttpGet("organizations/search")]
-        public async Task<IActionResult> SearchOrganization([FromQuery]SearchKeyword searchKeyword)
+        public async Task<IActionResult> SearchOrganizations([FromQuery]SearchKeyword searchKeyword)
         {
-            var result = await organizationService.SearchOrganization(searchKeyword);
+            var result = await organizationService.SearchOrganizations(searchKeyword);
             return StatusCode((int)result.Code, result.Value);
         }
 
