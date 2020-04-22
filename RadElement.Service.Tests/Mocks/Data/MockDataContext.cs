@@ -70,20 +70,20 @@ namespace RadElement.Service.Tests.Mocks.Data
 
         public static IQueryable<PersonRoleElementRef> personElementRefDb = new List<PersonRoleElementRef>()
             {
-                new PersonRoleElementRef { Id = 1, PersonID = 1, ElementID = 338, Role = PersonRole.Author },
-                new PersonRoleElementRef { Id = 1, PersonID = 1, ElementID = 338, Role = PersonRole.Editor },
-                new PersonRoleElementRef { Id = 2, PersonID = 2, ElementID = 340, Role = PersonRole.Contributor },
-                new PersonRoleElementRef { Id = 3, PersonID = 3, ElementID = 307, Role = PersonRole.Editor },
-                new PersonRoleElementRef { Id = 4, PersonID = 4, ElementID = 283, Role = PersonRole.Reviewer },
+                new PersonRoleElementRef { Id = 1, PersonID = 1, ElementID = 338, Role = PersonRole.Author.ToString() },
+                new PersonRoleElementRef { Id = 1, PersonID = 1, ElementID = 338, Role = PersonRole.Editor.ToString() },
+                new PersonRoleElementRef { Id = 2, PersonID = 2, ElementID = 340, Role = PersonRole.Contributor.ToString() },
+                new PersonRoleElementRef { Id = 3, PersonID = 3, ElementID = 307, Role = PersonRole.Editor.ToString() },
+                new PersonRoleElementRef { Id = 4, PersonID = 4, ElementID = 283, Role = PersonRole.Reviewer.ToString() },
         }.AsQueryable();
 
         public static IQueryable<PersonRoleElementSetRef> personElementSetRefDb = new List<PersonRoleElementSetRef>()
             {
-                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Author },
-                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Editor },
-                new PersonRoleElementSetRef { Id = 2, PersonID = 2, ElementSetID = 66, Role = PersonRole.Contributor },
-                new PersonRoleElementSetRef { Id = 3, PersonID = 3, ElementSetID = 72, Role = PersonRole.Editor },
-                new PersonRoleElementSetRef { Id = 4, PersonID = 4, ElementSetID = 74, Role = PersonRole.Reviewer },
+                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Author.ToString() },
+                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Editor.ToString() },
+                new PersonRoleElementSetRef { Id = 2, PersonID = 2, ElementSetID = 66, Role = PersonRole.Contributor.ToString() },
+                new PersonRoleElementSetRef { Id = 3, PersonID = 3, ElementSetID = 72, Role = PersonRole.Editor.ToString() },
+                new PersonRoleElementSetRef { Id = 4, PersonID = 4, ElementSetID = 74, Role = PersonRole.Reviewer.ToString() },
         }.AsQueryable();
 
         public static IQueryable<Organization> organizationDb = new List<Organization>()
@@ -96,20 +96,20 @@ namespace RadElement.Service.Tests.Mocks.Data
 
         public static IQueryable<OrganizationRoleElementRef> organizationElementRefDb = new List<OrganizationRoleElementRef>()
             {
-                new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Author },
-                new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Translator },
-                new OrganizationRoleElementRef { Id = 2, OrganizationID = 2, ElementID = 340, Role = OrganizationRole.Contributor },
-                new OrganizationRoleElementRef { Id = 3, OrganizationID = 3, ElementID = 307, Role = OrganizationRole.Translator },
-                new OrganizationRoleElementRef { Id = 4, OrganizationID = 4, ElementID = 283, Role = OrganizationRole.Reviewer },
+                new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Author.ToString() },
+                new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Translator.ToString() },
+                new OrganizationRoleElementRef { Id = 2, OrganizationID = 2, ElementID = 340, Role = OrganizationRole.Contributor.ToString() },
+                new OrganizationRoleElementRef { Id = 3, OrganizationID = 3, ElementID = 307, Role = OrganizationRole.Translator.ToString() },
+                new OrganizationRoleElementRef { Id = 4, OrganizationID = 4, ElementID = 283, Role = OrganizationRole.Reviewer.ToString() },
         }.AsQueryable();
 
         public static IQueryable<OrganizationRoleElementSetRef> organizationElementSetRefDb = new List<OrganizationRoleElementSetRef>()
             {
-                new OrganizationRoleElementSetRef { Id = 1, OrganizationID = 1, ElementSetID = 53, Role = OrganizationRole.Author },
-                new OrganizationRoleElementSetRef { Id = 1, OrganizationID = 1, ElementSetID = 53, Role = OrganizationRole.Translator },
-                new OrganizationRoleElementSetRef { Id = 2, OrganizationID = 2, ElementSetID = 66, Role = OrganizationRole.Contributor },
-                new OrganizationRoleElementSetRef { Id = 3, OrganizationID = 3, ElementSetID = 72, Role = OrganizationRole.Translator },
-                new OrganizationRoleElementSetRef { Id = 4, OrganizationID = 4, ElementSetID = 74, Role = OrganizationRole.Reviewer },
+                new OrganizationRoleElementSetRef { Id = 1, OrganizationID = 1, ElementSetID = 53, Role = OrganizationRole.Author.ToString() },
+                new OrganizationRoleElementSetRef { Id = 1, OrganizationID = 1, ElementSetID = 53, Role = OrganizationRole.Translator.ToString() },
+                new OrganizationRoleElementSetRef { Id = 2, OrganizationID = 2, ElementSetID = 66, Role = OrganizationRole.Contributor.ToString() },
+                new OrganizationRoleElementSetRef { Id = 3, OrganizationID = 3, ElementSetID = 72, Role = OrganizationRole.Translator.ToString() },
+                new OrganizationRoleElementSetRef { Id = 4, OrganizationID = 4, ElementSetID = 74, Role = OrganizationRole.Reviewer.ToString() },
         }.AsQueryable();
 
         #endregion

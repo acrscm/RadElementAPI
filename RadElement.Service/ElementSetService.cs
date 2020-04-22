@@ -439,20 +439,79 @@ namespace RadElement.Service
         /// <summary>
         /// Gets the element set details dto.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="set">The value.</param>
         /// <returns></returns>
-        private object GetElementSetDetailsDto(object value)
+        private object GetElementSetDetailsDto(object set)
         {
-            if (value.GetType() == typeof(List<ElementSet>))
+            if (set.GetType() == typeof(List<ElementSet>))
             {
-                return mapper.Map<List<ElementSet>, List<ElementSetDetails>>(value as List<ElementSet>);
+                var sets = mapper.Map<List<ElementSet>, List<ElementSetDetails>>(set as List<ElementSet>);
+                sets.ForEach(set =>
+                {
+                    set.OrganizationInformation = GetOrganizationDetails((set as ElementSet).Id);
+                    set.PersonInformation = GetPersonDetails((set as ElementSet).Id);
+                });
+                return sets;
+
             }
-            else if (value.GetType() == typeof(ElementSet))
+            else if (set.GetType() == typeof(ElementSet))
             {
-                return mapper.Map<ElementSetDetails>(value as ElementSet);
+                var setDetails = mapper.Map<ElementSetDetails>(set as ElementSet);
+                setDetails.OrganizationInformation = GetOrganizationDetails((set as ElementSet).Id);
+                setDetails.PersonInformation = GetPersonDetails((set as ElementSet).Id);
+
+                return setDetails;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the organization details.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <returns></returns>
+        private List<Organization> GetOrganizationDetails(int setId)
+        {
+            List<Organization> organizationInfo = new List<Organization>(); ;
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.ToList().Where(x => x.ElementSetID == setId);
+            if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
+            {
+                foreach (var organizationElementSetRef in organizationElementSetRefs)
+                {
+                    var organization = radElementDbContext.Organization.ToList().Where(x => x.Id == organizationElementSetRef.OrganizationID).FirstOrDefault();
+                    if (organization != null)
+                    {
+                        organizationInfo.Add(organization);
+                    }
+                }
+            }
+
+            return organizationInfo;
+        }
+
+        /// <summary>
+        /// Gets the person details.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <returns></returns>
+        private List<Person> GetPersonDetails(int setId)
+        {
+            List<Person> personInfo = new List<Person>(); ;
+            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.ToList().Where(x => x.ElementSetID == setId);
+            if (personElementSetRefs != null && personElementSetRefs.Any())
+            {
+                foreach (var personElementSetRef in personElementSetRefs)
+                {
+                    var person = radElementDbContext.Person.ToList().Where(x => x.Id == personElementSetRef.PersonID).FirstOrDefault();
+                    if (person != null)
+                    {
+                        personInfo.Add(person);
+                    }
+                }
+            }
+
+            return personInfo;
         }
     }
 }

@@ -18,6 +18,18 @@ namespace RadElement.Core.DTO
         public List<SetBasicAttributes> SetInformation { get; set; }
 
         /// <summary>
+        /// Gets or sets the person information.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public List<Person> PersonInformation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the organization information.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public List<Organization> OrganizationInformation { get; set; }
+
+        /// <summary>
         /// Gets or sets the element values.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

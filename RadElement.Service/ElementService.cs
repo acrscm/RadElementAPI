@@ -1025,6 +1025,8 @@ namespace RadElement.Service
                 elements.ForEach(element =>
                 {
                     element.SetInformation = GetSetDetails((element as Element).Id);
+                    element.OrganizationInformation = GetOrganizationDetails((element as Element).Id);
+                    element.PersonInformation = GetPersonDetails((element as Element).Id);
 
                     if (element.ValueType == "valueSet")
                     {
@@ -1085,6 +1087,54 @@ namespace RadElement.Service
             }
 
             return setInfo;
+        }
+
+        /// <summary>
+        /// Gets the organization details.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        private List<Organization> GetOrganizationDetails(uint elementId)
+        {
+            List<Organization> organizationInfo = new List<Organization>(); ;
+            var organizationElementRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.ElementID == elementId);
+            if (organizationElementRefs != null && organizationElementRefs.Any())
+            {
+                foreach (var organizationElementRef in organizationElementRefs)
+                {
+                    var organization = radElementDbContext.Organization.ToList().Where(x => x.Id == organizationElementRef.OrganizationID).FirstOrDefault();
+                    if (organization != null)
+                    {
+                        organizationInfo.Add(organization);
+                    }
+                }
+            }
+
+            return organizationInfo;
+        }
+
+        /// <summary>
+        /// Gets the person details.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        private List<Person> GetPersonDetails(uint elementId)
+        {
+            List<Person> personInfo = new List<Person>(); ;
+            var personElementRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.ElementID == elementId);
+            if (personElementRefs != null && personElementRefs.Any())
+            {
+                foreach (var persoElementRef in personElementRefs)
+                {
+                    var person = radElementDbContext.Person.ToList().Where(x => x.Id == persoElementRef.PersonID).FirstOrDefault();
+                    if (person != null)
+                    {
+                        personInfo.Add(person);
+                    }
+                }
+            }
+
+            return personInfo;
         }
 
         /// <summary>
