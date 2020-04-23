@@ -139,27 +139,27 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchElements(SearchKeyword searchKeyword)
+        public async Task<JsonResult> SearchElements(string searchKeyword)
         {
             try
             {
-                if (!string.IsNullOrEmpty(searchKeyword.Keyword))
+                if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    if (searchKeyword.Keyword.Length < 3)
+                    if (searchKeyword.Length < 3)
                     {
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
                     var elements = radElementDbContext.Element.ToList();
-                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.Keyword.ToLower()) ||
-                                                               x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
+                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
+                                                               x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements), HttpStatusCode.OK));
                     }
                     else
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword.Keyword), HttpStatusCode.NotFound));
+                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                     }
                 }
 

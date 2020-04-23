@@ -103,21 +103,21 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchSets(SearchKeyword searchKeyword)
+        public async Task<JsonResult> SearchSets(string searchKeyword)
         {
             try
             {
-                if (!string.IsNullOrEmpty(searchKeyword.Keyword))
+                if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = radElementDbContext.ElementSet.ToList().Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.Keyword.ToLower()) ||
-                                                                                  x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
+                    var sets = radElementDbContext.ElementSet.ToList().Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
+                                                                                  x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (sets != null && sets.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
                     }
                     else
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword.Keyword), HttpStatusCode.NotFound));
+                        return await Task.FromResult(new JsonResult(string.Format("No such set with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                     }
                 }
 

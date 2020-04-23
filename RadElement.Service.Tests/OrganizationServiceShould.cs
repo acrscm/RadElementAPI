@@ -132,7 +132,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -147,7 +147,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnEmpyOrganizationIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -161,7 +161,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
             IntializeMockData(false);
-            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -173,7 +173,7 @@ namespace RadElement.Service.Tests
         public async void SearchOrganizationShouldReturnOrganizationIfSearchedOrganizationExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchOrganizations(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchOrganizations(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);

@@ -27,7 +27,7 @@ namespace RadElement.Core.Services
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        Task<JsonResult> SearchOrganizations(SearchKeyword searchKeyword);
+        Task<JsonResult> SearchOrganizations(string searchKeyword);
 
         /// <summary>
         /// Creates the organization.

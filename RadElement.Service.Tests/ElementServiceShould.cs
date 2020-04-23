@@ -196,7 +196,7 @@ namespace RadElement.Service.Tests
         public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -211,7 +211,7 @@ namespace RadElement.Service.Tests
         public async void SearchElementShouldReturnEmpyElementsIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -225,7 +225,7 @@ namespace RadElement.Service.Tests
         public async void SearchElementShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
             IntializeMockData(false);
-            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -237,7 +237,7 @@ namespace RadElement.Service.Tests
         public async void GetElementShouldReturnElementsIfSearchedElementExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchElements(new SearchKeyword { Keyword = searchKeyword });
+            var result = await service.SearchElements(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);

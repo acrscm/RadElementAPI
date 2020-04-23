@@ -78,7 +78,7 @@ namespace RadElement.API.Controllers
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
         [HttpGet("elements/search")]
-        public async Task<IActionResult> SearchElements([FromQuery]SearchKeyword searchKeyword)
+        public async Task<IActionResult> SearchElements([FromQuery]string searchKeyword)
         {
             var result = await radElementService.SearchElements(searchKeyword);
             return StatusCode((int)result.Code, result.Value);

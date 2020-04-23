@@ -27,7 +27,7 @@ namespace RadElement.Core.Services
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        Task<JsonResult> SearchPersons(SearchKeyword searchKeyword);
+        Task<JsonResult> SearchPersons(string searchKeyword);
 
         /// <summary>
         /// Creates the person.

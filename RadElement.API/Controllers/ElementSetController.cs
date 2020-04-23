@@ -65,7 +65,7 @@ namespace RadElement.API.Controllers
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
         [HttpGet("sets/search")]
-         public async Task<IActionResult> SearchSets([FromQuery]SearchKeyword searchKeyword)
+         public async Task<IActionResult> SearchSets([FromQuery]string searchKeyword)
         {
             var result = await elementSetService.SearchSets(searchKeyword);
             return StatusCode((int)result.Code, result.Value);

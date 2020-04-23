@@ -101,7 +101,7 @@
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.SearchElements(RadElement.Core.DTO.SearchKeyword)">
+        <member name="M:RadElement.API.Controllers.ElementController.SearchElements(System.String)">
             <summary>
             Searches the element with provided keyword.
             </summary>
@@ -183,7 +183,7 @@
             <param name="setId">The set identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementSetController.SearchSets(RadElement.Core.DTO.SearchKeyword)">
+        <member name="M:RadElement.API.Controllers.ElementSetController.SearchSets(System.String)">
             <summary>
             Searches the set with provided keyword.
             </summary>
@@ -261,7 +261,7 @@
             <param name="organizationId">The organization identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.OrganizationController.SearchOrganizations(RadElement.Core.DTO.SearchKeyword)">
+        <member name="M:RadElement.API.Controllers.OrganizationController.SearchOrganizations(System.String)">
             <summary>
             Searches the organizations.
             </summary>
@@ -321,7 +321,7 @@
             <param name="personId">The person identifier.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.PersonController.SearchPersons(RadElement.Core.DTO.SearchKeyword)">
+        <member name="M:RadElement.API.Controllers.PersonController.SearchPersons(System.String)">
             <summary>
             Searches the persons.
             </summary>

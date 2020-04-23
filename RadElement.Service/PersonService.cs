@@ -92,21 +92,21 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="searchKeyword">The search keyword.</param>
         /// <returns></returns>
-        public async Task<JsonResult> SearchPersons(SearchKeyword searchKeyword)
+        public async Task<JsonResult> SearchPersons(string searchKeyword)
         {
             try
             {
-                if (!string.IsNullOrEmpty(searchKeyword.Keyword))
+                if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var persons = radElementDbContext.Person.ToList();
-                    var filteredPersons = persons.Where(x => x.Name.ToLower().Contains(searchKeyword.Keyword.ToLower())).ToList();
+                    var filteredPersons = persons.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredPersons != null && filteredPersons.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredPersons, HttpStatusCode.OK));
                     }
                     else
                     {
-                        return await Task.FromResult(new JsonResult(string.Format("No such person with keyword '{0}'.", searchKeyword.Keyword), HttpStatusCode.NotFound));
+                        return await Task.FromResult(new JsonResult(string.Format("No such person with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
                     }
                 }
 
