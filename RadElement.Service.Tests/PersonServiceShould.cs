@@ -36,7 +36,7 @@ namespace RadElement.Service.Tests
         private const string personNotFoundMessageWithSearchMessage = "No such person with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string personInvalidMessage = "Person fields are invalid.";
-        private const string personExistsMessage = "Person with same details already exists.";
+        private const string personExistsMessage = "Person already exists with the available information.";
         private const string personUpdateMessage = "Person with id '{0}' is updated.";
         private const string personDeletedMessage = "Person with id '{0}' is deleted.";
 
@@ -202,7 +202,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("Adam Flanders, MD, MS")]
         [InlineData("Charles E. Kahn, Jr., MD, MS")]
-        public async void CreatePersonShouldReturnBadRequestIfPersonExists(string name)
+        public async void CreatePersonShouldReturnPersonIdIfPersonExists(string name)
         {
             var person = new CreateUpdatePerson();
             person.Name = name;
@@ -212,14 +212,14 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(personExistsMessage, result.Value);
+            Assert.IsType<PersonIdDetails>(result.Value);
+            Assert.Equal(HttpStatusCode.Created, result.Code);
         }
 
         [Theory]
         [InlineData("Adam", "Orcidr1")]
         [InlineData("Mike", "Orcidr2")]
-        public async void CreatePersonShouldReturnElementIdIfPersonsAreValid(string name, string orcid)
+        public async void CreatePersonShouldReturnPersonIdIfPersonsAreValid(string name, string orcid)
         {
             var person = new CreateUpdatePerson();
             person.Name = name;
@@ -297,7 +297,7 @@ namespace RadElement.Service.Tests
         [InlineData(6)]
         [InlineData(7)]
         [InlineData(8)]
-        public async void DeletePersonShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(int personId)
+        public async void DeletePersonShouldReturnNotFoundIfPersontIdIsInvalid(int personId)
         {
             IntializeMockData(true);
             var result = await service.DeletePerson(personId);

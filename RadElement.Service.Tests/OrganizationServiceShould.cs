@@ -36,7 +36,7 @@ namespace RadElement.Service.Tests
         private const string organizationNotFoundMessageWithSearchMessage = "No such organization with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string organizationInvalidMessage = "Organization fields are invalid.";
-        private const string organizationExistsMessage = "Organization with same details already exists.";
+        private const string organizationExistsMessage = "Organization already exists with the available information.";
         private const string organizationUpdateMessage = "Organization with id '{0}' is updated.";
         private const string organizationDeletedMessage = "Organization with id '{0}' is deleted.";
 
@@ -202,7 +202,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
         [InlineData("American College of Radiology", "ACR", "http://www.acr.org")]
-        public async void CreateOrganizationShouldReturnBadRequestIfOrganizationExists(string name, string abbreviation, string Url)
+        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationExists(string name, string abbreviation, string Url)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = name;
@@ -213,15 +213,15 @@ namespace RadElement.Service.Tests
             var result = await service.CreateOrganization(organization);
 
             Assert.NotNull(result);
+            Assert.IsType<OrganizationIdDetails>(result.Value);
             Assert.NotNull(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(organizationExistsMessage, result.Value);
+            Assert.Equal(HttpStatusCode.Created, result.Code);
         }
 
         [Theory]
         [InlineData("ACR", "ACR")]
         [InlineData("ASNR", "ASNR")]
-        public async void CreateOrganizationShouldReturnElementIdIOrganizationIsValid(string name, string abbreviation)
+        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationIsValid(string name, string abbreviation)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = name;
@@ -301,7 +301,7 @@ namespace RadElement.Service.Tests
         [InlineData(6)]
         [InlineData(7)]
         [InlineData(8)]
-        public async void DeleteOrganizationShouldReturnNotFoundIfSetIdAndElementIdIsInvalid(int organizationId)
+        public async void DeleteOrganizationShouldReturnNotFoundIfOrganizationtIdIsInvalid(int organizationId)
         {
             IntializeMockData(true);
             var result = await service.DeleteOrganization(organizationId);

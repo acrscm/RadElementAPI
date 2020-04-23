@@ -137,15 +137,16 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var isMatchingPerson = radElementDbContext.Person.ToList().Exists(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
+                    var isMatchingPerson = radElementDbContext.Person.ToList().Where(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                                            string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
                                                                                            string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-                    if (isMatchingPerson)
+                                                                                           string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (isMatchingPerson != null)
                     {
-                        return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
+                        var details = new PersonIdDetails() { PersonId = isMatchingPerson.Id.ToString(), Message = "Person already exists with the available information." };
+                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.Created));
                     }
-                    
+
                     var personData = new Person()
                     {
                         Name = person.Name,
@@ -198,7 +199,7 @@ namespace RadElement.Service
 
                         if (isMatchingPerson)
                         {
-                            return await Task.FromResult(new JsonResult("Person with same details already exists.", HttpStatusCode.BadRequest));
+                            return await Task.FromResult(new JsonResult("Person already exists with the available information.", HttpStatusCode.BadRequest));
                         }
 
                         var personDetails = persons.Find(x => x.Id == personId);

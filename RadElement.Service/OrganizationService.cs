@@ -137,15 +137,16 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var isMatchingOrganization = radElementDbContext.Organization.ToList().Exists(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
+                    var isMatchingOrganization = radElementDbContext.Organization.ToList().Where(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                                                        string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
                                                                                                        string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
                                                                                                        string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
                                                                                                        string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-                    if (isMatchingOrganization)
+                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (isMatchingOrganization != null)
                     {
-                        return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
+                        var details = new OrganizationIdDetails() { OrganizationId = isMatchingOrganization.Id.ToString(), Message = "Organization already exists with the available information." };
+                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.Created));
                     }
                     
                     var organizationData = new Organization()
@@ -203,7 +204,7 @@ namespace RadElement.Service
                                                                                string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
                         if (isMatchingOrganization)
                         {
-                            return await Task.FromResult(new JsonResult("Organization with same details already exists.", HttpStatusCode.BadRequest));
+                            return await Task.FromResult(new JsonResult("Organization already exists with the available information.", HttpStatusCode.BadRequest));
                         }
 
                         var organizationDetails = organizations.Find(x => x.Id == organizationId);
