@@ -144,7 +144,7 @@ namespace RadElement.Service
                     if (isMatchingPerson != null)
                     {
                         var details = new PersonIdDetails() { PersonId = isMatchingPerson.Id.ToString(), Message = "Person already exists with the available information." };
-                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.Created));
+                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.OK));
                     }
 
                     var personData = new Person()

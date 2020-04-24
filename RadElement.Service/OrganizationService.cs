@@ -146,7 +146,7 @@ namespace RadElement.Service
                     if (isMatchingOrganization != null)
                     {
                         var details = new OrganizationIdDetails() { OrganizationId = isMatchingOrganization.Id.ToString(), Message = "Organization already exists with the available information." };
-                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.Created));
+                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.OK));
                     }
                     
                     var organizationData = new Organization()

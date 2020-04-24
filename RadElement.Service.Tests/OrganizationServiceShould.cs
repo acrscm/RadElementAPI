@@ -215,7 +215,7 @@ namespace RadElement.Service.Tests
             Assert.NotNull(result);
             Assert.IsType<OrganizationIdDetails>(result.Value);
             Assert.NotNull(result.Value);
-            Assert.Equal(HttpStatusCode.Created, result.Code);
+            Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
         [Theory]
