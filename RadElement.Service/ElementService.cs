@@ -658,8 +658,9 @@ namespace RadElement.Service
 
                         var elementSets = radElementDbContext.ElementSet.ToList();
                         var elementSet = elementSets.Find(x => x.Id == setInternalId);
+                        var setElementRefs = radElementDbContext.ElementSetRef.ToList().Find(x => x.ElementId == elementInternalId && x.ElementSetId == setInternalId);
 
-                        if (elementSet != null)
+                        if (elementSet != null && setElementRefs != null)
                         {
                             var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementInternalId);
                             if (element != null)
