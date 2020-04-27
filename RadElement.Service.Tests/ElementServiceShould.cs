@@ -367,7 +367,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES72", DataElementType.Numeric)]
         [InlineData("RDES66", DataElementType.Integer)]
         [InlineData("RDES53", DataElementType.MultiChoice)]
-        public async void CreateElementShouldReturnElementIdIfDataElementIsValid(string setId, DataElementType elementType)
+        public async void CreateElementShouldReturnElementIdIfDataElementIsValidAndDoesnotExists(string setId, DataElementType elementType)
         {
             var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
@@ -411,7 +411,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES72", "RDE338", DataElementType.Numeric)]
         [InlineData("RDES66", "RDE307", DataElementType.Integer)]
         [InlineData("RDES53", "RDE283", DataElementType.MultiChoice)]
-        public async void CreateElementShouldReturnElementIdIfDataElementIsValid1(string setId, string elementId, DataElementType elementType)
+        public async void CreateElementShouldReturnElementIdIfDataElementIsValidAndDoesExists(string setId, string elementId, DataElementType elementType)
         {
             var dataElement = new CreateElement();
             dataElement.ElementId = elementId;
@@ -447,7 +447,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.Equal(string.Format(elemenIdMappedMessage, setId, elementId), result.Value);
+            Assert.IsType<ElementIdDetails>(result.Value);
             Assert.Equal(HttpStatusCode.Created, result.Code);
         }
 

@@ -448,7 +448,7 @@ namespace RadElement.Service
                                             transaction.Commit();
                                         }
 
-                                        return await Task.FromResult(new JsonResult(string.Format("Element with set id '{0}' and element id '{1}' is mapped.", setId, dataElement.ElementId), HttpStatusCode.Created));
+                                        return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = dataElement.ElementId }, HttpStatusCode.Created));
                                     }
                                 }
 
