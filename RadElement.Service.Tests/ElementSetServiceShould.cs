@@ -55,9 +55,13 @@ namespace RadElement.Service.Tests
             mockLogger = new Mock<ILogger>();
 
             var elementSetProfile = new ElementSetProfile();
+            var personProfile = new PersonProfile();
+            var organizationProfile = new OrganizationProfile();
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(elementSetProfile);
+                cfg.AddProfile(personProfile);
+                cfg.AddProfile(organizationProfile);
             });
 
             mapper = new Mapper(mapperConfig);

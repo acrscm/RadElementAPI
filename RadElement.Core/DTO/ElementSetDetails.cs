@@ -15,12 +15,12 @@ namespace RadElement.Core.DTO
         /// Gets or sets the person information.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<Person> PersonInformation { get; set; }
+        public List<PersonAttributes> PersonInformation { get; set; }
 
         /// <summary>
         /// Gets or sets the organization information.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<Organization> OrganizationInformation { get; set; }
+        public List<OrganizationAttributes> OrganizationInformation { get; set; }
     }
 }
