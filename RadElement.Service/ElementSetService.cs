@@ -446,13 +446,13 @@ namespace RadElement.Service
             if (set.GetType() == typeof(List<ElementSet>))
             {
                 var sets = mapper.Map<List<ElementSet>, List<ElementSetDetails>>(set as List<ElementSet>);
-                sets.ForEach(set =>
+                sets.ForEach(_set =>
                 {
-                    set.OrganizationInformation = GetOrganizationDetails((set as ElementSet).Id);
-                    set.PersonInformation = GetPersonDetails((set as ElementSet).Id);
+                    _set.OrganizationInformation = GetOrganizationDetails((_set as ElementSet).Id);
+                    _set.PersonInformation = GetPersonDetails((_set as ElementSet).Id);
                 });
-                return sets;
 
+                return sets;
             }
             else if (set.GetType() == typeof(ElementSet))
             {
