@@ -48,7 +48,6 @@ namespace RadElement.Service.Tests
         private const string elemenIdInvalidMessage = "No such element with element id '{0}'.";
         private const string elementUpdateMessage = "Element with set id '{0}' and element id '{1}' is updated.";
         private const string elemenIdDeletedMessage = "Element with set id '{0}' and element id '{1}' is deleted.";
-        private const string elemenIdMappedMessage = "Element with set id '{0}' and element id '{1}' is mapped.";
         private const string setIdInvalidMessage = "No such set with set id {0}.";
 
         /// <summary>
