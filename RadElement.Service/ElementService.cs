@@ -1028,15 +1028,15 @@ namespace RadElement.Service
             if (element.GetType() == typeof(List<Element>))
             {
                 var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
-                elements.ForEach(element =>
+                elements.ForEach(_element =>
                 {
-                    element.SetInformation = GetSetDetails((element as Element).Id);
-                    element.OrganizationInformation = GetOrganizationDetails((element as Element).Id);
-                    element.PersonInformation = GetPersonDetails((element as Element).Id);
+                    _element.SetInformation = GetSetDetails((_element as Element).Id);
+                    _element.OrganizationInformation = GetOrganizationDetails((_element as Element).Id);
+                    _element.PersonInformation = GetPersonDetails((_element as Element).Id);
 
-                    if (element.ValueType == "valueSet")
+                    if (_element.ValueType == "valueSet")
                     {
-                        element.ElementValues = GetElementValues((element as Element).Id);
+                        _element.ElementValues = GetElementValues((_element as Element).Id);
                     }
                 });
 
