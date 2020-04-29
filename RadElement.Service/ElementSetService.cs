@@ -485,13 +485,19 @@ namespace RadElement.Service
                         if (!organizationInfo.Exists(x => x.Id == organization.Id))
                         {
                             var organizationDetails = mapper.Map<OrganizationAttributes>(organization);
-                            organizationDetails.Roles.Add(organizationElementSetRef.Role);
+                            if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
+                            {
+                                organizationDetails.Roles.Add(organizationElementSetRef.Role);
+                            }
                             organizationInfo.Add(organizationDetails);
                         }
                         else
                         {
                             var existingOrganization = organizationInfo.Find(x => x.Id == organization.Id);
-                            existingOrganization.Roles.Add(organizationElementSetRef.Role);
+                            if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
+                            {
+                                existingOrganization.Roles.Add(organizationElementSetRef.Role);
+                            }
                         }
                     }
                 }
@@ -519,13 +525,19 @@ namespace RadElement.Service
                         if (!personInfo.Exists(x => x.Id == person.Id))
                         {
                             var personDetails = mapper.Map<PersonAttributes>(person);
-                            personDetails.Roles.Add(personElementSetRef.Role);
+                            if (!string.IsNullOrEmpty(personElementSetRef.Role))
+                            {
+                                personDetails.Roles.Add(personElementSetRef.Role);
+                            }
                             personInfo.Add(personDetails);
                         }
                         else
                         {
                             var existingPerson = personInfo.Find(x => x.Id == person.Id);
-                            existingPerson.Roles.Add(personElementSetRef.Role);
+                            if (!string.IsNullOrEmpty(personElementSetRef.Role))
+                            {
+                                existingPerson.Roles.Add(personElementSetRef.Role);
+                            }
                         }
                     }
                 }
