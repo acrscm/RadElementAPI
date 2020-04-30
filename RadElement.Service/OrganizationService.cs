@@ -137,12 +137,12 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var isMatchingOrganization = radElementDbContext.Organization.ToList().Where(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var isMatchingOrganization = radElementDbContext.Organization.ToList().Where(x => string.Equals(x.Name?.Trim(), organization.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Abbreviation?.Trim(), organization.Abbreviation?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Url?.Trim(), organization.Url?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Comment?.Trim(), organization.Comment?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.Email?.Trim(), organization.Email?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                                       string.Equals(x.TwitterHandle?.Trim(), organization.TwitterHandle?.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     if (isMatchingOrganization != null)
                     {
                         var details = new OrganizationIdDetails() { OrganizationId = isMatchingOrganization.Id.ToString(), Message = "Organization already exists with the available information." };
@@ -196,12 +196,12 @@ namespace RadElement.Service
                     {
                         var organizations = radElementDbContext.Organization.ToList();
                         var isMatchingOrganization = organizations.Exists(x => x.Id != organizationId &&
-                                                                               string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                                                                               string.Equals(x.Name?.Trim(), organization.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Abbreviation?.Trim(), organization.Abbreviation?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Url?.Trim(), organization.Url?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Comment?.Trim(), organization.Comment?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.Email?.Trim(), organization.Email?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                               string.Equals(x.TwitterHandle?.Trim(), organization.TwitterHandle?.Trim(), StringComparison.OrdinalIgnoreCase));
                         if (isMatchingOrganization)
                         {
                             return await Task.FromResult(new JsonResult("Organization already exists with the available information.", HttpStatusCode.BadRequest));

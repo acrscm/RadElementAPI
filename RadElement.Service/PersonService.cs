@@ -137,10 +137,10 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var isMatchingPerson = radElementDbContext.Person.ToList().Where(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var isMatchingPerson = radElementDbContext.Person.ToList().Where(x => string.Equals(x.Name?.Trim(), person.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                           string.Equals(x.Orcid?.Trim(), person.Orcid?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                           string.Equals(x.Url?.Trim(), person.Url?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                                           string.Equals(x.TwitterHandle?.Trim(), person.TwitterHandle?.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     if (isMatchingPerson != null)
                     {
                         var details = new PersonIdDetails() { PersonId = isMatchingPerson.Id.ToString(), Message = "Person already exists with the available information." };
@@ -192,10 +192,10 @@ namespace RadElement.Service
                     {
                         var persons = radElementDbContext.Person.ToList();
                         var isMatchingPerson = persons.Exists(x => x.Id != personId &&
-                                                                   string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                   string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                   string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                   string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
+                                                                   string.Equals(x.Name?.Trim(), person.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                   string.Equals(x.Orcid?.Trim(), person.Orcid?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                   string.Equals(x.Url?.Trim(), person.Url?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                                   string.Equals(x.TwitterHandle?.Trim(), person.TwitterHandle?.Trim(), StringComparison.OrdinalIgnoreCase));
 
                         if (isMatchingPerson)
                         {
