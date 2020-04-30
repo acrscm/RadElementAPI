@@ -187,7 +187,7 @@ namespace RadElement.Service.Tests
 
         [Theory]
         [InlineData(null)]
-        public async void CreateOrganizationShouldReturnBadRequestIfOrganizationIsInvalid(CreateUpdateOrganization organization)
+        public async void CreateOrganizationShouldReturnBadRequestIfOrganizationDetailsAreInvalid(CreateUpdateOrganization organization)
         {
             IntializeMockData(true);
             var result = await service.CreateOrganization(organization);
@@ -202,7 +202,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
         [InlineData("American College of Radiology", "ACR", "http://www.acr.org")]
-        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationExists(string name, string abbreviation, string Url)
+        public async void CreateOrganizationShouldReturnUpdatedOrganizationIdIfOrganizationDetailsAlraedyExists(string name, string abbreviation, string Url)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = name;
@@ -221,7 +221,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("ACR", "ACR")]
         [InlineData("ASNR", "ASNR")]
-        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationIsValid(string name, string abbreviation)
+        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationDetailsDoenNotExists(string name, string abbreviation)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = name;
@@ -243,7 +243,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData(1, null)]
         [InlineData(2, null)]
-        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationIsInvalid(int organizationId, CreateUpdateOrganization organization)
+        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationDetailsAreInvalid(int organizationId, CreateUpdateOrganization organization)
         {
             IntializeMockData(true);
             var result = await service.UpdateOrganization(organizationId, organization);
@@ -256,27 +256,8 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(2, "American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
-        [InlineData(4, "American College of Radiology", "ACR", "http://www.acr.org")]
-        public async void UpdateOrganizationShouldReturnBadRequestIfOrganizationExists(int organizationId, string name, string abbreviation, string url)
-        {
-            var organization = new CreateUpdateOrganization();
-            organization.Name = name;
-            organization.Abbreviation = abbreviation;
-            organization.Url = url;
-
-            IntializeMockData(true);
-            var result = await service.UpdateOrganization(organizationId, organization);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(organizationExistsMessage, result.Value);
-        }
-
-        [Theory]
         [InlineData(2)]
-        public async void UpdateOrganizationShouldReturnOrganizationIdIfOrganizationIsValid(int organizationId)
+        public async void UpdateOrganizationShouldReturnOrganizationIdIfOrganizationDetailsAreValid(int organizationId)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = "ACR New";

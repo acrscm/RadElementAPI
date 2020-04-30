@@ -187,7 +187,7 @@ namespace RadElement.Service.Tests
 
         [Theory]
         [InlineData(null)]
-        public async void CreatePersonShouldReturnBadRequestIfPersonIsInvalid(CreateUpdatePerson person)
+        public async void CreatePersonShouldReturnBadRequestIfPersonDetailsAreInvalid(CreateUpdatePerson person)
         {
             IntializeMockData(true);
             var result = await service.CreatePerson(person);
@@ -200,9 +200,9 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("Adam Flanders, MD, MS")]
         [InlineData("Charles E. Kahn, Jr., MD, MS")]
-        public async void CreatePersonShouldReturnPersonIdIfPersonExists(string name)
+        [InlineData("Woojin Kim, MD")]
+        public async void CreatePersonShouldReturnUpdatedPersonAndIdIfPersonDetailsAlreadyExists(string name)
         {
             var person = new CreateUpdatePerson();
             person.Name = name;
@@ -219,7 +219,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("Adam", "Orcidr1")]
         [InlineData("Mike", "Orcidr2")]
-        public async void CreatePersonShouldReturnPersonIdIfPersonsAreValid(string name, string orcid)
+        public async void CreatePersonShouldReturnPersonIdIfPersonDetailsDoesNotExists(string name, string orcid)
         {
             var person = new CreateUpdatePerson();
             person.Name = name;
@@ -241,7 +241,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData(1, null)]
         [InlineData(2, null)]
-        public async void UpdatePersonShouldReturnBadRequestIfPersonIsInvalid(int personId, CreateUpdatePerson person)
+        public async void UpdatePersonShouldReturnBadRequestIfPersonDetailsAreInvalid(int personId, CreateUpdatePerson person)
         {
             IntializeMockData(true);
             var result = await service.UpdatePerson(personId, person);
@@ -254,25 +254,8 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData(1)]
         [InlineData(2)]
-        public async void UpdatePersonShouldReturnBadRequestIfPersonExists(int personId)
-        {
-            var person = new CreateUpdatePerson();
-            person.Name = "Woojin Kim, MD";
-
-            IntializeMockData(true);
-            var result = await service.UpdatePerson(personId, person);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(personExistsMessage, result.Value);
-        }
-
-        [Theory]
-        [InlineData(2)]
-        public async void UpdatePersonShouldReturnPersonIdIfPersonsAreValid(int personId)
+        public async void UpdatePersonShouldReturnPersonIdIfPersonDetailsAreValid(int personId)
         {
             var person = new CreateUpdatePerson();
             person.Name = "Tumuor";
