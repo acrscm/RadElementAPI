@@ -80,8 +80,7 @@ namespace RadElement.Service
                 if (IsValidSetId(setId))
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
-                    var sets = radElementDbContext.ElementSet.ToList();
-                    var set = sets.Find(x => x.Id == id);
+                    var set = radElementDbContext.ElementSet.Where(x => x.Id == id).FirstOrDefault();
 
                     if (set != null)
                     {
@@ -109,7 +108,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = radElementDbContext.ElementSet.ToList().Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
+                    var sets = radElementDbContext.ElementSet.Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
                                                                                   x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (sets != null && sets.Any())
                     {
@@ -149,7 +148,7 @@ namespace RadElement.Service
 
                     ElementSet set = new ElementSet()
                     {
-                        Name = content.ModuleName.Trim(),
+                        Name = content.Name.Trim(),
                         Description = content.Description,
                         ContactName = content.ContactName,
                         ParentId = content.ParentId,
@@ -208,7 +207,7 @@ namespace RadElement.Service
 
                         if (elementSet != null)
                         {
-                            elementSet.Name = content.ModuleName.Trim();
+                            elementSet.Name = content.Name.Trim();
                             elementSet.Description = content.Description;
                             elementSet.ContactName = content.ContactName;
                             elementSet.ParentId = content.ParentId;

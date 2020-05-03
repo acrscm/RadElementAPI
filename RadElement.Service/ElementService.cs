@@ -80,8 +80,7 @@ namespace RadElement.Service
                 if (IsValidElementId(elementId))
                 {
                     int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var elements = radElementDbContext.Element.ToList();
-                    var element = elements.Find(x => x.Id == elementInternalId);
+                    var element = radElementDbContext.Element.Where(x => x.Id == elementInternalId).FirstOrDefault();
 
                     if (element != null)
                     {
@@ -111,13 +110,11 @@ namespace RadElement.Service
                 if (IsValidSetId(setId))
                 {
                     int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
-                    var setRefs = radElementDbContext.ElementSetRef.ToList();
-                    var elementIds = setRefs.Where(x => x.ElementSetId == setInternalId);
-                    var elements = radElementDbContext.Element.ToList();
+                    var elementIds = radElementDbContext.ElementSetRef.Where(x => x.ElementSetId == setInternalId);
 
-                    var selectedElements = from elemetId in elementIds
-                                           join element in elements on elemetId.ElementId equals (int)element.Id
-                                           select element;
+                    var selectedElements = (from elemetId in elementIds
+                                           join element in radElementDbContext.Element on elemetId.ElementId equals (int)element.Id
+                                           select element).ToList();
 
                     if (selectedElements != null && selectedElements.Any())
                     {
@@ -150,8 +147,7 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var elements = radElementDbContext.Element.ToList();
-                    var filteredElements = elements.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
+                    var filteredElements = radElementDbContext.Element.Where(x => string.Concat("RDE", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
                                                                x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
@@ -171,159 +167,7 @@ namespace RadElement.Service
                 var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
-        }
-
-        /// <summary>
-        /// Creates the element.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <param name="content">The content.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> CreateElement(string setId, DataElementType elementType, CreateUpdateElementOld dataElement)
-        {
-            using (var transaction = radElementDbContext.Database.BeginTransaction())
-            {
-                try
-                {
-                    if (IsValidSetId(setId))
-                    {
-                        int id = Convert.ToInt32(setId.Remove(0, 4));
-                        if (dataElement == null)
-                        {
-                            return await Task.FromResult(new JsonResult("Element fields are invalid.", HttpStatusCode.BadRequest));
-                        }
-
-                        if (string.IsNullOrEmpty(dataElement.Label))
-                        {
-                            return await Task.FromResult(new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest));
-                        }
-
-                        if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
-                        {
-                            if (dataElement.Options == null)
-                            {
-                                return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
-                            }
-                        }
-
-                        int elementId = 0;
-                        var elementSets = radElementDbContext.ElementSet.ToList();
-                        var elementSet = elementSets.Find(x => x.Id == id);
-
-                        if (elementSet != null)
-                        {
-                            Element element = new Element()
-                            {
-                                Name = dataElement.Label,
-                                ShortName = "",
-                                Definition = dataElement.Definition ?? "",
-                                MaxCardinality = 1,
-                                MinCardinality = 1,
-                                Source = "DSI TOUCH-AI",
-                                Status = "Proposed",
-                                StatusDate = DateTime.Now,
-                                Editor = "",
-                                Instructions = "",
-                                Question = dataElement.Label ?? "",
-                                References = "",
-                                Synonyms = "",
-                                VersionDate = DateTime.Now,
-                                Version = "1",
-                                ValueSize = 0,
-                                Unit = ""
-                            };
-
-                            if (elementType == DataElementType.Integer)
-                            {
-                                element.ValueType = "integer";
-                                element.ValueMin = dataElement.ValueMin;
-                                element.ValueMax = dataElement.ValueMax;
-                                element.StepValue = 1;
-                                element.Unit = dataElement.Unit ?? "";
-                            }
-
-                            if (elementType == DataElementType.Numeric)
-                            {
-                                float? minValue = null;
-                                float? maxValue = null;
-
-                                if (dataElement.ValueMin.HasValue)
-                                {
-                                    minValue = Convert.ToSingle(dataElement.ValueMin.Value);
-                                }
-
-                                if (dataElement.ValueMax.HasValue)
-                                {
-                                    maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                                }
-                                element.ValueType = "float";
-                                element.ValueMin = minValue;
-                                element.ValueMax = maxValue;
-                                element.StepValue = 0.1f;
-                                element.Unit = dataElement.Unit ?? "";
-                            }
-
-                            if (elementType == DataElementType.Choice)
-                            {
-                                element.ValueType = "valueSet";
-                            }
-
-                            if (elementType == DataElementType.MultiChoice)
-                            {
-                                element.ValueType = "valueSet";
-                                element.MaxCardinality = (uint)dataElement.Options.Count;
-                            }
-
-                            if (elementType == DataElementType.DateTime)
-                            {
-                                element.ValueType = "date";
-                            }
-
-                            if (elementType == DataElementType.String)
-                            {
-                                element.ValueType = "string";
-                            }
-
-                            radElementDbContext.Element.Add(element);
-                            radElementDbContext.SaveChanges();
-
-                            elementId = (int)element.Id;
-
-                            if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
-                            {
-                                foreach (OptionOld option in dataElement.Options)
-                                {
-                                    ElementValue elementvalue = new ElementValue()
-                                    {
-                                        Name = option.Label,
-                                        Value = string.Empty,
-                                        Definition = option.Label,
-                                        ElementId = element.Id
-                                    };
-
-                                    radElementDbContext.ElementValue.Add(elementvalue);
-                                }
-                            }
-                        }
-
-                        AddElementSetReferences(id, (short)elementId);
-                        radElementDbContext.SaveChanges();
-                        transaction.Commit();
-
-                        return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = "RDE" + elementId.ToString() }, HttpStatusCode.Created));
-                    }
-
-                    return await Task.FromResult(new JsonResult(string.Format("No such set with set id {0}.", setId), HttpStatusCode.NotFound));
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    logger.Error(ex, "Exception in method 'CreateElement(int setId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-                }
-            }
-        }
+        }        
 
         /// <summary>
         /// Creates the element.
@@ -467,163 +311,7 @@ namespace RadElement.Service
                     return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
                 }
             }
-        }
-
-        /// <summary>
-        /// Updates the set.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <param name="elementId">The element identifier.</param>
-        /// <param name="dataElement">The data element.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> UpdateElement(string setId, string elementId, DataElementType elementType, CreateUpdateElementOld dataElement)
-        {
-            using (var transaction = radElementDbContext.Database.BeginTransaction())
-            {
-                try
-                {
-                    if (IsValidSetId(setId) && IsValidElementId(elementId))
-                    {
-                        int id = Convert.ToInt32(setId.Remove(0, 4));
-                        int elemId = Convert.ToInt32(elementId.Remove(0, 3));
-
-                        if (dataElement == null)
-                        {
-                            return await Task.FromResult(new JsonResult("Element fields are invalid.", HttpStatusCode.BadRequest));
-                        }
-
-                        if (string.IsNullOrEmpty(dataElement.Label))
-                        {
-                            return await Task.FromResult(new JsonResult("'Label' field is missing in request", HttpStatusCode.BadRequest));
-                        }
-
-                        if (elementType == DataElementType.Choice || elementType == DataElementType.MultiChoice)
-                        {
-                            if (dataElement.Options == null)
-                            {
-                                return await Task.FromResult(new JsonResult("'Options' field is missing for Choice type elements in request", HttpStatusCode.BadRequest));
-                            }
-                        }
-
-                        var elementSets = radElementDbContext.ElementSet.ToList();
-                        var elementSet = elementSets.Find(x => x.Id == id);
-
-                        if (elementSet != null)
-                        {
-                            var element = radElementDbContext.Element.ToList().Find(x => x.Id == elemId);
-                            if (element != null)
-                            {
-                                var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == element.Id);
-                                if (elementValues != null && elementValues.Any())
-                                {
-                                    radElementDbContext.ElementValue.RemoveRange(elementValues);
-                                }
-
-                                element.Name = dataElement.Label;
-                                element.ShortName = "";
-                                element.Definition = dataElement.Definition ?? "";
-                                element.MaxCardinality = 1;
-                                element.MinCardinality = 1;
-                                element.Source = "DSI TOUCH-AI";
-                                element.Status = "Proposed";
-                                element.StatusDate = DateTime.Now;
-                                element.Editor = "";
-                                element.Instructions = "";
-                                element.Question = dataElement.Label ?? "";
-                                element.References = "";
-                                element.Synonyms = "";
-                                element.VersionDate = DateTime.Now;
-                                element.Version = "1";
-                                element.ValueSize = 0;
-                                element.Unit = "";
-
-                                if (elementType == DataElementType.Integer)
-                                {
-                                    element.ValueType = "integer";
-                                    element.ValueMin = dataElement.ValueMin;
-                                    element.ValueMax = dataElement.ValueMax;
-                                    element.StepValue = 1;
-                                    element.Unit = dataElement.Unit ?? "";
-                                }
-
-                                if (elementType == DataElementType.Numeric)
-                                {
-                                    float? minValue = null;
-                                    float? maxValue = null;
-
-                                    if (dataElement.ValueMin.HasValue)
-                                    {
-                                        minValue = Convert.ToSingle(dataElement.ValueMin.Value);
-                                    }
-
-                                    if (dataElement.ValueMax.HasValue)
-                                    {
-                                        maxValue = Convert.ToSingle(dataElement.ValueMax.Value);
-                                    }
-
-                                    element.ValueType = "float";
-                                    element.ValueMin = minValue;
-                                    element.ValueMax = maxValue;
-                                    element.StepValue = 0.1f;
-                                    element.Unit = dataElement.Unit ?? "";
-                                }
-
-                                if (elementType == DataElementType.Choice)
-                                {
-                                    element.ValueType = "valueSet";
-                                }
-
-                                if (elementType == DataElementType.MultiChoice)
-                                {
-                                    element.ValueType = "valueSet";
-                                    element.MaxCardinality = (uint)dataElement.Options.Count;
-                                }
-
-                                if (elementType == DataElementType.DateTime)
-                                {
-                                    element.ValueType = "date";
-                                }
-
-                                if (elementType == DataElementType.String)
-                                {
-                                    element.ValueType = "string";
-                                }
-
-                                if (elementType == DataElementType.MultiChoice || elementType == DataElementType.Choice)
-                                {
-                                    foreach (OptionOld option in dataElement.Options)
-                                    {
-                                        ElementValue elementvalue = new ElementValue()
-                                        {
-                                            Name = option.Label,
-                                            Value = string.Empty,
-                                            Definition = option.Label,
-                                            ElementId = element.Id
-                                        };
-
-                                        radElementDbContext.ElementValue.Add(elementvalue);
-                                    }
-                                }
-
-                                radElementDbContext.SaveChanges();
-                                transaction.Commit();
-
-                                return await Task.FromResult(new JsonResult(string.Format("Element with set id {0} and element id {1} is updated.", setId, elementId), HttpStatusCode.OK));
-                            }
-                        }
-                    }
-
-                    return await Task.FromResult(new JsonResult(string.Format("No such element with set id {0} and element id {1}.", setId, elementId), HttpStatusCode.NotFound));
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    logger.Error(ex, "Exception in method 'UpdateElement(int setId, int elementId, DataElementType elementType, CreateUpdateElement dataElement)'");
-                    var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                    return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-                }
-            }
-        }
+        }        
 
         /// <summary>
         /// Updates the set.

@@ -69,8 +69,7 @@ namespace RadElement.Service
             {
                 if (personId != 0)
                 {
-                    var persons = radElementDbContext.Person.ToList();
-                    var person = persons.Find(x => x.Id == personId);
+                    var person = radElementDbContext.Person.Where(x => x.Id == personId).FirstOrDefault();
 
                     if (person != null)
                     {
@@ -98,8 +97,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var persons = radElementDbContext.Person.ToList();
-                    var filteredPersons = persons.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredPersons = radElementDbContext.Person.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredPersons != null && filteredPersons.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredPersons, HttpStatusCode.OK));

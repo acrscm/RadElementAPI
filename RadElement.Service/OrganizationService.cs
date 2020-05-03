@@ -69,8 +69,7 @@ namespace RadElement.Service
             {
                 if (organizationId != 0)
                 {
-                    var organizations = radElementDbContext.Organization.ToList();
-                    var organization = organizations.Find(x => x.Id == organizationId);
+                    var organization = radElementDbContext.Organization.Where(x => x.Id == organizationId).FirstOrDefault();
 
                     if (organization != null)
                     {
@@ -86,7 +85,7 @@ namespace RadElement.Service
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
-        
+
         /// <summary>
         /// Searches the organization.
         /// </summary>
@@ -99,8 +98,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var organizations = radElementDbContext.Organization.ToList();
-                    var filteredorganizations = organizations.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredorganizations = radElementDbContext.Organization.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredorganizations != null && filteredorganizations.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredorganizations, HttpStatusCode.OK));

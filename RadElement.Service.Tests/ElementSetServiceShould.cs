@@ -224,7 +224,7 @@ namespace RadElement.Service.Tests
         public async void CreateSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -242,7 +242,7 @@ namespace RadElement.Service.Tests
         public async void CreateSetShouldReturnSetIdIfSetIsValid(string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -279,7 +279,7 @@ namespace RadElement.Service.Tests
         public async void UpdateSetShouldThrowInternalServerErrorForExceptions(string setId, string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -297,7 +297,7 @@ namespace RadElement.Service.Tests
         public async void UpdateSetShouldReturnSetIdIfSetIsValid(string setId, string moduleName, string contactName, string description)
         {
             var set = new CreateUpdateSet();
-            set.ModuleName = moduleName;
+            set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
 
@@ -386,7 +386,7 @@ namespace RadElement.Service.Tests
 
                 var mockElementValue = new Mock<DbSet<ElementValue>>();
                 mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Provider).Returns(MockDataContext.elementValueDb.Provider);
-                mockElement.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
+                mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.Expression).Returns(MockDataContext.elementValueDb.Expression);
                 mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.ElementType).Returns(MockDataContext.elementValueDb.ElementType);
                 mockElementValue.As<IQueryable<ElementValue>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.elementValueDb.GetEnumerator());
 
@@ -395,22 +395,19 @@ namespace RadElement.Service.Tests
                 mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Expression).Returns(MockDataContext.organizationDb.Expression);
                 mockOrganization.As<IQueryable<Organization>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationDb.ElementType);
                 mockOrganization.As<IQueryable<Organization>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationDb.GetEnumerator());
-                mockOrganization.Setup(d => d.Add(It.IsAny<Organization>())).Callback<Organization>((s) => MockDataContext.organizationDb.ToList().Add(s));
-
+                
                 var mockOrganizationElementRef = new Mock<DbSet<OrganizationRoleElementRef>>();
                 mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementRefDb.Provider);
                 mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementRefDb.Expression);
                 mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementRefDb.ElementType);
                 mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementRefDb.GetEnumerator());
-                mockOrganizationElementRef.Setup(d => d.Add(It.IsAny<OrganizationRoleElementRef>())).Callback<OrganizationRoleElementRef>((s) => MockDataContext.organizationElementRefDb.ToList().Add(s));
-
+                
                 var mockOrganizationElementSetRef = new Mock<DbSet<OrganizationRoleElementSetRef>>();
                 mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementSetRefDb.Provider);
                 mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementSetRefDb.Expression);
                 mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementSetRefDb.ElementType);
                 mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementSetRefDb.GetEnumerator());
-                mockOrganizationElementSetRef.Setup(d => d.Add(It.IsAny<OrganizationRoleElementSetRef>())).Callback<OrganizationRoleElementSetRef>((s) => MockDataContext.organizationElementSetRefDb.ToList().Add(s));
-
+                
                 var mockPerson = new Mock<DbSet<Person>>();
                 mockPerson.As<IQueryable<Person>>().Setup(m => m.Provider).Returns(MockDataContext.personDb.Provider);
                 mockPerson.As<IQueryable<Person>>().Setup(m => m.Expression).Returns(MockDataContext.personDb.Expression);
