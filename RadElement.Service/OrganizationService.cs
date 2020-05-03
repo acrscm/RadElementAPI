@@ -203,8 +203,7 @@ namespace RadElement.Service
 
                     if (organizationId != 0)
                     {
-                        var organizations = radElementDbContext.Organization.ToList();
-                        var organizationDetails = organizations.Find(x => x.Id == organizationId);
+                        var organizationDetails = radElementDbContext.Organization.Where(x => x.Id == organizationId).FirstOrDefault();
 
                         if (organizationDetails != null)
                         {
@@ -247,8 +246,7 @@ namespace RadElement.Service
                 {
                     if (organizationId != 0)
                     {
-                        var organizations = radElementDbContext.Organization.ToList();
-                        var organization = organizations.Find(x => x.Id == organizationId);
+                        var organization = radElementDbContext.Organization.Where(x => x.Id == organizationId).FirstOrDefault();
 
                         if (organization != null)
                         {
@@ -280,7 +278,7 @@ namespace RadElement.Service
         /// <param name="organization">The organization.</param>
         private void RemoveOrganizationElementSetReferences(Organization organization)
         {
-            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.ToList().Where(x => x.OrganizationID == organization.Id);
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.OrganizationID == organization.Id);
             if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
             {
                 radElementDbContext.OrganizationRoleElementSetRef.RemoveRange(organizationElementSetRefs);
@@ -294,7 +292,7 @@ namespace RadElement.Service
         /// <param name="organization">The organization.</param>
         private void RemoveOrganizationElementReferences(Organization organization)
         {
-            var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.OrganizationID == organization.Id);
+            var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.Where(x => x.OrganizationID == organization.Id);
             if (organizationElementsRefs != null && organizationElementsRefs.Any())
             {
                 radElementDbContext.OrganizationRoleElementRef.RemoveRange(organizationElementsRefs);

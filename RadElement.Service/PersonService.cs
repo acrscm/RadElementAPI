@@ -198,8 +198,7 @@ namespace RadElement.Service
 
                     if (personId != 0)
                     {
-                        var persons = radElementDbContext.Person.ToList();
-                        var personDetails = persons.Find(x => x.Id == personId);
+                        var personDetails = radElementDbContext.Person.Where(x => x.Id == personId).FirstOrDefault();
 
                         if (personDetails != null)
                         {
@@ -240,8 +239,7 @@ namespace RadElement.Service
                 {
                     if (personId != 0)
                     {
-                        var persons = radElementDbContext.Person.ToList();
-                        var person = persons.Find(x => x.Id == personId);
+                        var person = radElementDbContext.Person.Where(x => x.Id == personId).FirstOrDefault();
 
                         if (person != null)
                         {
@@ -273,7 +271,7 @@ namespace RadElement.Service
         /// <param name="person">The person.</param>
         private void RemovePersonElementSetReferences(Person person)
         {
-            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.ToList().Where(x => x.PersonID == person.Id);
+            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.PersonID == person.Id);
             if (personElementSetRefs != null && personElementSetRefs.Any())
             {
                 radElementDbContext.PersonRoleElementSetRef.RemoveRange(personElementSetRefs);
@@ -287,7 +285,7 @@ namespace RadElement.Service
         /// <param name="person">The person.</param>
         private void RemovePersonElementReferences(Person person)
         {
-            var personElementsRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.PersonID == person.Id);
+            var personElementsRefs = radElementDbContext.PersonRoleElementRef.Where(x => x.PersonID == person.Id);
             if (personElementsRefs != null && personElementsRefs.Any())
             {
                 radElementDbContext.PersonRoleElementRef.RemoveRange(personElementsRefs);
