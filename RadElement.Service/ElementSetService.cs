@@ -108,7 +108,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = radElementDbContext.ElementSet.Where(x => string.Concat("RDES", x.Id).ToLower().Contains(searchKeyword.ToLower()) ||
+                    var sets = radElementDbContext.ElementSet.Where(x => ("RDES" + x.Id.ToString()).ToLower().Contains(searchKeyword.ToLower()) ||
                                                                                   x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (sets != null && sets.Any())
                     {
@@ -307,7 +307,7 @@ namespace RadElement.Service
         /// <param name="elementSet">The element set.</param>
         private void RemoveSetElementsReferences(ElementSet elementSet)
         {
-            var elementSetRefs = radElementDbContext.ElementSetRef.Where(x => x.ElementSetId == elementSet.Id);
+            var elementSetRefs = radElementDbContext.ElementSetRef.Where(x => x.ElementSetId == elementSet.Id).ToList();
             if (elementSetRefs != null && elementSetRefs.Any())
             {
                 radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
@@ -409,7 +409,7 @@ namespace RadElement.Service
         /// <param name="setId">The set identifier.</param>
         private void RemovePersonReferences(int setId)
         {
-            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.ElementSetID == setId);
+            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
             if (personElementSetRefs != null && personElementSetRefs.Any())
             {
                 radElementDbContext.PersonRoleElementSetRef.RemoveRange(personElementSetRefs);
@@ -423,7 +423,7 @@ namespace RadElement.Service
         /// <param name="setId">The set identifier.</param>
         private void RemoveOrganizationReferences(int setId)
         {
-            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.ElementSetID == setId);
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
             if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
             {
                 radElementDbContext.OrganizationRoleElementSetRef.RemoveRange(organizationElementSetRefs);
@@ -469,7 +469,7 @@ namespace RadElement.Service
         private List<OrganizationAttributes> GetOrganizationDetails(int setId)
         {
             List<OrganizationAttributes> organizationInfo = new List<OrganizationAttributes>();
-            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.ElementSetID == setId);
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
 
             if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
             {
@@ -511,7 +511,8 @@ namespace RadElement.Service
         private List<PersonAttributes> GetPersonDetails(int setId)
         {
             List<PersonAttributes> personInfo = new List<PersonAttributes>();
-            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.ElementSetID == setId);
+            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
+
             if (personElementSetRefs != null && personElementSetRefs.Any())
             {
                 foreach (var personElementSetRef in personElementSetRefs)
