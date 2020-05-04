@@ -69,8 +69,7 @@ namespace RadElement.Service
             {
                 if (organizationId != 0)
                 {
-                    var organizations = radElementDbContext.Organization.ToList();
-                    var organization = organizations.Find(x => x.Id == organizationId);
+                    var organization = radElementDbContext.Organization.Where(x => x.Id == organizationId).FirstOrDefault();
 
                     if (organization != null)
                     {
@@ -86,7 +85,7 @@ namespace RadElement.Service
                 return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
             }
         }
-        
+
         /// <summary>
         /// Searches the organization.
         /// </summary>
@@ -99,8 +98,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var organizations = radElementDbContext.Organization.ToList();
-                    var filteredorganizations = organizations.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredorganizations = radElementDbContext.Organization.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredorganizations != null && filteredorganizations.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredorganizations, HttpStatusCode.OK));
@@ -137,18 +135,29 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Organization fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var isMatchingOrganization = radElementDbContext.Organization.ToList().Where(x => string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                       string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    if (isMatchingOrganization != null)
+                    var matchedOrganization = radElementDbContext.Organization.ToList().Where(
+                        x => string.Equals(x.Name?.Trim(), organization.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                             string.Equals(x.Abbreviation?.Trim(), organization.Abbreviation?.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                    if (matchedOrganization != null)
                     {
-                        var details = new OrganizationIdDetails() { OrganizationId = isMatchingOrganization.Id.ToString(), Message = "Organization already exists with the available information." };
+                        matchedOrganization.Url = organization.Url;
+                        matchedOrganization.Comment = organization.Comment;
+                        matchedOrganization.Email = organization.Email;
+                        matchedOrganization.TwitterHandle = organization.TwitterHandle;
+
+                        radElementDbContext.SaveChanges();
+                        transaction.Commit();
+
+                        var details = new OrganizationIdDetails()
+                        {
+                            OrganizationId = matchedOrganization.Id.ToString(),
+                            Message = string.Format("Organization with name '{0}' is updated.", organization.Name)
+                        };
+
                         return await Task.FromResult(new JsonResult(details, HttpStatusCode.OK));
                     }
-                    
+
                     var organizationData = new Organization()
                     {
                         Name = organization.Name,
@@ -156,7 +165,7 @@ namespace RadElement.Service
                         Url = organization.Url,
                         Comment = organization.Comment,
                         Email = organization.Email,
-                        TwitterHandle = organization.TwitterHandle,
+                        TwitterHandle = organization.TwitterHandle
                     };
 
                     radElementDbContext.Organization.Add(organizationData);
@@ -194,20 +203,7 @@ namespace RadElement.Service
 
                     if (organizationId != 0)
                     {
-                        var organizations = radElementDbContext.Organization.ToList();
-                        var isMatchingOrganization = organizations.Exists(x => x.Id != organizationId &&
-                                                                               string.Equals(x.Name, organization.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Abbreviation, organization.Abbreviation, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Url, organization.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Comment, organization.Comment, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.Email, organization.Email, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(x.TwitterHandle, organization.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-                        if (isMatchingOrganization)
-                        {
-                            return await Task.FromResult(new JsonResult("Organization already exists with the available information.", HttpStatusCode.BadRequest));
-                        }
-
-                        var organizationDetails = organizations.Find(x => x.Id == organizationId);
+                        var organizationDetails = radElementDbContext.Organization.Where(x => x.Id == organizationId).FirstOrDefault();
 
                         if (organizationDetails != null)
                         {
@@ -217,7 +213,7 @@ namespace RadElement.Service
                             organizationDetails.Comment = organization.Comment;
                             organizationDetails.Email = organization.Email;
                             organizationDetails.TwitterHandle = organization.TwitterHandle;
-                            
+
                             radElementDbContext.SaveChanges();
                             transaction.Commit();
 
@@ -250,8 +246,7 @@ namespace RadElement.Service
                 {
                     if (organizationId != 0)
                     {
-                        var organizations = radElementDbContext.Organization.ToList();
-                        var organization = organizations.Find(x => x.Id == organizationId);
+                        var organization = radElementDbContext.Organization.Where(x => x.Id == organizationId).FirstOrDefault();
 
                         if (organization != null)
                         {
@@ -283,7 +278,7 @@ namespace RadElement.Service
         /// <param name="organization">The organization.</param>
         private void RemoveOrganizationElementSetReferences(Organization organization)
         {
-            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.ToList().Where(x => x.OrganizationID == organization.Id);
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.OrganizationID == organization.Id);
             if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
             {
                 radElementDbContext.OrganizationRoleElementSetRef.RemoveRange(organizationElementSetRefs);
@@ -297,7 +292,7 @@ namespace RadElement.Service
         /// <param name="organization">The organization.</param>
         private void RemoveOrganizationElementReferences(Organization organization)
         {
-            var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.OrganizationID == organization.Id);
+            var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.Where(x => x.OrganizationID == organization.Id);
             if (organizationElementsRefs != null && organizationElementsRefs.Any())
             {
                 radElementDbContext.OrganizationRoleElementRef.RemoveRange(organizationElementsRefs);

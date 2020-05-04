@@ -69,8 +69,7 @@ namespace RadElement.Service
             {
                 if (personId != 0)
                 {
-                    var persons = radElementDbContext.Person.ToList();
-                    var person = persons.Find(x => x.Id == personId);
+                    var person = radElementDbContext.Person.Where(x => x.Id == personId).FirstOrDefault();
 
                     if (person != null)
                     {
@@ -98,8 +97,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var persons = radElementDbContext.Person.ToList();
-                    var filteredPersons = persons.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredPersons = radElementDbContext.Person.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredPersons != null && filteredPersons.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredPersons, HttpStatusCode.OK));
@@ -137,14 +135,24 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Person fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
-                    var isMatchingPerson = radElementDbContext.Person.ToList().Where(x => string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                                           string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    if (isMatchingPerson != null)
+                    var matchedPerson = radElementDbContext.Person.ToList().Where(
+                        x => string.Equals(x.Name?.Trim(), person.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                             string.Equals(x.Orcid?.Trim(), person.Orcid?.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (matchedPerson != null)
                     {
-                        var details = new PersonIdDetails() { PersonId = isMatchingPerson.Id.ToString(), Message = "Person already exists with the available information." };
-                        return await Task.FromResult(new JsonResult(details, HttpStatusCode.OK));
+                        matchedPerson.TwitterHandle = person.TwitterHandle;
+                        matchedPerson.Url = person.Url;
+
+                        radElementDbContext.SaveChanges();
+                        transaction.Commit();
+
+                        var personDetails = new PersonIdDetails()
+                        {
+                            PersonId = matchedPerson.Id.ToString(),
+                            Message = string.Format("Person with name '{0}' is updated.", person.Name)
+                        };
+
+                        return await Task.FromResult(new JsonResult(personDetails, HttpStatusCode.OK));
                     }
 
                     var personData = new Person()
@@ -190,19 +198,7 @@ namespace RadElement.Service
 
                     if (personId != 0)
                     {
-                        var persons = radElementDbContext.Person.ToList();
-                        var isMatchingPerson = persons.Exists(x => x.Id != personId &&
-                                                                   string.Equals(x.Name, person.Name, StringComparison.OrdinalIgnoreCase) &&
-                                                                   string.Equals(x.Orcid, person.Orcid, StringComparison.OrdinalIgnoreCase) &&
-                                                                   string.Equals(x.Url, person.Url, StringComparison.OrdinalIgnoreCase) &&
-                                                                   string.Equals(x.TwitterHandle, person.TwitterHandle, StringComparison.OrdinalIgnoreCase));
-
-                        if (isMatchingPerson)
-                        {
-                            return await Task.FromResult(new JsonResult("Person already exists with the available information.", HttpStatusCode.BadRequest));
-                        }
-
-                        var personDetails = persons.Find(x => x.Id == personId);
+                        var personDetails = radElementDbContext.Person.Where(x => x.Id == personId).FirstOrDefault();
 
                         if (personDetails != null)
                         {
@@ -243,8 +239,7 @@ namespace RadElement.Service
                 {
                     if (personId != 0)
                     {
-                        var persons = radElementDbContext.Person.ToList();
-                        var person = persons.Find(x => x.Id == personId);
+                        var person = radElementDbContext.Person.Where(x => x.Id == personId).FirstOrDefault();
 
                         if (person != null)
                         {
@@ -276,7 +271,7 @@ namespace RadElement.Service
         /// <param name="person">The person.</param>
         private void RemovePersonElementSetReferences(Person person)
         {
-            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.ToList().Where(x => x.PersonID == person.Id);
+            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.PersonID == person.Id);
             if (personElementSetRefs != null && personElementSetRefs.Any())
             {
                 radElementDbContext.PersonRoleElementSetRef.RemoveRange(personElementSetRefs);
@@ -290,7 +285,7 @@ namespace RadElement.Service
         /// <param name="person">The person.</param>
         private void RemovePersonElementReferences(Person person)
         {
-            var personElementsRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.PersonID == person.Id);
+            var personElementsRefs = radElementDbContext.PersonRoleElementRef.Where(x => x.PersonID == person.Id);
             if (personElementsRefs != null && personElementsRefs.Any())
             {
                 radElementDbContext.PersonRoleElementRef.RemoveRange(personElementsRefs);
