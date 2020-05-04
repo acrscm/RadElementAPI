@@ -448,7 +448,7 @@ namespace RadElement.Service
                                             transaction.Commit();
                                         }
 
-                                        return await Task.FromResult(new JsonResult(string.Format("Element with set id '{0}' and element id '{1}' is mapped.", setId, dataElement.ElementId), HttpStatusCode.Created));
+                                        return await Task.FromResult(new JsonResult(new ElementIdDetails() { ElementId = dataElement.ElementId }, HttpStatusCode.Created));
                                     }
                                 }
 
@@ -774,7 +774,7 @@ namespace RadElement.Service
                         {
                             var elementValues = radElementDbContext.ElementValue.ToList().Where(x => x.ElementId == elementSetRef.ElementId);
                             var element = radElementDbContext.Element.ToList().Find(x => x.Id == elementSetRef.ElementId);
-                            
+
                             if (element != null)
                             {
                                 radElementDbContext.Element.Remove(element);
@@ -1031,8 +1031,9 @@ namespace RadElement.Service
                 elements.ForEach(_element =>
                 {
                     _element.SetInformation = GetSetDetails((_element as Element).Id);
-                    _element.OrganizationInformation = GetOrganizationDetails((_element as Element).Id);
-                    _element.PersonInformation = GetPersonDetails((_element as Element).Id);
+
+                    _element.OrganizationInformation = GetOrganizationDetails((int)(_element as Element).Id);
+                    _element.PersonInformation = GetPersonDetails((int)(_element as Element).Id);
 
                     if (_element.ValueType == "valueSet")
                     {
@@ -1046,6 +1047,8 @@ namespace RadElement.Service
             {
                 var elementDetails = mapper.Map<ElementDetails>(element as Element);
                 elementDetails.SetInformation = GetSetDetails((element as Element).Id);
+                elementDetails.OrganizationInformation = GetOrganizationDetails((int)(element as Element).Id);
+                elementDetails.PersonInformation = GetPersonDetails((int)(element as Element).Id);
 
                 if (elementDetails.ValueType == "valueSet")
                 {
@@ -1074,7 +1077,7 @@ namespace RadElement.Service
         /// <returns></returns>
         private List<SetBasicAttributes> GetSetDetails(uint elementId)
         {
-            List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>(); ;
+            List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>();
             var elementSetRefs = radElementDbContext.ElementSetRef.ToList().Where(x => x.ElementId == elementId);
             if (elementSetRefs != null && elementSetRefs.Any())
             {
@@ -1098,20 +1101,30 @@ namespace RadElement.Service
         /// <summary>
         /// Gets the organization details.
         /// </summary>
-        /// <param name="elementId">The element identifier.</param>
+        /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        private List<Organization> GetOrganizationDetails(uint elementId)
+        private List<OrganizationAttributes> GetOrganizationDetails(int setId)
         {
-            List<Organization> organizationInfo = new List<Organization>(); ;
-            var organizationElementRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.ElementID == elementId);
-            if (organizationElementRefs != null && organizationElementRefs.Any())
+            List<OrganizationAttributes> organizationInfo = new List<OrganizationAttributes>();
+            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementRef.ToList().Where(x => x.ElementID == setId);
+            if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
             {
-                foreach (var organizationElementRef in organizationElementRefs)
+                foreach (var organizationElementSetRef in organizationElementSetRefs)
                 {
-                    var organization = radElementDbContext.Organization.ToList().Where(x => x.Id == organizationElementRef.OrganizationID).FirstOrDefault();
+                    var organization = radElementDbContext.Organization.ToList().Where(x => x.Id == organizationElementSetRef.OrganizationID).FirstOrDefault();
                     if (organization != null)
                     {
-                        organizationInfo.Add(organization);
+                        if (!organizationInfo.Exists(x => x.Id == organization.Id))
+                        {
+                            var organizationDetails = mapper.Map<OrganizationAttributes>(organization);
+                            organizationDetails.Roles.Add(organizationElementSetRef.Role);
+                            organizationInfo.Add(organizationDetails);
+                        }
+                        else
+                        {
+                            var existingOrganization = organizationInfo.Find(x => x.Id == organization.Id);
+                            existingOrganization.Roles.Add(organizationElementSetRef.Role);
+                        }
                     }
                 }
             }
@@ -1122,20 +1135,30 @@ namespace RadElement.Service
         /// <summary>
         /// Gets the person details.
         /// </summary>
-        /// <param name="elementId">The element identifier.</param>
+        /// <param name="setId">The set identifier.</param>
         /// <returns></returns>
-        private List<Person> GetPersonDetails(uint elementId)
+        private List<PersonAttributes> GetPersonDetails(int setId)
         {
-            List<Person> personInfo = new List<Person>(); ;
-            var personElementRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.ElementID == elementId);
-            if (personElementRefs != null && personElementRefs.Any())
+            List<PersonAttributes> personInfo = new List<PersonAttributes>();
+            var personElementSetRefs = radElementDbContext.PersonRoleElementRef.ToList().Where(x => x.ElementID == setId);
+            if (personElementSetRefs != null && personElementSetRefs.Any())
             {
-                foreach (var persoElementRef in personElementRefs)
+                foreach (var personElementSetRef in personElementSetRefs)
                 {
-                    var person = radElementDbContext.Person.ToList().Where(x => x.Id == persoElementRef.PersonID).FirstOrDefault();
+                    var person = radElementDbContext.Person.ToList().Where(x => x.Id == personElementSetRef.PersonID).FirstOrDefault();
                     if (person != null)
                     {
-                        personInfo.Add(person);
+                        if (!personInfo.Exists(x => x.Id == person.Id))
+                        {
+                            var personDetails = mapper.Map<PersonAttributes>(person);
+                            personDetails.Roles.Add(personElementSetRef.Role);
+                            personInfo.Add(personDetails);
+                        }
+                        else
+                        {
+                            var existingPerson = personInfo.Find(x => x.Id == person.Id);
+                            existingPerson.Roles.Add(personElementSetRef.Role);
+                        }
                     }
                 }
             }
