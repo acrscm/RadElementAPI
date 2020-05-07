@@ -17,7 +17,7 @@ namespace RadElement.Service.Tests
     public class PersonServiceShould
     {
         /// <summary>
-        /// The service
+        /// The person service
         /// </summary>
         private readonly PersonService service;
 
