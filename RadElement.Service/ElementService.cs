@@ -456,10 +456,8 @@ namespace RadElement.Service
 
                         if (elementSetRef != null)
                         {
-
                             var elementValues = radElementDbContext.ElementValue.Where(x => x.ElementId == elementSetRef.ElementId).ToList();
                             var element = radElementDbContext.Element.Where(x => x.Id == elementSetRef.ElementId).FirstOrDefault();
-
 
                             if (element != null)
                             {
@@ -714,7 +712,6 @@ namespace RadElement.Service
                 elements.ForEach(_element =>
                 {
                     _element.SetInformation = GetSetDetails((_element as Element).Id);
-
                     _element.OrganizationInformation = GetOrganizationDetails((int)(_element as Element).Id);
                     _element.PersonInformation = GetPersonDetails((int)(_element as Element).Id);
 
