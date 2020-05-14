@@ -185,8 +185,7 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredElements = radElementDbContext.Element.Where(x => ("RDE" + x.Id.ToString()).ToLower().Contains(searchKeyword.ToLower()) ||
-                                                               x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredElements = radElementDbContext.Element.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementBasicDetailsDto(filteredElements), HttpStatusCode.OK));
