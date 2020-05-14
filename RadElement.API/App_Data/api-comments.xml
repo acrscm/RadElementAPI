@@ -112,7 +112,7 @@
             <summary>
             Searches the element with provided keyword.
             </summary>
-            <param name="searchKeyword">The search keyword.</param>
+            <param name="keyword">The search keyword.</param>
             <returns></returns>
         </member>
         <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,RadElement.Core.DTO.CreateElement)">

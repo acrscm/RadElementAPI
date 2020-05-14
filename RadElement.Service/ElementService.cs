@@ -781,29 +781,23 @@ namespace RadElement.Service
         /// <summary>
         /// Gets the element basic details dto.
         /// </summary>
-        /// <param name="element">The element.</param>
+        /// <param name="elementDetails">The element.</param>
         /// <returns></returns>
-        private object GetElementBasicDetailsDto(object element)
+        private object GetElementBasicDetailsDto(List<Element> elementDetails)
         {
-            if (element.GetType() == typeof(List<Element>))
+            var elements = new List<BasicElementDetails>();
+            foreach (var elem in elementDetails)
             {
-                var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
-                elements.ForEach(_element =>
+                var element = new BasicElementDetails()
                 {
-                    _element.SetInformation = GetSetDetails((_element as Element).Id);
-                });
-
-                return elements;
-            }
-            else if (element.GetType() == typeof(Element))
-            {
-                var elementDetails = mapper.Map<ElementDetails>(element as Element);
-                elementDetails.SetInformation = GetSetDetails((element as Element).Id);
-
-                return elementDetails;
+                    Id = string.Concat("RDE", elem.Id),
+                    Name = elem.Name,
+                    SetInformation = GetSetDetails(elem.Id)
+                };
+                elements.Add(element);
             }
 
-            return null;
+            return elements;
         }
 
         /// <summary>
