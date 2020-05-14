@@ -8,7 +8,12 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the element identifier.
         /// </summary>
-        public string Id { get; set; }
+        public uint Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the element identifier.
+        /// </summary>
+        public string ElementId { get; set; }
 
         /// <summary>
         /// Gets or sets the name.

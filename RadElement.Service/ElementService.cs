@@ -185,7 +185,8 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredElements = radElementDbContext.Element.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredElements = radElementDbContext.Element.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).Select(
+                        x => new BasicElementDetails { Id = x.Id, Name = x.Name }).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementBasicDetailsDto(filteredElements), HttpStatusCode.OK));
@@ -782,21 +783,15 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="elementDetails">The element.</param>
         /// <returns></returns>
-        private object GetElementBasicDetailsDto(List<Element> elementDetails)
+        private object GetElementBasicDetailsDto(List<BasicElementDetails> elementDetails)
         {
-            var elements = new List<BasicElementDetails>();
-            foreach (var elem in elementDetails)
+            elementDetails.ForEach(element =>
             {
-                var element = new BasicElementDetails()
-                {
-                    Id = string.Concat("RDE", elem.Id),
-                    Name = elem.Name,
-                    SetInformation = GetSetDetails(elem.Id)
-                };
-                elements.Add(element);
-            }
+                element.ElementId = string.Concat("RDE", element.Id);
+                element.SetInformation = GetSetDetails(element.Id);
+            });
 
-            return elements;
+            return elementDetails;
         }
 
         /// <summary>
