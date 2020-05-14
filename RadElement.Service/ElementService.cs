@@ -170,6 +170,44 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Searches the element.
+        /// </summary>
+        /// <param name="searchKeyword">The search keyword.</param>
+        /// <returns></returns>
+        public async Task<JsonResult> SearchElementsBasicDetails(string searchKeyword)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    if (searchKeyword.Length < 3)
+                    {
+                        return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
+                    }
+
+                    var filteredElements = radElementDbContext.Element.Where(x => ("RDE" + x.Id.ToString()).ToLower().Contains(searchKeyword.ToLower()) ||
+                                                               x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    if (filteredElements != null && filteredElements.Any())
+                    {
+                        return await Task.FromResult(new JsonResult(GetElementBasicDetailsDto(filteredElements), HttpStatusCode.OK));
+                    }
+                    else
+                    {
+                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
+                    }
+                }
+
+                return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception in method 'SearchElements(SearchKeyword searchKeyword)'");
+                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+            }
+        }
+
+        /// <summary>
         /// Creates the element.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
@@ -734,6 +772,34 @@ namespace RadElement.Service
                 {
                     elementDetails.ElementValues = GetElementValues((element as Element).Id);
                 }
+                return elementDetails;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the element basic details dto.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns></returns>
+        private object GetElementBasicDetailsDto(object element)
+        {
+            if (element.GetType() == typeof(List<Element>))
+            {
+                var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
+                elements.ForEach(_element =>
+                {
+                    _element.SetInformation = GetSetDetails((_element as Element).Id);
+                });
+
+                return elements;
+            }
+            else if (element.GetType() == typeof(Element))
+            {
+                var elementDetails = mapper.Map<ElementDetails>(element as Element);
+                elementDetails.SetInformation = GetSetDetails((element as Element).Id);
+
                 return elementDetails;
             }
 

@@ -82,6 +82,18 @@ namespace RadElement.API.Controllers
             var result = await radElementService.SearchElements(searchKeyword);
             return StatusCode((int)result.Code, result.Value);
         }
+        
+        /// <summary>
+         /// Searches the element with provided keyword.
+         /// </summary>
+         /// <param name="searchKeyword">The search keyword.</param>
+         /// <returns></returns>
+        [HttpGet("elements/basicsearch")]
+        public async Task<IActionResult> SearchElementsBasicDetails([FromQuery]string searchKeyword)
+        {
+            var result = await radElementService.SearchElementsBasicDetails(searchKeyword);
+            return StatusCode((int)result.Code, result.Value);
+        }
 
         /// <summary>
         /// Creates a element under specific set identifier.
