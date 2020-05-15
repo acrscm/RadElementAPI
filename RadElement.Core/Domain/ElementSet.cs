@@ -83,6 +83,6 @@ namespace RadElement.Core.Domain
         /// Gets or sets the deleted at.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public DateTime Deleted_At { get; set; }
+        public DateTime? Deleted_At { get; set; }
     }
 }
