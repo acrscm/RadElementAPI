@@ -108,8 +108,8 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = radElementDbContext.ElementSet.Where(x => ("RDES" + x.Id.ToString()).ToLower().Contains(searchKeyword.ToLower()) ||
-                                                                                  x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var sets = radElementDbContext.ElementSet.Where(x => ("RDES" + x.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
+                                                                                  x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
                     if (sets != null && sets.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
@@ -296,7 +296,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidSetId(string setId)
         {
-            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.InvariantCultureIgnoreCase))
             {
                 bool result = int.TryParse(setId.Remove(0, 4), out _);
                 return result;

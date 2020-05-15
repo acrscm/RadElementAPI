@@ -147,8 +147,8 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredElements = radElementDbContext.Element.Where(x => ("RDE" + x.Id.ToString()).ToLower().Contains(searchKeyword.ToLower()) ||
-                                                               x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredElements = radElementDbContext.Element.Where(x => ("RDE" + x.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
+                                                               x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
                     if (filteredElements != null && filteredElements.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements), HttpStatusCode.OK));
@@ -185,11 +185,20 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredElements = radElementDbContext.Element.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).Select(
-                        x => new BasicElementDetails { Id = x.Id, Name = x.Name }).ToList();
+                    var watch = new System.Diagnostics.Stopwatch();
+                    watch.Start();
+
+                    var filteredElements = radElementDbContext.Element.Where(x => x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
+                        .Select(x => new BasicElementDetails { Id = x.Id, Name = x.Name }).ToList();
+
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementBasicDetailsDto(filteredElements), HttpStatusCode.OK));
+                        var simpleSearchResponse = new SimpleSearchResponse();
+                        simpleSearchResponse.Elements = GetElementBasicDetailsDto(filteredElements);
+                        watch.Stop();
+                        simpleSearchResponse.ExecutionTime = string.Format("Execution Time: {0} ms", watch.ElapsedMilliseconds);
+
+                        return await Task.FromResult(new JsonResult(simpleSearchResponse, HttpStatusCode.OK));
                     }
                     else
                     {
@@ -710,7 +719,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidElementId(string elementId)
         {
-            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.OrdinalIgnoreCase))
+            if (elementId.Length > 3 && string.Equals(elementId.Substring(0, 3), "RDE", StringComparison.InvariantCultureIgnoreCase))
             {
                 bool result = int.TryParse(elementId.Remove(0, 3), out _);
                 return result;
@@ -728,7 +737,7 @@ namespace RadElement.Service
         /// </returns>
         private bool IsValidSetId(string setId)
         {
-            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.OrdinalIgnoreCase))
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.InvariantCultureIgnoreCase))
             {
                 bool result = int.TryParse(setId.Remove(0, 4), out _);
                 return result;
@@ -783,7 +792,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="elementDetails">The element.</param>
         /// <returns></returns>
-        private object GetElementBasicDetailsDto(List<BasicElementDetails> elementDetails)
+        private List<BasicElementDetails> GetElementBasicDetailsDto(List<BasicElementDetails> elementDetails)
         {
             elementDetails.ForEach(element =>
             {

@@ -97,7 +97,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var filteredPersons = radElementDbContext.Person.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredPersons = radElementDbContext.Person.Where(x => x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
                     if (filteredPersons != null && filteredPersons.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredPersons, HttpStatusCode.OK));
@@ -136,8 +136,8 @@ namespace RadElement.Service
                     }
 
                     var matchedPerson = radElementDbContext.Person.ToList().Where(
-                        x => string.Equals(x.Name?.Trim(), person.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                             string.Equals(x.Orcid?.Trim(), person.Orcid?.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        x => string.Equals(x.Name?.Trim(), person.Name?.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.Orcid?.Trim(), person.Orcid?.Trim(), StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                     if (matchedPerson != null)
                     {
                         matchedPerson.TwitterHandle = person.TwitterHandle;

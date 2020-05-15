@@ -98,7 +98,7 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var filteredorganizations = radElementDbContext.Organization.Where(x => x.Name.ToLower().Contains(searchKeyword.ToLower())).ToList();
+                    var filteredorganizations = radElementDbContext.Organization.Where(x => x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
                     if (filteredorganizations != null && filteredorganizations.Any())
                     {
                         return await Task.FromResult(new JsonResult(filteredorganizations, HttpStatusCode.OK));
@@ -136,8 +136,8 @@ namespace RadElement.Service
                     }
 
                     var matchedOrganization = radElementDbContext.Organization.ToList().Where(
-                        x => string.Equals(x.Name?.Trim(), organization.Name?.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                             string.Equals(x.Abbreviation?.Trim(), organization.Abbreviation?.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        x => string.Equals(x.Name?.Trim(), organization.Name?.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.Abbreviation?.Trim(), organization.Abbreviation?.Trim(), StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
 
                     if (matchedOrganization != null)
                     {
