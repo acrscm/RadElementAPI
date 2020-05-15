@@ -72,5 +72,17 @@ namespace RadElement.Core.Domain
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version date.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime VersionDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the deleted at.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime Deleted_At { get; set; }
     }
 }

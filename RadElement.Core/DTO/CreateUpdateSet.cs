@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RadElement.Core.DTO
@@ -53,6 +54,16 @@ namespace RadElement.Core.DTO
         /// </summary>
         [MaxLength(8)]
         public string Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version date.
+        /// </summary>
+        public DateTime VersionDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the deleted at.
+        /// </summary>
+        public DateTime? DeletedAt { get; set; }
 
         /// <summary>
         /// Gets or sets the person ids.

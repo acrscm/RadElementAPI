@@ -152,13 +152,15 @@ namespace RadElement.Service
                         Description = content.Description,
                         ContactName = content.ContactName,
                         ParentId = content.ParentId,
-                        Status = "Proposed",
-                        StatusDate = DateTime.UtcNow,
                         Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null,
                         BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null,
                         AgeLowerBound = content.AgeLowerBound,
                         AgeUpperBound = content.AgeUpperBound,
-                        Version = content.Version
+                        Status = "Proposed",
+                        StatusDate = DateTime.UtcNow,
+                        Version = content.Version,
+                        VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.Now,
+                        Deleted_At = content.DeletedAt ?? DateTime.Now
                     };
 
                     radElementDbContext.ElementSet.Add(set);
@@ -215,6 +217,8 @@ namespace RadElement.Service
                             elementSet.AgeLowerBound = content.AgeLowerBound;
                             elementSet.AgeUpperBound = content.AgeUpperBound;
                             elementSet.Version = content.Version;
+                            elementSet.VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.Now;
+                            elementSet.Deleted_At = content.DeletedAt ?? DateTime.Now;
 
                             radElementDbContext.SaveChanges();
 
