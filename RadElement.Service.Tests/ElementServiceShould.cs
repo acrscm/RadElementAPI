@@ -29,6 +29,11 @@ namespace RadElement.Service.Tests
         private readonly Mock<RadElementDbContext> mockRadElementContext;
 
         /// <summary>
+        /// The mock dapper repo
+        /// </summary>
+        private readonly Mock<IDapperRepo> mockDapperRepo;
+
+        /// <summary>
         /// The mock logger
         /// </summary>
         private readonly Mock<ILogger> mockLogger;
@@ -56,6 +61,7 @@ namespace RadElement.Service.Tests
         public ElementServiceShould()
         {
             mockRadElementContext = new Mock<RadElementDbContext>();
+            mockDapperRepo = new Mock<IDapperRepo>();
             mockLogger = new Mock<ILogger>();
 
             var elementProfile = new ElementProfile();
@@ -69,7 +75,7 @@ namespace RadElement.Service.Tests
             });
 
             mapper = new Mapper(mapperConfig);
-            service = new ElementService(mockRadElementContext.Object, mapper, mockLogger.Object);
+            service = new ElementService(mockRadElementContext.Object, mockDapperRepo.Object, mapper, mockLogger.Object);
         }
 
         #region GetElements

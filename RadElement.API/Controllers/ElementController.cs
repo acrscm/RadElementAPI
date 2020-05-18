@@ -82,16 +82,30 @@ namespace RadElement.API.Controllers
             var result = await radElementService.SearchElements(searchKeyword);
             return StatusCode((int)result.Code, result.Value);
         }
-        
+
         /// <summary>
-         /// Searches the element with provided keyword.
-         /// </summary>
-         /// <param name="keyword">The search keyword.</param>
-         /// <returns></returns>
-        [HttpGet("elements/simplesearch")]
-        public async Task<IActionResult> SearchElementsBasicDetails([FromQuery]string keyword)
+        /// Deeps the search elements.
+        /// </summary>
+        /// <param name="keyword">The keyword.</param>
+        /// <param name="operation">The operation.</param>
+        /// <returns></returns>
+        [HttpGet("elements/deepsearch")]
+        public async Task<IActionResult> DeepSearchElements([FromQuery]string keyword, [FromQuery]string operation)
         {
-            var result = await radElementService.SearchElementsBasicDetails(keyword);
+            var result = await radElementService.DeepSearchElements(keyword, operation);
+            return StatusCode((int)result.Code, result.Value);
+        }
+
+        /// <summary>
+        /// Searches the element with provided keyword.
+        /// </summary>
+        /// <param name="keyword">The search keyword.</param>
+        /// <param name="operation">The operation.</param>
+        /// <returns></returns>
+        [HttpGet("elements/simplesearch")]
+        public async Task<IActionResult> SimplSearchElements([FromQuery]string keyword, [FromQuery]string operation)
+        {
+            var result = await radElementService.SimpleSearchElements(keyword, operation);
             return StatusCode((int)result.Code, result.Value);
         }
 

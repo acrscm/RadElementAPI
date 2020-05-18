@@ -7,7 +7,12 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the execution time.
         /// </summary>
-        public string ExecutionTime { get; set; }
+        public string ElementExecutionTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the set execution time.
+        /// </summary>
+        public string SetExecutionTime { get; set; }
 
         /// <summary>
         /// Gets or sets the elements.

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service", "RadElement.Service\RadElement.Service.csproj", "{D14C7550-85EE-48E8-ACDC-260748BE3AAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadElement.Data", "RadElement.Data\RadElement.Data.csproj", "{94CCDB86-141F-44B5-8F79-98E436048C02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D14C7550-85EE-48E8-ACDC-260748BE3AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D14C7550-85EE-48E8-ACDC-260748BE3AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D14C7550-85EE-48E8-ACDC-260748BE3AAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94CCDB86-141F-44B5-8F79-98E436048C02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94CCDB86-141F-44B5-8F79-98E436048C02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94CCDB86-141F-44B5-8F79-98E436048C02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94CCDB86-141F-44B5-8F79-98E436048C02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

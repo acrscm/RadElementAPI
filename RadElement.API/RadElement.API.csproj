@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RadElement.Core\RadElement.Core.csproj" />
+    <ProjectReference Include="..\RadElement.Data\RadElement.Data.csproj" />
     <ProjectReference Include="..\RadElement.Infrastructure\RadElement.Infrastructure.csproj" />
     <ProjectReference Include="..\RadElement.Service\RadElement.Service.csproj" />
   </ItemGroup>

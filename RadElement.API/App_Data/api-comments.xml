@@ -108,11 +108,20 @@
             <param name="searchKeyword">The search keyword.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.SearchElementsBasicDetails(System.String)">
+        <member name="M:RadElement.API.Controllers.ElementController.DeepSearchElements(System.String,System.String)">
+            <summary>
+            Deeps the search elements.
+            </summary>
+            <param name="keyword">The keyword.</param>
+            <param name="operation">The operation.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ElementController.SimplSearchElements(System.String,System.String)">
             <summary>
             Searches the element with provided keyword.
             </summary>
             <param name="keyword">The search keyword.</param>
+            <param name="operation">The operation.</param>
             <returns></returns>
         </member>
         <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,RadElement.Core.DTO.CreateElement)">
