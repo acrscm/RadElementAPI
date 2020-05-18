@@ -215,48 +215,60 @@ namespace RadElement.Service
 
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        long setEllapsedTime = 0;
-                        long valuesEllapsedTime = 0;
-                        long organizationEllapsedTime = 0;
-                        long personEllapsedTime = 0;
-
                         var elements = mapper.Map<List<Element>, List<ElementDetails>>(filteredElements as List<Element>);
                         if (operation == "entity")
                         {
-                            elements.ForEach(element =>
+                            var setWatch = new System.Diagnostics.Stopwatch();
+                            setWatch.Start();
+
+                            foreach (var element in elements)
                             {
-                                var setWatch = new System.Diagnostics.Stopwatch();
-                                setWatch.Start();
                                 element.SetInformation = GetSetDetails(element.Id);
-                                setWatch.Stop();
-                                setEllapsedTime += setWatch.ElapsedMilliseconds;
+                            }
 
-                                var valueWatch = new System.Diagnostics.Stopwatch();
-                                valueWatch.Start();
+                            setWatch.Stop();
+                            deepSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
+
+                            var valueWatch = new System.Diagnostics.Stopwatch();
+                            valueWatch.Start();
+
+                            foreach (var element in elements)
+                            {
                                 element.ElementValues = GetElementValues(element.Id);
-                                valueWatch.Stop();
-                                valuesEllapsedTime += valueWatch.ElapsedMilliseconds;
+                            }
 
-                                var organizationWatch = new System.Diagnostics.Stopwatch();
-                                organizationWatch.Start();
+                            valueWatch.Stop();
+                            deepSearchResponse.ElementValuesExecutionTime = string.Format("Execution Time: {0} ms", valueWatch.ElapsedMilliseconds);
+
+                            var organizationWatch = new System.Diagnostics.Stopwatch();
+                            organizationWatch.Start();
+
+                            foreach (var element in elements)
+                            {
                                 element.OrganizationInformation = GetOrganizationDetails((int)(element as Element).Id);
-                                organizationWatch.Stop();
-                                organizationEllapsedTime += setWatch.ElapsedMilliseconds;
+                            }
 
-                                var personWatch = new System.Diagnostics.Stopwatch();
-                                personWatch.Start();
+                            organizationWatch.Stop();
+                            deepSearchResponse.OrganizationExecutionTime = string.Format("Execution Time: {0} ms", organizationWatch.ElapsedMilliseconds);
+
+                            var personWatch = new System.Diagnostics.Stopwatch();
+                            personWatch.Start();
+
+                            foreach (var element in elements)
+                            {
                                 element.PersonInformation = GetPersonDetails((int)(element as Element).Id);
-                                personWatch.Stop();
-                                personEllapsedTime += personWatch.ElapsedMilliseconds;
-                            });
+                            }
+
+                            personWatch.Stop();
+                            deepSearchResponse.PersonExecutionTime = string.Format("Execution Time: {0} ms", personWatch.ElapsedMilliseconds);
                         }
                         else if (operation == "dapper")
                         {
+                            var setWatch = new System.Diagnostics.Stopwatch();
+                            setWatch.Start();
+
                             foreach (var element in elements)
                             {
-                                var setWatch = new System.Diagnostics.Stopwatch();
-                                setWatch.Start();
-
                                 List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>();
                                 var sets = await dapperRepo.GetSetsByElementId((int)element.Id);
                                 if (sets != null && sets.Any())
@@ -272,18 +284,27 @@ namespace RadElement.Service
                                 }
 
                                 element.SetInformation = setInfo;
-                                setWatch.Stop();
-                                setEllapsedTime += setWatch.ElapsedMilliseconds;
+                            }
 
-                                var valueWatch = new System.Diagnostics.Stopwatch();
-                                valueWatch.Start();
+                            setWatch.Stop();
+                            deepSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
+
+                            var valueWatch = new System.Diagnostics.Stopwatch();
+                            valueWatch.Start();
+
+                            foreach (var element in elements)
+                            {
                                 element.ElementValues = await dapperRepo.GetElementValuesByElementId((int)element.Id);
-                                valueWatch.Stop();
-                                valuesEllapsedTime += valueWatch.ElapsedMilliseconds;
+                            }
 
-                                var organizationWatch = new System.Diagnostics.Stopwatch();
-                                organizationWatch.Start();
+                            valueWatch.Stop();
+                            deepSearchResponse.ElementValuesExecutionTime = string.Format("Execution Time: {0} ms", valueWatch.ElapsedMilliseconds);
 
+                            var organizationWatch = new System.Diagnostics.Stopwatch();
+                            organizationWatch.Start();
+
+                            foreach (var element in elements)
+                            {
                                 List<OrganizationAttributes> organizationInfo = new List<OrganizationAttributes>();
                                 var organizationElementSetRefs = await dapperRepo.GetOrganizationRolesByElementId((int)element.Id);
                                 if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
@@ -315,12 +336,16 @@ namespace RadElement.Service
                                 }
 
                                 element.OrganizationInformation = organizationInfo;
-                                organizationWatch.Stop();
-                                organizationEllapsedTime += setWatch.ElapsedMilliseconds;
+                            }
 
-                                var personWatch = new System.Diagnostics.Stopwatch();
-                                personWatch.Start();
+                            organizationWatch.Stop();
+                            deepSearchResponse.OrganizationExecutionTime = string.Format("Execution Time: {0} ms", organizationWatch.ElapsedMilliseconds);
 
+                            var personWatch = new System.Diagnostics.Stopwatch();
+                            personWatch.Start();
+
+                            foreach (var element in elements)
+                            {
                                 List<PersonAttributes> personInfo = new List<PersonAttributes>();
                                 var personElementSetRefs = await dapperRepo.GetPersonRolesByElementId((int)element.Id);
 
@@ -353,15 +378,11 @@ namespace RadElement.Service
                                 }
 
                                 element.PersonInformation = personInfo;
-                                personWatch.Stop();
-                                personEllapsedTime += personWatch.ElapsedMilliseconds;
                             }
-                        }
 
-                        deepSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setEllapsedTime);
-                        deepSearchResponse.ElementValuesExecutionTime = string.Format("Execution Time: {0} ms", valuesEllapsedTime);
-                        deepSearchResponse.OrganizationExecutionTime = string.Format("Execution Time: {0} ms", organizationEllapsedTime);
-                        deepSearchResponse.PersonExecutionTime = string.Format("Execution Time: {0} ms", personEllapsedTime);
+                            personWatch.Stop();
+                            deepSearchResponse.PersonExecutionTime = string.Format("Execution Time: {0} ms", personWatch.ElapsedMilliseconds);
+                        }
 
                         deepSearchResponse.Elements = elements;
 
@@ -422,27 +443,24 @@ namespace RadElement.Service
 
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        long setEllapsedTime = 0;
+                        var setWatch = new System.Diagnostics.Stopwatch();
                         if (operation == "entity")
                         {
+                            setWatch.Start(); ;
                             filteredElements.ForEach(element =>
                             {
                                 element.ElementId = string.Concat("RDE", element.Id);
-
-                                var setWatch = new System.Diagnostics.Stopwatch();
-                                setWatch.Start();
                                 element.SetInformation = GetSetDetails(element.Id);
-                                setWatch.Stop();
-                                setEllapsedTime += setWatch.ElapsedMilliseconds;
                             });
+
+                            setWatch.Stop();
+                            simpleSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
                         }
                         else if (operation == "dapper")
                         {
+                            setWatch.Start();
                             foreach (var element in filteredElements)
                             {
-                                var setWatch = new System.Diagnostics.Stopwatch();
-                                setWatch.Start();
-
                                 List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>();
                                 var sets = await dapperRepo.GetSetsByElementId((int)element.Id);
                                 if (sets != null && sets.Any())
@@ -456,14 +474,13 @@ namespace RadElement.Service
                                         });
                                     }
                                 }
-
                                 element.SetInformation = setInfo;
-                                setWatch.Stop();
-                                setEllapsedTime += setWatch.ElapsedMilliseconds;
                             }
+
+                            setWatch.Stop();
+                            simpleSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
                         }
 
-                        simpleSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setEllapsedTime);
                         simpleSearchResponse.Elements = filteredElements;
 
                         return await Task.FromResult(new JsonResult(simpleSearchResponse, HttpStatusCode.OK));
