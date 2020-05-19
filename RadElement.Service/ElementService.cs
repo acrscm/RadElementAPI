@@ -195,14 +195,38 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
+                    var filteredData = new List<FilteredElements>();
                     var deepSearchResponse = new DeepSearchResponse();
                     var watch = new System.Diagnostics.Stopwatch();
                     watch.Start();
-                    var filteredData = (from elementSetRefId in radElementDbContext.ElementSetRef
-                                        join element in radElementDbContext.Element on elementSetRefId.ElementId equals (int)element.Id
-                                        join elementSet in radElementDbContext.ElementSet on elementSetRefId.ElementSetId equals elementSet.Id
-                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new { Element = element, ElementSet = elementSet, }).Distinct().ToList();
+
+                    if (operation == "set")
+                    {
+                        filteredData = (from ele in radElementDbContext.Element
+                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)ele.Id equals eleSetRefId.ElementId into setrefs
+                                        from eleSetRef in setrefs.DefaultIfEmpty()
+                                        join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                        from elementSet in sets.DefaultIfEmpty()
+                                        where ele.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                        select new FilteredElements { Element = ele, ElementSet = elementSet }).Distinct().ToList();
+                    }
+                    else if (operation == "values")
+                    {
+                        filteredData = (from ele in radElementDbContext.Element
+                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)ele.Id equals eleSetRefId.ElementId into setrefs
+                                        from eleSetRef in setrefs.DefaultIfEmpty()
+                                        join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                        from elementSet in sets.DefaultIfEmpty()
+                                        join eleValue in radElementDbContext.ElementValue on ele.Id equals eleValue.ElementId into values
+                                        from elementValues in values.DefaultIfEmpty()
+                                        where ele.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                        select new FilteredElements { 
+                                            Element = ele, 
+                                            ElementSet = elementSet, 
+                                            ElementValues = elementValues 
+                                        }).Distinct().ToList();
+                    }
+
                     watch.Stop();
                     deepSearchResponse.ExecutionTime = string.Format("Execution Time: {0} ms", watch.ElapsedMilliseconds);
 
@@ -221,6 +245,12 @@ namespace RadElement.Service
                                     var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
                                     element.SetInformation.Add(setAttributes);
                                 }
+                                if (data.ElementValues != null)
+                                {
+                                    element.ElementValues = new List<ElementValue>();
+                                    element.ElementValues.Add(data.ElementValues);
+                                }
+
                                 elements.Add(element);
                             }
                             else
@@ -230,12 +260,26 @@ namespace RadElement.Service
                                 {
                                     element.SetInformation = new List<SetBasicAttributes>();
                                 }
-
-                                var elementSet = mapper.Map<ElementSetDetails>(data.ElementSet);
-                                if (!element.SetInformation.Exists(x => x.SetId == elementSet.SetId))
+                                if (element.ElementValues == null)
                                 {
-                                    var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
-                                    element.SetInformation.Add(setAttributes);
+                                    element.ElementValues = new List<ElementValue>();
+                                }
+
+                                if (data.ElementSet != null)
+                                {
+                                    var elementSet = mapper.Map<ElementSetDetails>(data.ElementSet);
+                                    if (!element.SetInformation.Exists(x => x.SetId == elementSet.SetId))
+                                    {
+                                        var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
+                                        element.SetInformation.Add(setAttributes);
+                                    }
+                                }
+                                if (data.ElementValues != null)
+                                {
+                                    if (!element.ElementValues.Exists(x => x.Id == data.ElementValues.Id))
+                                    {
+                                        element.ElementValues.Add(data.ElementValues);
+                                    }
                                 }
                             }
                         }
