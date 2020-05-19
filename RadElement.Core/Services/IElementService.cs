@@ -45,14 +45,6 @@ namespace RadElement.Core.Services
         Task<JsonResult> DeepSearchElements(string searchKeyword, string operation);
 
         /// <summary>
-        /// Simples the search elements.
-        /// </summary>
-        /// <param name="searchKeyword">The search keyword.</param>
-        /// <param name="operation">The operation.</param>
-        /// <returns></returns>
-        Task<JsonResult> SimpleSearchElements(string searchKeyword, string operation);
-
-        /// <summary>
         /// Creates the element.
         /// </summary>
         /// <param name="setId">The set identifier.</param>

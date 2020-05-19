@@ -9,6 +9,7 @@ using System.Net;
 using Serilog;
 using AutoMapper;
 using RadElement.Core.Data;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace RadElement.Service
 {
@@ -120,8 +121,8 @@ namespace RadElement.Service
                     int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
                     var elementIds = radElementDbContext.ElementSetRef.Where(x => x.ElementSetId == setInternalId).ToList();
 
-                    var selectedElements = (from elemetId in elementIds
-                                            join element in radElementDbContext.Element on elemetId.ElementId equals (int)element.Id
+                    var selectedElements = (from elementId in elementIds
+                                            join element in radElementDbContext.Element on elementId.ElementId equals (int)element.Id
                                             select element).ToList();
 
                     if (selectedElements != null && selectedElements.Any())
@@ -194,296 +195,54 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredElements = new List<Element>();
-                    var elementWatch = new System.Diagnostics.Stopwatch();
-
-                    if (operation == "entity")
-                    {
-                        elementWatch.Start();
-                        filteredElements = radElementDbContext.Element.Where(x => x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                        elementWatch.Stop();
-                    }
-                    else if (operation == "dapper")
-                    {
-                        elementWatch.Start();
-                        filteredElements = await dapperRepo.SearchElementsDetails(searchKeyword);
-                        elementWatch.Stop();
-                    }
-
                     var deepSearchResponse = new DeepSearchResponse();
-                    deepSearchResponse.ElementExecutionTime = string.Format("Execution Time: {0} ms", elementWatch.ElapsedMilliseconds);
+                    var watch = new System.Diagnostics.Stopwatch();
+                    watch.Start();
+                    var filteredData = (from elementSetRefId in radElementDbContext.ElementSetRef
+                                        join element in radElementDbContext.Element on elementSetRefId.ElementId equals (int)element.Id
+                                        join elementSet in radElementDbContext.ElementSet on elementSetRefId.ElementSetId equals elementSet.Id
+                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                        select new { Element = element, ElementSet = elementSet, }).Distinct().ToList();
+                    watch.Stop();
+                    deepSearchResponse.ExecutionTime = string.Format("Execution Time: {0} ms", watch.ElapsedMilliseconds);
 
-                    if (filteredElements != null && filteredElements.Any())
+                    if (filteredData != null && filteredData.Any())
                     {
-                        var elements = mapper.Map<List<Element>, List<ElementDetails>>(filteredElements as List<Element>);
-                        if (operation == "entity")
+                        var elements = new List<ElementDetails>();
+                        foreach (var data in filteredData)
                         {
-                            var setWatch = new System.Diagnostics.Stopwatch();
-                            setWatch.Start();
-
-                            foreach (var element in elements)
+                            if (!elements.Exists(x => x.Id == data.Element.Id))
                             {
-                                element.SetInformation = GetSetDetails(element.Id);
-                            }
-
-                            setWatch.Stop();
-                            deepSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
-
-                            var valueWatch = new System.Diagnostics.Stopwatch();
-                            valueWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                element.ElementValues = GetElementValues(element.Id);
-                            }
-
-                            valueWatch.Stop();
-                            deepSearchResponse.ElementValuesExecutionTime = string.Format("Execution Time: {0} ms", valueWatch.ElapsedMilliseconds);
-
-                            var organizationWatch = new System.Diagnostics.Stopwatch();
-                            organizationWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                element.OrganizationInformation = GetOrganizationDetails((int)(element as Element).Id);
-                            }
-
-                            organizationWatch.Stop();
-                            deepSearchResponse.OrganizationExecutionTime = string.Format("Execution Time: {0} ms", organizationWatch.ElapsedMilliseconds);
-
-                            var personWatch = new System.Diagnostics.Stopwatch();
-                            personWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                element.PersonInformation = GetPersonDetails((int)(element as Element).Id);
-                            }
-
-                            personWatch.Stop();
-                            deepSearchResponse.PersonExecutionTime = string.Format("Execution Time: {0} ms", personWatch.ElapsedMilliseconds);
-                        }
-                        else if (operation == "dapper")
-                        {
-                            var setWatch = new System.Diagnostics.Stopwatch();
-                            setWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>();
-                                var sets = await dapperRepo.GetSetsByElementId((int)element.Id);
-                                if (sets != null && sets.Any())
+                                var element = mapper.Map<ElementDetails>(data.Element);
+                                if (data.ElementSet != null)
                                 {
-                                    foreach (var set in sets)
-                                    {
-                                        setInfo.Add(new SetBasicAttributes
-                                        {
-                                            SetId = string.Concat("RDES", set.Id),
-                                            SetName = set.Name
-                                        });
-                                    }
+                                    element.SetInformation = new List<SetBasicAttributes>();
+                                    var elementSet = mapper.Map<ElementSetDetails>(data.ElementSet);
+                                    var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
+                                    element.SetInformation.Add(setAttributes);
+                                }
+                                elements.Add(element);
+                            }
+                            else
+                            {
+                                var element = elements.Find(x => x.Id == data.Element.Id);
+                                if (element.SetInformation == null)
+                                {
+                                    element.SetInformation = new List<SetBasicAttributes>();
                                 }
 
-                                element.SetInformation = setInfo;
-                            }
-
-                            setWatch.Stop();
-                            deepSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
-
-                            var valueWatch = new System.Diagnostics.Stopwatch();
-                            valueWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                element.ElementValues = await dapperRepo.GetElementValuesByElementId((int)element.Id);
-                            }
-
-                            valueWatch.Stop();
-                            deepSearchResponse.ElementValuesExecutionTime = string.Format("Execution Time: {0} ms", valueWatch.ElapsedMilliseconds);
-
-                            var organizationWatch = new System.Diagnostics.Stopwatch();
-                            organizationWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                List<OrganizationAttributes> organizationInfo = new List<OrganizationAttributes>();
-                                var organizationElementSetRefs = await dapperRepo.GetOrganizationRolesByElementId((int)element.Id);
-                                if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
+                                var elementSet = mapper.Map<ElementSetDetails>(data.ElementSet);
+                                if (!element.SetInformation.Exists(x => x.SetId == elementSet.SetId))
                                 {
-                                    foreach (var organizationElementSetRef in organizationElementSetRefs)
-                                    {
-                                        var organization = await dapperRepo.GetOrganization(organizationElementSetRef.OrganizationID);
-                                        if (organization != null)
-                                        {
-                                            if (!organizationInfo.Exists(x => x.Id == organization.Id))
-                                            {
-                                                var organizationDetails = mapper.Map<OrganizationAttributes>(organization);
-                                                if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
-                                                {
-                                                    organizationDetails.Roles.Add(organizationElementSetRef.Role);
-                                                }
-                                                organizationInfo.Add(organizationDetails);
-                                            }
-                                            else
-                                            {
-                                                var existingOrganization = organizationInfo.Find(x => x.Id == organization.Id);
-                                                if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
-                                                {
-                                                    existingOrganization.Roles.Add(organizationElementSetRef.Role);
-                                                }
-                                            }
-                                        }
-                                    }
+                                    var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
+                                    element.SetInformation.Add(setAttributes);
                                 }
-
-                                element.OrganizationInformation = organizationInfo;
                             }
-
-                            organizationWatch.Stop();
-                            deepSearchResponse.OrganizationExecutionTime = string.Format("Execution Time: {0} ms", organizationWatch.ElapsedMilliseconds);
-
-                            var personWatch = new System.Diagnostics.Stopwatch();
-                            personWatch.Start();
-
-                            foreach (var element in elements)
-                            {
-                                List<PersonAttributes> personInfo = new List<PersonAttributes>();
-                                var personElementSetRefs = await dapperRepo.GetPersonRolesByElementId((int)element.Id);
-
-                                if (personElementSetRefs != null && personElementSetRefs.Any())
-                                {
-                                    foreach (var personElementSetRef in personElementSetRefs)
-                                    {
-                                        var person = await dapperRepo.GetPerson(personElementSetRef.PersonID);
-                                        if (person != null)
-                                        {
-                                            if (!personInfo.Exists(x => x.Id == person.Id))
-                                            {
-                                                var personDetails = mapper.Map<PersonAttributes>(person);
-                                                if (!string.IsNullOrEmpty(personElementSetRef.Role))
-                                                {
-                                                    personDetails.Roles.Add(personElementSetRef.Role);
-                                                }
-                                                personInfo.Add(personDetails);
-                                            }
-                                            else
-                                            {
-                                                var existingPerson = personInfo.Find(x => x.Id == person.Id);
-                                                if (!string.IsNullOrEmpty(personElementSetRef.Role))
-                                                {
-                                                    existingPerson.Roles.Add(personElementSetRef.Role);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                element.PersonInformation = personInfo;
-                            }
-
-                            personWatch.Stop();
-                            deepSearchResponse.PersonExecutionTime = string.Format("Execution Time: {0} ms", personWatch.ElapsedMilliseconds);
                         }
 
                         deepSearchResponse.Elements = elements;
 
                         return await Task.FromResult(new JsonResult(deepSearchResponse, HttpStatusCode.OK));
-                    }
-                    else
-                    {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
-                    }
-                }
-
-                return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'SearchElements(SearchKeyword searchKeyword)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-            }
-        }
-
-        /// <summary>
-        /// Searches the element.
-        /// </summary>
-        /// <param name="searchKeyword">The search keyword.</param>
-        /// <param name="operation">The operation.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> SimpleSearchElements(string searchKeyword, string operation)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(searchKeyword))
-                {
-                    if (searchKeyword.Length < 3)
-                    {
-                        return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
-                    }
-
-                    var filteredElements = new List<BasicElementDetails>();
-                    var elementWatch = new System.Diagnostics.Stopwatch();
-
-                    if (operation == "entity")
-                    {
-                        elementWatch.Start();
-                        filteredElements = radElementDbContext.Element.Where(x => x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
-                            .Select(x => new BasicElementDetails { Id = x.Id, Name = x.Name }).ToList();
-                        elementWatch.Stop();
-                    }
-                    else if (operation == "dapper")
-                    {
-                        elementWatch.Start();
-                        filteredElements = await dapperRepo.SearchBasicElementsDetails(searchKeyword);
-                        elementWatch.Stop();
-                    }
-
-                    var simpleSearchResponse = new SimpleSearchResponse();
-                    simpleSearchResponse.ElementExecutionTime = string.Format("Execution Time: {0} ms", elementWatch.ElapsedMilliseconds);
-
-                    if (filteredElements != null && filteredElements.Any())
-                    {
-                        var setWatch = new System.Diagnostics.Stopwatch();
-                        if (operation == "entity")
-                        {
-                            setWatch.Start(); ;
-                            filteredElements.ForEach(element =>
-                            {
-                                element.ElementId = string.Concat("RDE", element.Id);
-                                element.SetInformation = GetSetDetails(element.Id);
-                            });
-
-                            setWatch.Stop();
-                            simpleSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
-                        }
-                        else if (operation == "dapper")
-                        {
-                            setWatch.Start();
-                            foreach (var element in filteredElements)
-                            {
-                                List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>();
-                                var sets = await dapperRepo.GetSetsByElementId((int)element.Id);
-                                if (sets != null && sets.Any())
-                                {
-                                    foreach (var set in sets)
-                                    {
-                                        setInfo.Add(new SetBasicAttributes
-                                        {
-                                            SetId = string.Concat("RDES", set.Id),
-                                            SetName = set.Name
-                                        });
-                                    }
-                                }
-                                element.SetInformation = setInfo;
-                            }
-
-                            setWatch.Stop();
-                            simpleSearchResponse.SetExecutionTime = string.Format("Execution Time: {0} ms", setWatch.ElapsedMilliseconds);
-                        }
-
-                        simpleSearchResponse.Elements = filteredElements;
-
-                        return await Task.FromResult(new JsonResult(simpleSearchResponse, HttpStatusCode.OK));
                     }
                     else
                     {

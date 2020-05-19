@@ -116,14 +116,6 @@
             <param name="operation">The operation.</param>
             <returns></returns>
         </member>
-        <member name="M:RadElement.API.Controllers.ElementController.SimplSearchElements(System.String,System.String)">
-            <summary>
-            Searches the element with provided keyword.
-            </summary>
-            <param name="keyword">The search keyword.</param>
-            <param name="operation">The operation.</param>
-            <returns></returns>
-        </member>
         <member name="M:RadElement.API.Controllers.ElementController.CreateElement(System.String,RadElement.Core.DTO.CreateElement)">
             <summary>
             Creates a element under specific set identifier.

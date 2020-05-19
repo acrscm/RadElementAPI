@@ -97,19 +97,6 @@ namespace RadElement.API.Controllers
         }
 
         /// <summary>
-        /// Searches the element with provided keyword.
-        /// </summary>
-        /// <param name="keyword">The search keyword.</param>
-        /// <param name="operation">The operation.</param>
-        /// <returns></returns>
-        [HttpGet("elements/simplesearch")]
-        public async Task<IActionResult> SimplSearchElements([FromQuery]string keyword, [FromQuery]string operation)
-        {
-            var result = await radElementService.SimpleSearchElements(keyword, operation);
-            return StatusCode((int)result.Code, result.Value);
-        }
-
-        /// <summary>
         /// Creates a element under specific set identifier.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
