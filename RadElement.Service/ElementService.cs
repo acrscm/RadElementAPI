@@ -9,7 +9,6 @@ using System.Net;
 using Serilog;
 using AutoMapper;
 using RadElement.Core.Data;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace RadElement.Service
 {
@@ -25,11 +24,6 @@ namespace RadElement.Service
         private RadElementDbContext radElementDbContext;
 
         /// <summary>
-        /// The dapper repo
-        /// </summary>
-        private readonly IDapperRepo dapperRepo;
-
-        /// <summary>
         /// The mapper
         /// </summary>
         private readonly IMapper mapper;
@@ -43,17 +37,14 @@ namespace RadElement.Service
         /// Initializes a new instance of the <see cref="ElementService" /> class.
         /// </summary>
         /// <param name="radElementDbContext">The RAD element database context.</param>
-        /// <param name="dapperRepo">The dapper repo.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="logger">The logger.</param>
         public ElementService(
             RadElementDbContext radElementDbContext,
-            IDapperRepo dapperRepo,
             IMapper mapper,
             ILogger logger)
         {
             this.radElementDbContext = radElementDbContext;
-            this.dapperRepo = dapperRepo;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -197,8 +188,8 @@ namespace RadElement.Service
 
                     var filteredData = new List<FilteredElements>();
                     var deepSearchResponse = new DeepSearchResponse();
-                    var watch = new System.Diagnostics.Stopwatch();
-                    watch.Start();
+                    var dbExecutionWatch = new System.Diagnostics.Stopwatch();
+                    dbExecutionWatch.Start();
 
                     if (operation == "set")
                     {
@@ -227,11 +218,14 @@ namespace RadElement.Service
                                         }).Distinct().ToList();
                     }
 
-                    watch.Stop();
-                    deepSearchResponse.ExecutionTime = string.Format("Execution Time: {0} ms", watch.ElapsedMilliseconds);
+                    dbExecutionWatch.Stop();
+                    deepSearchResponse.DBExecutionTime = string.Format("Execution Time: {0} ms", dbExecutionWatch.ElapsedMilliseconds);
 
                     if (filteredData != null && filteredData.Any())
                     {
+                        var loopExecutionWatch = new System.Diagnostics.Stopwatch();
+                        loopExecutionWatch.Start();
+
                         var elements = new List<ElementDetails>();
                         foreach (var data in filteredData)
                         {
@@ -284,6 +278,8 @@ namespace RadElement.Service
                             }
                         }
 
+                        loopExecutionWatch.Stop();
+                        deepSearchResponse.LoopExecutionTime = string.Format("Execution Time: {0} ms", loopExecutionWatch.ElapsedMilliseconds);
                         deepSearchResponse.Elements = elements;
 
                         return await Task.FromResult(new JsonResult(deepSearchResponse, HttpStatusCode.OK));

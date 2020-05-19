@@ -27,7 +27,6 @@ using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using AutoMapper;
 using RadElement.Core.Data;
-using RadElement.Data;
 
 namespace RadElement.API
 {   
@@ -154,7 +153,6 @@ namespace RadElement.API
             services.AddTransient<IElementSetService, ElementSetService>();
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IOrganizationService, OrganizationService>();
-            services.AddTransient<IDapperRepo, DapperRepo>();
             services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();
             services.AddSingleton<ILogger>(Log.Logger);
 
