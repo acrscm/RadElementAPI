@@ -57,8 +57,21 @@ namespace RadElement.Service
         {
             try
             {
-                var elements = radElementDbContext.Element.ToList();
-                return await Task.FromResult(new JsonResult(GetElementDetailsDto(elements), HttpStatusCode.OK));
+                var elements = (from element in radElementDbContext.Element
+                                join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
+                                from eleSetRef in setrefs.DefaultIfEmpty()
+                                join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                from elementSet in sets.DefaultIfEmpty()
+                                join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
+                                from elementValues in values.DefaultIfEmpty()
+                                select new FilteredElements
+                                {
+                                    Element = element,
+                                    ElementSet = elementSet,
+                                    ElementValue = elementValues
+                                }).Distinct().ToList();
+
+                return await Task.FromResult(new JsonResult(GetElementDetailsDto(elements, false), HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -80,11 +93,52 @@ namespace RadElement.Service
                 if (IsValidElementId(elementId))
                 {
                     int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
-                    var element = radElementDbContext.Element.Where(x => x.Id == elementInternalId).FirstOrDefault();
+                    var selectedElements = (from element in radElementDbContext.Element
+                                            join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
+                                            from eleSetRef in setrefs.DefaultIfEmpty()
+                                            join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                            from elementSet in sets.DefaultIfEmpty()
+                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
+                                            from elementValues in values.DefaultIfEmpty()                                            
+                                            join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
+                                            from personRef in perRef.DefaultIfEmpty()
+                                            join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id
+                                            join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into orgRef
+                                            from organizaionRef in orgRef.DefaultIfEmpty()
+                                            join eleOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals eleOrganization.Id into org
+                                            from organization in org.DefaultIfEmpty()
 
-                    if (element != null)
+                                            where element.Id == elementInternalId
+                                            select new FilteredElements
+                                            {
+                                                Element = element,
+                                                ElementSet = elementSet,
+                                                ElementValue = elementValues,
+                                                Person = elePerson == null ? null : new PersonAttributes
+                                                {
+                                                    Id = elePerson.Id,
+                                                    Name = elePerson.Name,
+                                                    Orcid = elePerson.Orcid,
+                                                    TwitterHandle = elePerson.TwitterHandle,
+                                                    Url = elePerson.Url,
+                                                    Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : null
+                                                },
+                                                Organization = organization == null ? null : new OrganizationAttributes
+                                                {
+                                                    Id = organization.Id,
+                                                    Name = organization.Name,
+                                                    Abbreviation = organization.Abbreviation,
+                                                    TwitterHandle = organization.TwitterHandle,
+                                                    Comment = organization.Comment,
+                                                    Email = organization.Email,
+                                                    Url = organization.Url,
+                                                    Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : null
+                                                }
+                                            }).Distinct().ToList();
+
+                    if (selectedElements != null)
                     {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(element), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(selectedElements, true), HttpStatusCode.OK));
                     }
                 }
 
@@ -110,15 +164,24 @@ namespace RadElement.Service
                 if (IsValidSetId(setId))
                 {
                     int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
-                    var elementIds = radElementDbContext.ElementSetRef.Where(x => x.ElementSetId == setInternalId).ToList();
-
-                    var selectedElements = (from elementId in elementIds
-                                            join element in radElementDbContext.Element on elementId.ElementId equals (int)element.Id
-                                            select element).ToList();
+                    var selectedElements = (from element in radElementDbContext.Element
+                                            join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
+                                            from eleSetRef in setrefs.DefaultIfEmpty()
+                                            join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                            from elementSet in sets.DefaultIfEmpty()
+                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
+                                            from elementValues in values.DefaultIfEmpty()
+                                            where elementSet.Id == setInternalId
+                                            select new FilteredElements
+                                            {
+                                                Element = element,
+                                                ElementSet = elementSet,
+                                                ElementValue = elementValues
+                                            }).Distinct().ToList();
 
                     if (selectedElements != null && selectedElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(selectedElements), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(selectedElements, false), HttpStatusCode.OK));
                     }
                 }
                 return await Task.FromResult(new JsonResult(string.Format("No such elements with set id '{0}'.", setId), HttpStatusCode.NotFound));
@@ -147,11 +210,24 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredElements = radElementDbContext.Element.Where(x => ("RDE" + x.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
-                                                               x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                    var filteredElements = (from element in radElementDbContext.Element
+                                            join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
+                                            from eleSetRef in setrefs.DefaultIfEmpty()
+                                            join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                            from elementSet in sets.DefaultIfEmpty()
+                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
+                                            from elementValues in values.DefaultIfEmpty()
+                                            where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                            select new FilteredElements
+                                            {
+                                                Element = element,
+                                                ElementSet = elementSet,
+                                                ElementValue = elementValues
+                                            }).Distinct().ToList();
+
                     if (filteredElements != null && filteredElements.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementDetailsDto(filteredElements, false), HttpStatusCode.OK));
                     }
                     else
                     {
@@ -193,28 +269,75 @@ namespace RadElement.Service
 
                     if (operation == "set")
                     {
-                        filteredData = (from ele in radElementDbContext.Element
-                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)ele.Id equals eleSetRefId.ElementId into setrefs
+                        filteredData = (from element in radElementDbContext.Element
+                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
                                         from eleSetRef in setrefs.DefaultIfEmpty()
                                         join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
                                         from elementSet in sets.DefaultIfEmpty()
-                                        where ele.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new FilteredElements { Element = ele, ElementSet = elementSet }).Distinct().ToList();
+                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
+                                        from elementValues in values.DefaultIfEmpty()
+                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                        select new FilteredElements { Element = element, ElementSet = elementSet }).Distinct().ToList();
                     }
                     else if (operation == "values")
                     {
-                        filteredData = (from ele in radElementDbContext.Element
-                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)ele.Id equals eleSetRefId.ElementId into setrefs
+                        filteredData = (from element in radElementDbContext.Element
+                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
                                         from eleSetRef in setrefs.DefaultIfEmpty()
                                         join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
                                         from elementSet in sets.DefaultIfEmpty()
-                                        join eleValue in radElementDbContext.ElementValue on ele.Id equals eleValue.ElementId into values
+                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                         from elementValues in values.DefaultIfEmpty()
-                                        where ele.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new FilteredElements { 
-                                            Element = ele, 
-                                            ElementSet = elementSet, 
-                                            ElementValues = elementValues 
+                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                        select new FilteredElements
+                                        {
+                                            Element = element,
+                                            ElementSet = elementSet,
+                                            ElementValue = elementValues
+                                        }).Distinct().ToList();
+                    }
+                    else if (operation == "persorg")
+                    {
+                        filteredData = (from element in radElementDbContext.Element
+                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
+                                        from eleSetRef in setrefs.DefaultIfEmpty()
+                                        join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
+                                        from elementSet in sets.DefaultIfEmpty()
+                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
+                                        from elementValues in values.DefaultIfEmpty()
+                                        join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
+                                        from personRef in perRef.DefaultIfEmpty()
+                                        join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id
+                                        join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into orgRef
+                                        from organizaionRef in orgRef.DefaultIfEmpty()
+                                        join eleOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals eleOrganization.Id into org
+                                        from organization in org.DefaultIfEmpty()
+                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                        select new FilteredElements
+                                        {
+                                            Element = element,
+                                            ElementSet = elementSet,
+                                            ElementValue = elementValues,
+                                            Person = elePerson == null ? null : new PersonAttributes
+                                            {
+                                                Id = elePerson.Id,
+                                                Name = elePerson.Name,
+                                                Orcid = elePerson.Orcid,
+                                                TwitterHandle = elePerson.TwitterHandle,
+                                                Url = elePerson.Url,
+                                                Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : null
+                                            },
+                                            Organization = organization == null ? null : new OrganizationAttributes
+                                            {
+                                                Id = organization.Id,
+                                                Name = organization.Name,
+                                                Abbreviation = organization.Abbreviation,
+                                                TwitterHandle = organization.TwitterHandle,
+                                                Comment = organization.Comment,
+                                                Email = organization.Email,
+                                                Url = organization.Url,
+                                                Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : null
+                                            }
                                         }).Distinct().ToList();
                     }
 
@@ -225,59 +348,7 @@ namespace RadElement.Service
                     {
                         var loopExecutionWatch = new System.Diagnostics.Stopwatch();
                         loopExecutionWatch.Start();
-
-                        var elements = new List<ElementDetails>();
-                        foreach (var data in filteredData)
-                        {
-                            if (!elements.Exists(x => x.Id == data.Element.Id))
-                            {
-                                var element = mapper.Map<ElementDetails>(data.Element);
-                                if (data.ElementSet != null)
-                                {
-                                    element.SetInformation = new List<SetBasicAttributes>();
-                                    var elementSet = mapper.Map<ElementSetDetails>(data.ElementSet);
-                                    var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
-                                    element.SetInformation.Add(setAttributes);
-                                }
-                                if (data.ElementValues != null)
-                                {
-                                    element.ElementValues = new List<ElementValue>();
-                                    element.ElementValues.Add(data.ElementValues);
-                                }
-
-                                elements.Add(element);
-                            }
-                            else
-                            {
-                                var element = elements.Find(x => x.Id == data.Element.Id);
-                                if (element.SetInformation == null)
-                                {
-                                    element.SetInformation = new List<SetBasicAttributes>();
-                                }
-                                if (element.ElementValues == null)
-                                {
-                                    element.ElementValues = new List<ElementValue>();
-                                }
-
-                                if (data.ElementSet != null)
-                                {
-                                    var elementSet = mapper.Map<ElementSetDetails>(data.ElementSet);
-                                    if (!element.SetInformation.Exists(x => x.SetId == elementSet.SetId))
-                                    {
-                                        var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
-                                        element.SetInformation.Add(setAttributes);
-                                    }
-                                }
-                                if (data.ElementValues != null)
-                                {
-                                    if (!element.ElementValues.Exists(x => x.Id == data.ElementValues.Id))
-                                    {
-                                        element.ElementValues.Add(data.ElementValues);
-                                    }
-                                }
-                            }
-                        }
-
+                        var elements = GetElementDetailsDto(filteredData, false);
                         loopExecutionWatch.Stop();
                         deepSearchResponse.LoopExecutionTime = string.Format("Execution Time: {0} ms", loopExecutionWatch.ElapsedMilliseconds);
                         deepSearchResponse.Elements = elements;
@@ -831,164 +902,124 @@ namespace RadElement.Service
         }
 
         /// <summary>
-        /// Gets the element details dto.
+        /// Gets the element details dto1.
         /// </summary>
-        /// <param name="element">The element.</param>
+        /// <param name="filteredElements">The filtered elements.</param>
+        /// <param name="isSingleElement">if set to <c>true</c> [is single element].</param>
         /// <returns></returns>
-        private object GetElementDetailsDto(object element)
+        private object GetElementDetailsDto(List<FilteredElements> filteredElements, bool isSingleElement)
         {
-            if (element.GetType() == typeof(List<Element>))
+            var elements = new List<ElementDetails>();
+            foreach (var elem in filteredElements)
             {
-                var elements = mapper.Map<List<Element>, List<ElementDetails>>(element as List<Element>);
-                elements.ForEach(_element =>
+                if (!elements.Exists(x => x.Id == elem.Element.Id))
                 {
-                    _element.SetInformation = GetSetDetails((_element as Element).Id);
-                    _element.OrganizationInformation = GetOrganizationDetails((int)(_element as Element).Id);
-                    _element.PersonInformation = GetPersonDetails((int)(_element as Element).Id);
-
-                    if (_element.ValueType == "valueSet")
+                    var element = mapper.Map<ElementDetails>(elem.Element);
+                    if (elem.ElementSet != null)
                     {
-                        _element.ElementValues = GetElementValues((_element as Element).Id);
+                        element.SetInformation = new List<SetBasicAttributes>();
+                        var elementSet = mapper.Map<ElementSetDetails>(elem.ElementSet);
+                        var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
+                        element.SetInformation.Add(setAttributes);
                     }
-                });
-
-                return elements;
-            }
-            else if (element.GetType() == typeof(Element))
-            {
-                var elementDetails = mapper.Map<ElementDetails>(element as Element);
-                elementDetails.SetInformation = GetSetDetails((element as Element).Id);
-                elementDetails.OrganizationInformation = GetOrganizationDetails((int)(element as Element).Id);
-                elementDetails.PersonInformation = GetPersonDetails((int)(element as Element).Id);
-
-                if (elementDetails.ValueType == "valueSet")
-                {
-                    elementDetails.ElementValues = GetElementValues((element as Element).Id);
-                }
-                return elementDetails;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the element values.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        private List<ElementValue> GetElementValues(uint elementId)
-        {
-            return radElementDbContext.ElementValue.Where(x => x.ElementId == elementId).ToList();
-        }
-
-        /// <summary>
-        /// Gets the set details.
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        /// <returns></returns>
-        private List<SetBasicAttributes> GetSetDetails(uint elementId)
-        {
-            List<SetBasicAttributes> setInfo = new List<SetBasicAttributes>();
-            var elementSetRefs = radElementDbContext.ElementSetRef.Where(x => x.ElementId == elementId).ToList();
-            if (elementSetRefs != null && elementSetRefs.Any())
-            {
-                foreach (var setRef in elementSetRefs)
-                {
-                    var set = radElementDbContext.ElementSet.Where(x => x.Id == setRef.ElementSetId).FirstOrDefault();
-                    if (set != null)
+                    if (elem.ElementValue != null)
                     {
-                        setInfo.Add(new SetBasicAttributes
-                        {
-                            SetId = string.Concat("RDES", set.Id),
-                            SetName = set.Name
-                        }); ;
+                        element.ElementValues = new List<ElementValue>();
+                        element.ElementValues.Add(elem.ElementValue);
                     }
-                }
-            }
-
-            return setInfo;
-        }
-
-        /// <summary>
-        /// Gets the organization details.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        private List<OrganizationAttributes> GetOrganizationDetails(int setId)
-        {
-            List<OrganizationAttributes> organizationInfo = new List<OrganizationAttributes>();
-            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementRef.Where(x => x.ElementID == setId).ToList();
-
-            if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
-            {
-                foreach (var organizationElementSetRef in organizationElementSetRefs)
-                {
-                    var organization = radElementDbContext.Organization.Where(x => x.Id == organizationElementSetRef.OrganizationID).FirstOrDefault();
-                    if (organization != null)
+                    if (elem.Person != null)
                     {
-                        if (!organizationInfo.Exists(x => x.Id == organization.Id))
+                        element.PersonInformation = new List<PersonAttributes>();
+                        element.PersonInformation.Add(elem.Person);
+                    }
+                    if (elem.Organization != null)
+                    {
+                        element.OrganizationInformation = new List<OrganizationAttributes>();
+                        element.OrganizationInformation.Add(elem.Organization);
+                    }
+
+                    elements.Add(element);
+                }
+                else
+                {
+                    var element = elements.Find(x => x.Id == elem.Element.Id);
+
+                    if (elem.ElementSet != null)
+                    {
+                        var elementSet = mapper.Map<ElementSetDetails>(elem.ElementSet);
+                        if (!element.SetInformation.Exists(x => x.SetId == elementSet.SetId))
                         {
-                            var organizationDetails = mapper.Map<OrganizationAttributes>(organization);
-                            if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
+                            if (element.SetInformation == null)
                             {
-                                organizationDetails.Roles.Add(organizationElementSetRef.Role);
+                                element.SetInformation = new List<SetBasicAttributes>();
                             }
-                            organizationInfo.Add(organizationDetails);
+                            var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
+                            element.SetInformation.Add(setAttributes);
+                        }
+                    }
+                    if (elem.ElementValue != null)
+                    {
+                        if (!element.ElementValues.Exists(x => x.Id == elem.ElementValue.Id))
+                        {
+                            if (element.ElementValues == null)
+                            {
+                                element.ElementValues = new List<ElementValue>();
+                            }
+                            element.ElementValues.Add(elem.ElementValue);
+                        }
+                    }
+                    if (elem.Person != null)
+                    {
+                        if (!element.PersonInformation.Exists(x => x.Id == elem.Person.Id))
+                        {
+                            if (element.PersonInformation == null)
+                            {
+                                element.PersonInformation = new List<PersonAttributes>();
+                            }
+                            element.PersonInformation.Add(elem.Person);
                         }
                         else
                         {
-                            var existingOrganization = organizationInfo.Find(x => x.Id == organization.Id);
-                            if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
+                            var person = element.PersonInformation.Find(x => x.Id == elem.Person.Id);
+                            if (person != null)
                             {
-                                existingOrganization.Roles.Add(organizationElementSetRef.Role);
+                                if (!person.Roles.Exists(x => x == elem.Person.Roles[0]))
+                                {
+                                    person.Roles.Add(elem.Person.Roles[0]);
+                                }
                             }
                         }
                     }
-                }
-            }
-
-            return organizationInfo;
-        }
-
-        /// <summary>
-        /// Gets the person details.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        private List<PersonAttributes> GetPersonDetails(int setId)
-        {
-            List<PersonAttributes> personInfo = new List<PersonAttributes>();
-            var personElementSetRefs = radElementDbContext.PersonRoleElementRef.Where(x => x.ElementID == setId).ToList();
-
-            if (personElementSetRefs != null && personElementSetRefs.Any())
-            {
-                foreach (var personElementSetRef in personElementSetRefs)
-                {
-                    var person = radElementDbContext.Person.Where(x => x.Id == personElementSetRef.PersonID).FirstOrDefault();
-                    if (person != null)
+                    if (elem.Organization != null)
                     {
-                        if (!personInfo.Exists(x => x.Id == person.Id))
+                        if (!element.OrganizationInformation.Exists(x => x.Id == elem.Organization.Id))
                         {
-                            var personDetails = mapper.Map<PersonAttributes>(person);
-                            if (!string.IsNullOrEmpty(personElementSetRef.Role))
+                            if (element.OrganizationInformation == null)
                             {
-                                personDetails.Roles.Add(personElementSetRef.Role);
+                                element.OrganizationInformation = new List<OrganizationAttributes>();
                             }
-                            personInfo.Add(personDetails);
+                            element.OrganizationInformation.Add(elem.Organization);
                         }
                         else
                         {
-                            var existingPerson = personInfo.Find(x => x.Id == person.Id);
-                            if (!string.IsNullOrEmpty(personElementSetRef.Role))
+                            var organization = element.OrganizationInformation.Find(x => x.Id == elem.Organization.Id);
+                            if (organization != null)
                             {
-                                existingPerson.Roles.Add(personElementSetRef.Role);
+                                if (!organization.Roles.Exists(x => x == elem.Organization.Roles[0]))
+                                {
+                                    organization.Roles.Add(elem.Organization.Roles[0]);
+                                }
                             }
                         }
                     }
                 }
             }
+            if (isSingleElement)
+            {
+                return elements.FirstOrDefault();
+            }
 
-            return personInfo;
+            return elements;
         }
 
         /// <summary>

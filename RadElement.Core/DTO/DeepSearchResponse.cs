@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace RadElement.Core.DTO
+﻿namespace RadElement.Core.DTO
 {
     public class DeepSearchResponse
     {
@@ -17,6 +15,6 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the elements.
         /// </summary>
-        public List<ElementDetails> Elements { get; set; }
+        public object Elements { get; set; }
     }
 }

@@ -16,6 +16,16 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the element value.
         /// </summary>
-        public ElementValue ElementValues { get; set; }
+        public ElementValue ElementValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person.
+        /// </summary>
+        public PersonAttributes Person { get; set; }
+
+        /// <summary>
+        /// Gets or sets the organization.
+        /// </summary>
+        public OrganizationAttributes Organization { get; set; }
     }
 }
