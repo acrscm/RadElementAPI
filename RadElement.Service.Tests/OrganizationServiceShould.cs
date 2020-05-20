@@ -36,7 +36,6 @@ namespace RadElement.Service.Tests
         private const string organizationNotFoundMessageWithSearchMessage = "No such organization with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string organizationInvalidMessage = "Organization fields are invalid.";
-        private const string organizationExistsMessage = "Organization already exists with the available information.";
         private const string organizationUpdateMessage = "Organization with id '{0}' is updated.";
         private const string organizationDeletedMessage = "Organization with id '{0}' is deleted.";
 
@@ -144,7 +143,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("test")]
         [InlineData("test1")]
-        public async void SearchOrganizationShouldReturnEmpyOrganizationIfSearchKeywordDoesnotExists(string searchKeyword)
+        public async void SearchOrganizationShouldReturnNotFoundIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
             var result = await service.SearchOrganizations(searchKeyword);
@@ -202,7 +201,25 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
         [InlineData("American College of Radiology", "ACR", "http://www.acr.org")]
-        public async void CreateOrganizationShouldReturnUpdatedOrganizationIdIfOrganizationDetailsAlraedyExists(string name, string abbreviation, string Url)
+        public async void CreateOrganizationShouldReturnThrowInternalServerErrorForExceptions(string name, string abbreviation, string Url)
+        {
+            var organization = new CreateUpdateOrganization();
+            organization.Name = name;
+            organization.Abbreviation = abbreviation;
+            organization.Url = Url;
+
+            IntializeMockData(false);
+            var result = await service.CreateOrganization(organization);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+        [Theory]
+        [InlineData("American College of Radiology - Data Science Institute", "ACR-DSI", "http://www.acrdsi.org")]
+        [InlineData("American College of Radiology", "ACR", "http://www.acr.org")]
+        public async void CreateOrganizationShouldReturnUpdatedOrganizationIdIfOrganizationDetailsAlreadyExists(string name, string abbreviation, string Url)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = name;
@@ -221,7 +238,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("ACR", "ACR")]
         [InlineData("ASNR", "ASNR")]
-        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationDetailsDoenNotExists(string name, string abbreviation)
+        public async void CreateOrganizationShouldReturnOrganizationIdIfOrganizationDetailsDoesNotExists(string name, string abbreviation)
         {
             var organization = new CreateUpdateOrganization();
             organization.Name = name;
@@ -253,6 +270,41 @@ namespace RadElement.Service.Tests
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(organizationInvalidMessage, result.Value);
+        }
+
+        [Theory]
+        [InlineData(60)]
+        [InlineData(70)]
+        public async void UpdateOrganizationShouldReturnnotFoundIfOrganizationIdDoesNotExists(int organizationId)
+        {
+            var organization = new CreateUpdateOrganization();
+            organization.Name = "ACR New";
+            organization.Abbreviation = "ACR New";
+
+            IntializeMockData(true);
+            var result = await service.UpdateOrganization(organizationId, organization);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(organizationNotFoundMessage, organizationId), result.Value);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public async void UpdateOrganizationShouldReturnThrowInternalServerErrorForExceptions(int organizationId)
+        {
+            var organization = new CreateUpdateOrganization();
+            organization.Name = "ACR New";
+            organization.Abbreviation = "ACR New";
+
+            IntializeMockData(false);
+            var result = await service.UpdateOrganization(organizationId, organization);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]

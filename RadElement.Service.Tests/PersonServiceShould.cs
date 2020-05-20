@@ -36,7 +36,6 @@ namespace RadElement.Service.Tests
         private const string personNotFoundMessageWithSearchMessage = "No such person with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string personInvalidMessage = "Person fields are invalid.";
-        private const string personExistsMessage = "Person already exists with the available information.";
         private const string personUpdateMessage = "Person with id '{0}' is updated.";
         private const string personDeletedMessage = "Person with id '{0}' is deleted.";
 
@@ -144,7 +143,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("test")]
         [InlineData("test1")]
-        public async void SearchPersonShouldReturnEmpyPersonsIfSearchKeywordDoesnotExists(string searchKeyword)
+        public async void SearchPersonShouldReturnNotFoundIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
             var result = await service.SearchPersons(searchKeyword);
@@ -200,6 +199,23 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
+        [InlineData("Adam", "Orcidr1")]
+        [InlineData("Mike", "Orcidr2")]
+        public async void CreatePersonShouldReturnThrowInternalServerErrorForExceptions(string name, string orcid)
+        {
+            var person = new CreateUpdatePerson();
+            person.Name = name;
+            person.Orcid = orcid;
+
+            IntializeMockData(false);
+            var result = await service.CreatePerson(person);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
+        }
+
+        [Theory]
         [InlineData("Charles E. Kahn, Jr., MD, MS")]
         [InlineData("Woojin Kim, MD")]
         public async void CreatePersonShouldReturnUpdatedPersonAndIdIfPersonDetailsAlreadyExists(string name)
@@ -251,6 +267,41 @@ namespace RadElement.Service.Tests
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(personInvalidMessage, result.Value);
+        }
+
+        [Theory]
+        [InlineData(60)]
+        [InlineData(70)]
+        public async void UpdatePersonShouldReturnENotFoundIfPersonDoesNotExists(int personId)
+        {
+            var person = new CreateUpdatePerson();
+            person.Name = "Tumuor";
+            person.Orcid = "Orcidr";
+
+            IntializeMockData(true);
+            var result = await service.UpdatePerson(personId, person);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(personNotFoundMessage, personId), result.Value);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public async void UpdatePersonShouldReturnThrowInternalServerErrorForExceptions(int personId)
+        {
+            var person = new CreateUpdatePerson();
+            person.Name = "Tumuor";
+            person.Orcid = "Orcidr";
+
+            IntializeMockData(false);
+            var result = await service.UpdatePerson(personId, person);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Theory]

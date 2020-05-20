@@ -222,7 +222,15 @@ namespace RadElement.Service.Tests
             var set = new CreateUpdateSet();
             set.Name = moduleName;
             set.ContactName = contactName;
-            set.Description = description;
+            set.Description = description; 
+            set.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            set.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
 
             IntializeMockData(false);
             var result = await service.CreateSet(set);
@@ -241,6 +249,19 @@ namespace RadElement.Service.Tests
             set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
+            set.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            set.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
+            set.IndexCodeReferences = new List<IndexCodeReference>() {
+                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+            };
 
             IntializeMockData(true);
             var result = await service.CreateSet(set);
@@ -288,6 +309,26 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
+        [InlineData("RD1")]
+        [InlineData("RD2")]
+        public async void UpdateSetShouldReturnNotFoundIfDoesnotExists(string setId)
+        {
+            var set = new CreateUpdateSet();
+            set.Name = "name";
+            set.ContactName = "contact";
+            set.Description = "description";
+
+            IntializeMockData(true);
+            var result = await service.UpdateSet(setId, set);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
+        }
+
+        [Theory]
         [InlineData("RDES53", "Tumuor1", "Tumuor2", "Tumuor3")]
         [InlineData("RDES66", "Sinus1", "Sinus2", "Sinus3")]
         public async void UpdateSetShouldReturnSetIdIfSetIsValid(string setId, string moduleName, string contactName, string description)
@@ -296,6 +337,14 @@ namespace RadElement.Service.Tests
             set.Name = moduleName;
             set.ContactName = contactName;
             set.Description = description;
+            set.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            set.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
 
             IntializeMockData(true);
             var result = await service.UpdateSet(setId, set);

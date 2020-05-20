@@ -175,14 +175,6 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    int searchingId = 0;
-                    var trimmedID = searchKeyword.Replace("RDES", "", StringComparison.InvariantCultureIgnoreCase);
-                    bool result = int.TryParse(trimmedID, out _);
-                    if (result)
-                    {
-                        searchingId = Convert.ToInt32(trimmedID);
-                    }
-
                     var filteredSets = (from elementSet in radElementDbContext.ElementSet
                                         join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
                                         from personRef in perRef.DefaultIfEmpty()

@@ -79,8 +79,10 @@ namespace RadElement.Service.Tests.Mocks.Data
 
         public static IQueryable<PersonRoleElementSetRef> personElementSetRefDb = new List<PersonRoleElementSetRef>()
             {
+                new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = "" },
                 new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Author.ToString() },
                 new PersonRoleElementSetRef { Id = 1, PersonID = 1, ElementSetID = 53, Role = PersonRole.Editor.ToString() },
+                new PersonRoleElementSetRef { Id = 1, PersonID = 2, ElementSetID = 53, Role = PersonRole.Contributor.ToString() },
                 new PersonRoleElementSetRef { Id = 2, PersonID = 2, ElementSetID = 66, Role = PersonRole.Contributor.ToString() },
                 new PersonRoleElementSetRef { Id = 3, PersonID = 3, ElementSetID = 72, Role = PersonRole.Editor.ToString() },
                 new PersonRoleElementSetRef { Id = 4, PersonID = 4, ElementSetID = 74, Role = PersonRole.Reviewer.ToString() },
@@ -98,6 +100,7 @@ namespace RadElement.Service.Tests.Mocks.Data
             {
                 new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Author.ToString() },
                 new OrganizationRoleElementRef { Id = 1, OrganizationID = 1, ElementID = 338, Role = OrganizationRole.Translator.ToString() },
+                new OrganizationRoleElementRef { Id = 1, OrganizationID = 2, ElementID = 338, Role = OrganizationRole.Contributor.ToString() },
                 new OrganizationRoleElementRef { Id = 2, OrganizationID = 2, ElementID = 340, Role = OrganizationRole.Contributor.ToString() },
                 new OrganizationRoleElementRef { Id = 3, OrganizationID = 3, ElementID = 307, Role = OrganizationRole.Translator.ToString() },
                 new OrganizationRoleElementRef { Id = 4, OrganizationID = 4, ElementID = 283, Role = OrganizationRole.Reviewer.ToString() },
