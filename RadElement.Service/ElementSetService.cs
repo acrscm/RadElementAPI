@@ -192,7 +192,8 @@ namespace RadElement.Service
                                         from organizaionRef in orgRef.DefaultIfEmpty()
                                         join setOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals setOrganization.Id into org
                                         from organization in org.DefaultIfEmpty()
-                                        where (elementSet.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
+                                        where (elementSet.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
+                                               ("RDES" + elementSet.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
                                         select new FilteredData
                                         {
                                             ElementSet = elementSet,
@@ -276,6 +277,7 @@ namespace RadElement.Service
 
                     AddPersonReferences(set.Id, content.Persons);
                     AddOrganizationReferences(set.Id, content.Organizations);
+                    AddIndexCodeReferences(set.Id, content.IndexCodeReferences);
 
                     transaction.Commit();
 
@@ -330,9 +332,11 @@ namespace RadElement.Service
 
                             radElementDbContext.SaveChanges();
 
+                            RemoveIndexCodeReferences(id);
                             RemovePersonReferences(id);
                             RemoveOrganizationReferences(id);
 
+                            AddIndexCodeReferences(id, content.IndexCodeReferences);
                             AddPersonReferences(id, content.Persons);
                             AddOrganizationReferences(id, content.Organizations);
 
@@ -372,6 +376,7 @@ namespace RadElement.Service
 
                         if (elementSet != null)
                         {
+                            RemoveIndexCodeReferences(elementSet.Id);
                             RemoveSetElementsReferences(elementSet);
                             RemovePersonReferences(elementSet.Id);
                             RemoveOrganizationReferences(elementSet.Id);
@@ -396,24 +401,6 @@ namespace RadElement.Service
         }
 
         /// <summary>
-        /// Determines whether [is valid set identifier] [the specified set identifier].
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns>
-        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsValidSetId(string setId)
-        {
-            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.InvariantCultureIgnoreCase))
-            {
-                bool result = int.TryParse(setId.Remove(0, 4), out _);
-                return result;
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// Removes the set elements.
         /// </summary>
         /// <param name="elementSet">The element set.</param>
@@ -423,6 +410,7 @@ namespace RadElement.Service
             if (elementSetRefs != null && elementSetRefs.Any())
             {
                 radElementDbContext.ElementSetRef.RemoveRange(elementSetRefs);
+                radElementDbContext.SaveChanges();
             }
         }
 
@@ -452,6 +440,7 @@ namespace RadElement.Service
                                 };
 
                                 radElementDbContext.PersonRoleElementSetRef.Add(setRef);
+                                radElementDbContext.SaveChanges();
                             }
                         }
                         else
@@ -463,10 +452,10 @@ namespace RadElement.Service
                             };
 
                             radElementDbContext.PersonRoleElementSetRef.Add(setRef);
+                            radElementDbContext.SaveChanges();
                         }
                     }
                 }
-                radElementDbContext.SaveChanges();
             }
         }
 
@@ -497,6 +486,7 @@ namespace RadElement.Service
                                 };
 
                                 radElementDbContext.OrganizationRoleElementSetRef.Add(setRef);
+                                radElementDbContext.SaveChanges();
                             }
                         }
                         else
@@ -508,10 +498,58 @@ namespace RadElement.Service
                             };
 
                             radElementDbContext.OrganizationRoleElementSetRef.Add(setRef);
+                            radElementDbContext.SaveChanges();
                         }
                     }
                 }
-                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Adds the index code references.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="codeReference">The code reference.</param>
+        private void AddIndexCodeReferences(int setId, List<IndexCodeReference> codeReferences)
+        {
+            if (codeReferences != null && codeReferences.Any())
+            {
+                foreach (var codeReference in codeReferences)
+                {
+                    int codeId = 0;
+                    var indexCodeSystem = radElementDbContext.IndexCodeSystem.Where(x => string.Equals(x.Abbrev, codeReference.System, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                    if (indexCodeSystem != null)
+                    {
+                        var indexCode = radElementDbContext.IndexCode.Where(x => string.Equals(x.System, indexCodeSystem.Abbrev, StringComparison.InvariantCultureIgnoreCase) &&
+                                                                                 string.Equals(x.Code, codeReference.Code, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                        if (indexCode != null)
+                        {
+                            codeId = indexCode.Id;
+                        }
+                        else
+                        {
+                            var indexCodeSys = new IndexCode
+                            {
+                                Code = codeReference.Code,
+                                System = indexCodeSystem.Abbrev,
+                                Display = codeReference.Display,
+                                AccessionDate = DateTime.UtcNow
+                            };
+                            radElementDbContext.IndexCode.Add(indexCodeSys);
+                            radElementDbContext.SaveChanges();
+
+                            codeId = indexCodeSys.Id;
+                        }
+                        var setIndexCode = new IndexCodeElementSetRef
+                        {
+                            ElementSetId = setId,
+                            CodeId = codeId
+                        };
+
+                        radElementDbContext.IndexCodeElementSetRef.Add(setIndexCode);
+                        radElementDbContext.SaveChanges();
+                    }
+                }
             }
         }
 
@@ -541,6 +579,37 @@ namespace RadElement.Service
                 radElementDbContext.OrganizationRoleElementSetRef.RemoveRange(organizationElementSetRefs);
                 radElementDbContext.SaveChanges();
             }
+        }
+        /// <summary>
+        /// Removes the index code references.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void  RemoveIndexCodeReferences(int setId)
+        {
+            var indexCodeSetRefs = radElementDbContext.IndexCodeElementSetRef.Where(x => x.ElementSetId == setId).ToList();
+            if (indexCodeSetRefs != null && indexCodeSetRefs.Any())
+            {
+                radElementDbContext.IndexCodeElementSetRef.RemoveRange(indexCodeSetRefs);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Determines whether [is valid set identifier] [the specified set identifier].
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <returns>
+        ///   <c>true</c> if [is valid set identifier] [the specified set identifier]; otherwise, <c>false</c>.
+        /// </returns>
+        private bool IsValidSetId(string setId)
+        {
+            if (setId.Length > 4 && string.Equals(setId.Substring(0, 4), "RDES", StringComparison.InvariantCultureIgnoreCase))
+            {
+                bool result = int.TryParse(setId.Remove(0, 4), out _);
+                return result;
+            }
+
+            return false;
         }
 
         /// <summary>

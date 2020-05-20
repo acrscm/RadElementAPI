@@ -126,5 +126,10 @@ namespace RadElement.Core.DTO
         /// Gets or sets the organization ids.
         /// </summary>
         public List<OrganizationDetails> Organizations { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code references.
+        /// </summary>
+        public List<IndexCodeReference> IndexCodeReferences { get; set; }
     }
 }

@@ -113,6 +113,32 @@ namespace RadElement.Core.Data
         public virtual DbSet<OrganizationRoleElementSetRef> OrganizationRoleElementSetRef { get; set; }
 
         /// <summary>
+        /// Gets or sets the index code system.
+        /// </summary>
+        public virtual DbSet<IndexCodeSystem> IndexCodeSystem { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code.
+        /// </summary>
+        /// <value>
+        public virtual DbSet<IndexCode> IndexCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code element reference.
+        /// </summary>
+        public virtual DbSet<IndexCodeElementRef> IndexCodeElementRef { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code element set reference.
+        /// </summary>
+        public virtual DbSet<IndexCodeElementSetRef> IndexCodeElementSetRef { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code element value reference.
+        /// </summary>
+        public virtual DbSet<IndexCodeElementValueRef> IndexCodeElementValueRef { get; set; }
+
+        /// <summary>
         /// <para>
         /// Override this method to configure the database (and other options) to be used for this context.
         /// This method is called for each instance of the context that is created.
@@ -152,6 +178,26 @@ namespace RadElement.Core.Data
             modelBuilder.Entity<CodeSystem>(entity =>
             {
                 entity.HasKey(e => e.Abbrev);
+            });
+            modelBuilder.Entity<IndexCode>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+            });
+            modelBuilder.Entity<IndexCodeSystem>(entity =>
+            {
+                entity.HasKey(e => e.Abbrev);
+            });
+            modelBuilder.Entity<IndexCodeElementRef>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+            });
+            modelBuilder.Entity<IndexCodeElementSetRef>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+            });
+            modelBuilder.Entity<IndexCodeElementValueRef>(entity =>
+            {
+                entity.HasKey(e => e.Id);
             });
         }
     }

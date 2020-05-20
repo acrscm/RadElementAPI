@@ -1,4 +1,6 @@
-﻿namespace RadElement.Core.DTO
+﻿using System.Collections.Generic;
+
+namespace RadElement.Core.DTO
 {
     /// <summary>
     /// Represents the option
@@ -24,5 +26,10 @@
         /// Gets or sets the images.
         /// </summary>
         public string Images { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code references.
+        /// </summary>
+        public List<IndexCodeReference> IndexCodeReferences { get; set; }
     }
 }
