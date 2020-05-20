@@ -64,7 +64,7 @@ namespace RadElement.Service
                                 from elementSet in sets.DefaultIfEmpty()
                                 join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                 from elementValues in values.DefaultIfEmpty()
-                                select new FilteredElements
+                                select new FilteredData
                                 {
                                     Element = element,
                                     ElementSet = elementSet,
@@ -102,26 +102,26 @@ namespace RadElement.Service
                                             from elementValues in values.DefaultIfEmpty()                                            
                                             join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
                                             from personRef in perRef.DefaultIfEmpty()
-                                            join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id
+                                            join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id into pers
+                                            from person in pers.DefaultIfEmpty()
                                             join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into orgRef
                                             from organizaionRef in orgRef.DefaultIfEmpty()
                                             join eleOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals eleOrganization.Id into org
                                             from organization in org.DefaultIfEmpty()
-
                                             where element.Id == elementInternalId
-                                            select new FilteredElements
+                                            select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
                                                 ElementValue = elementValues,
-                                                Person = elePerson == null ? null : new PersonAttributes
+                                                Person = person == null ? null : new PersonAttributes
                                                 {
-                                                    Id = elePerson.Id,
-                                                    Name = elePerson.Name,
-                                                    Orcid = elePerson.Orcid,
-                                                    TwitterHandle = elePerson.TwitterHandle,
-                                                    Url = elePerson.Url,
-                                                    Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : null
+                                                    Id = person.Id,
+                                                    Name = person.Name,
+                                                    Orcid = person.Orcid,
+                                                    TwitterHandle = person.TwitterHandle,
+                                                    Url = person.Url,
+                                                    Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
                                                 },
                                                 Organization = organization == null ? null : new OrganizationAttributes
                                                 {
@@ -132,11 +132,11 @@ namespace RadElement.Service
                                                     Comment = organization.Comment,
                                                     Email = organization.Email,
                                                     Url = organization.Url,
-                                                    Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : null
+                                                    Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
                                                 }
                                             }).Distinct().ToList();
 
-                    if (selectedElements != null)
+                    if (selectedElements != null && selectedElements.Any())
                     {
                         return await Task.FromResult(new JsonResult(GetElementDetailsDto(selectedElements, true), HttpStatusCode.OK));
                     }
@@ -172,7 +172,7 @@ namespace RadElement.Service
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                             from elementValues in values.DefaultIfEmpty()
                                             where elementSet.Id == setInternalId
-                                            select new FilteredElements
+                                            select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
@@ -218,7 +218,7 @@ namespace RadElement.Service
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                             from elementValues in values.DefaultIfEmpty()
                                             where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                            select new FilteredElements
+                                            select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
@@ -262,7 +262,7 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
                     }
 
-                    var filteredData = new List<FilteredElements>();
+                    var filteredData = new List<FilteredData>();
                     var deepSearchResponse = new DeepSearchResponse();
                     var dbExecutionWatch = new System.Diagnostics.Stopwatch();
                     dbExecutionWatch.Start();
@@ -277,7 +277,7 @@ namespace RadElement.Service
                                         join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                         from elementValues in values.DefaultIfEmpty()
                                         where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new FilteredElements { Element = element, ElementSet = elementSet }).Distinct().ToList();
+                                        select new FilteredData { Element = element, ElementSet = elementSet }).Distinct().ToList();
                     }
                     else if (operation == "values")
                     {
@@ -289,7 +289,7 @@ namespace RadElement.Service
                                         join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                         from elementValues in values.DefaultIfEmpty()
                                         where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new FilteredElements
+                                        select new FilteredData
                                         {
                                             Element = element,
                                             ElementSet = elementSet,
@@ -307,25 +307,26 @@ namespace RadElement.Service
                                         from elementValues in values.DefaultIfEmpty()
                                         join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
                                         from personRef in perRef.DefaultIfEmpty()
-                                        join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id
+                                        join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id into pers
+                                        from person in pers.DefaultIfEmpty()
                                         join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into orgRef
                                         from organizaionRef in orgRef.DefaultIfEmpty()
                                         join eleOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals eleOrganization.Id into org
                                         from organization in org.DefaultIfEmpty()
                                         where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new FilteredElements
+                                        select new FilteredData
                                         {
                                             Element = element,
                                             ElementSet = elementSet,
                                             ElementValue = elementValues,
-                                            Person = elePerson == null ? null : new PersonAttributes
+                                            Person = person == null ? null : new PersonAttributes
                                             {
-                                                Id = elePerson.Id,
-                                                Name = elePerson.Name,
-                                                Orcid = elePerson.Orcid,
-                                                TwitterHandle = elePerson.TwitterHandle,
-                                                Url = elePerson.Url,
-                                                Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : null
+                                                Id = person.Id,
+                                                Name = person.Name,
+                                                Orcid = person.Orcid,
+                                                TwitterHandle = person.TwitterHandle,
+                                                Url = person.Url,
+                                                Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
                                             },
                                             Organization = organization == null ? null : new OrganizationAttributes
                                             {
@@ -336,7 +337,7 @@ namespace RadElement.Service
                                                 Comment = organization.Comment,
                                                 Email = organization.Email,
                                                 Url = organization.Url,
-                                                Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : null
+                                                Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
                                             }
                                         }).Distinct().ToList();
                     }
@@ -907,7 +908,7 @@ namespace RadElement.Service
         /// <param name="filteredElements">The filtered elements.</param>
         /// <param name="isSingleElement">if set to <c>true</c> [is single element].</param>
         /// <returns></returns>
-        private object GetElementDetailsDto(List<FilteredElements> filteredElements, bool isSingleElement)
+        private object GetElementDetailsDto(List<FilteredData> filteredElements, bool isSingleElement)
         {
             var elements = new List<ElementDetails>();
             foreach (var elem in filteredElements)
@@ -943,7 +944,6 @@ namespace RadElement.Service
                 else
                 {
                     var element = elements.Find(x => x.Id == elem.Element.Id);
-
                     if (elem.ElementSet != null)
                     {
                         var elementSet = mapper.Map<ElementSetDetails>(elem.ElementSet);
@@ -983,7 +983,7 @@ namespace RadElement.Service
                             var person = element.PersonInformation.Find(x => x.Id == elem.Person.Id);
                             if (person != null)
                             {
-                                if (!person.Roles.Exists(x => x == elem.Person.Roles[0]))
+                                if (elem.Person.Roles.Any() && !person.Roles.Exists(x => x == elem.Person.Roles[0]))
                                 {
                                     person.Roles.Add(elem.Person.Roles[0]);
                                 }
@@ -1005,7 +1005,7 @@ namespace RadElement.Service
                             var organization = element.OrganizationInformation.Find(x => x.Id == elem.Organization.Id);
                             if (organization != null)
                             {
-                                if (!organization.Roles.Exists(x => x == elem.Organization.Roles[0]))
+                                if (elem.Organization.Roles.Any() && !organization.Roles.Exists(x => x == elem.Organization.Roles[0]))
                                 {
                                     organization.Roles.Add(elem.Organization.Roles[0]);
                                 }

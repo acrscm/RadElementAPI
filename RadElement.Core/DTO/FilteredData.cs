@@ -1,7 +1,7 @@
 ﻿using RadElement.Core.Domain;
 namespace RadElement.Core.DTO
 {
-    public class FilteredElements
+    public class FilteredData
     {
         /// <summary>
         /// Gets or sets the element.

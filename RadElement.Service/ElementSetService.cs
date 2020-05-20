@@ -57,8 +57,41 @@ namespace RadElement.Service
         {
             try
             {
-                var sets = radElementDbContext.ElementSet.ToList();
-                return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
+                var sets = (from elementSet in radElementDbContext.ElementSet
+                            join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
+                            from personRef in perRef.DefaultIfEmpty()
+                            join setPerson in radElementDbContext.Person on personRef.PersonID equals setPerson.Id into pers
+                            from person in pers.DefaultIfEmpty()
+                            join setOrganizationRef in radElementDbContext.OrganizationRoleElementSetRef on elementSet.Id equals setOrganizationRef.ElementSetID into orgRef
+                            from organizaionRef in orgRef.DefaultIfEmpty()
+                            join setOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals setOrganization.Id into org
+                            from organization in org.DefaultIfEmpty()
+                            select new FilteredData
+                            {
+                                ElementSet = elementSet,
+                                Person = person == null ? null : new PersonAttributes
+                                {
+                                    Id = person.Id,
+                                    Name = person.Name,
+                                    Orcid = person.Orcid,
+                                    TwitterHandle = person.TwitterHandle,
+                                    Url = person.Url,
+                                    Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
+                                },
+                                Organization = organization == null ? null : new OrganizationAttributes
+                                {
+                                    Id = organization.Id,
+                                    Name = organization.Name,
+                                    Abbreviation = organization.Abbreviation,
+                                    TwitterHandle = organization.TwitterHandle,
+                                    Comment = organization.Comment,
+                                    Email = organization.Email,
+                                    Url = organization.Url,
+                                    Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
+                                }
+                            }).Distinct().ToList();
+
+                return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets, false), HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -80,13 +113,47 @@ namespace RadElement.Service
                 if (IsValidSetId(setId))
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
-                    var set = radElementDbContext.ElementSet.Where(x => x.Id == id).FirstOrDefault();
+                    var selectedSets = (from elementSet in radElementDbContext.ElementSet
+                                        join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
+                                        from personRef in perRef.DefaultIfEmpty()
+                                        join setPerson in radElementDbContext.Person on personRef.PersonID equals setPerson.Id into pers
+                                        from person in pers.DefaultIfEmpty()
+                                        join setOrganizationRef in radElementDbContext.OrganizationRoleElementSetRef on elementSet.Id equals setOrganizationRef.ElementSetID into orgRef
+                                        from organizaionRef in orgRef.DefaultIfEmpty()
+                                        join setOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals setOrganization.Id into org
+                                        from organization in org.DefaultIfEmpty()
+                                        where elementSet.Id == id
+                                        select new FilteredData
+                                        {
+                                            ElementSet = elementSet,
+                                            Person = person == null ? null : new PersonAttributes
+                                            {
+                                                Id = person.Id,
+                                                Name = person.Name,
+                                                Orcid = person.Orcid,
+                                                TwitterHandle = person.TwitterHandle,
+                                                Url = person.Url,
+                                                Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
+                                            },
+                                            Organization = organization == null ? null : new OrganizationAttributes
+                                            {
+                                                Id = organization.Id,
+                                                Name = organization.Name,
+                                                Abbreviation = organization.Abbreviation,
+                                                TwitterHandle = organization.TwitterHandle,
+                                                Comment = organization.Comment,
+                                                Email = organization.Email,
+                                                Url = organization.Url,
+                                                Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
+                                            }
+                                        }).Distinct().ToList();
 
-                    if (set != null)
+                    if (selectedSets != null && selectedSets.Any())
                     {
-                        return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(set), HttpStatusCode.OK));
+                        return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(selectedSets, true), HttpStatusCode.OK));
                     }
                 }
+
                 return await Task.FromResult(new JsonResult(string.Format("No such set with id '{0}'.", setId), HttpStatusCode.NotFound));
             }
             catch (Exception ex)
@@ -108,11 +175,52 @@ namespace RadElement.Service
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    var sets = radElementDbContext.ElementSet.Where(x => ("RDES" + x.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
-                                                                                  x.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                    if (sets != null && sets.Any())
+                    int searchingId = 0;
+                    var trimmedID = searchKeyword.Replace("RDES", "", StringComparison.InvariantCultureIgnoreCase);
+                    bool result = int.TryParse(trimmedID, out _);
+                    if (result)
                     {
-                        return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(sets), HttpStatusCode.OK));
+                        searchingId = Convert.ToInt32(trimmedID);
+                    }
+
+                    var filteredSets = (from elementSet in radElementDbContext.ElementSet
+                                        join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
+                                        from personRef in perRef.DefaultIfEmpty()
+                                        join setPerson in radElementDbContext.Person on personRef.PersonID equals setPerson.Id into pers
+                                        from person in pers.DefaultIfEmpty()
+                                        join setOrganizationRef in radElementDbContext.OrganizationRoleElementSetRef on elementSet.Id equals setOrganizationRef.ElementSetID into orgRef
+                                        from organizaionRef in orgRef.DefaultIfEmpty()
+                                        join setOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals setOrganization.Id into org
+                                        from organization in org.DefaultIfEmpty()
+                                        where (elementSet.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
+                                        select new FilteredData
+                                        {
+                                            ElementSet = elementSet,
+                                            Person = person == null ? null : new PersonAttributes
+                                            {
+                                                Id = person.Id,
+                                                Name = person.Name,
+                                                Orcid = person.Orcid,
+                                                TwitterHandle = person.TwitterHandle,
+                                                Url = person.Url,
+                                                Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
+                                            },
+                                            Organization = organization == null ? null : new OrganizationAttributes
+                                            {
+                                                Id = organization.Id,
+                                                Name = organization.Name,
+                                                Abbreviation = organization.Abbreviation,
+                                                TwitterHandle = organization.TwitterHandle,
+                                                Comment = organization.Comment,
+                                                Email = organization.Email,
+                                                Url = organization.Url,
+                                                Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
+                                            }
+                                        }).Distinct().ToList();
+
+                    if (filteredSets != null && filteredSets.Any())
+                    {
+                        return await Task.FromResult(new JsonResult(GetElementSetDetailsDto(filteredSets, false), HttpStatusCode.OK));
                     }
                     else
                     {
@@ -438,115 +546,85 @@ namespace RadElement.Service
         /// <summary>
         /// Gets the element set details dto.
         /// </summary>
-        /// <param name="set">The value.</param>
+        /// <param name="filteredSets">The filtered sets.</param>
+        /// <param name="isSingleSet">if set to <c>true</c> [is single set].</param>
         /// <returns></returns>
-        private object GetElementSetDetailsDto(object set)
+        private object GetElementSetDetailsDto(List<FilteredData> filteredSets, bool isSingleSet)
         {
-            if (set.GetType() == typeof(List<ElementSet>))
+            var sets = new List<ElementSetDetails>();
+            foreach (var eleSet in filteredSets)
             {
-                var sets = mapper.Map<List<ElementSet>, List<ElementSetDetails>>(set as List<ElementSet>);
-                sets.ForEach(_set =>
+                if (!sets.Exists(x => x.Id == eleSet.ElementSet.Id))
                 {
-                    _set.OrganizationInformation = GetOrganizationDetails((_set as ElementSet).Id);
-                    _set.PersonInformation = GetPersonDetails((_set as ElementSet).Id);
-                });
-
-                return sets;
-            }
-            else if (set.GetType() == typeof(ElementSet))
-            {
-                var setDetails = mapper.Map<ElementSetDetails>(set as ElementSet);
-                setDetails.OrganizationInformation = GetOrganizationDetails((set as ElementSet).Id);
-                setDetails.PersonInformation = GetPersonDetails((set as ElementSet).Id);
-
-                return setDetails;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the organization details.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        private List<OrganizationAttributes> GetOrganizationDetails(int setId)
-        {
-            List<OrganizationAttributes> organizationInfo = new List<OrganizationAttributes>();
-            var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
-
-            if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
-            {
-                foreach (var organizationElementSetRef in organizationElementSetRefs)
-                {
-                    var organization = radElementDbContext.Organization.Where(x => x.Id == organizationElementSetRef.OrganizationID).FirstOrDefault();
-
-                    if (organization != null)
+                    var set = mapper.Map<ElementSetDetails>(eleSet.ElementSet);
+                    if (eleSet.Person != null)
                     {
-                        if (!organizationInfo.Exists(x => x.Id == organization.Id))
+                        set.PersonInformation = new List<PersonAttributes>();
+                        set.PersonInformation.Add(eleSet.Person);
+                    }
+                    if (eleSet.Organization != null)
+                    {
+                        set.OrganizationInformation = new List<OrganizationAttributes>();
+                        set.OrganizationInformation.Add(eleSet.Organization);
+                    }
+
+                    sets.Add(set);
+                }
+                else
+                {
+                    var set = sets.Find(x => x.Id == eleSet.ElementSet.Id);
+                    if (eleSet.Person != null)
+                    {
+                        if (!set.PersonInformation.Exists(x => x.Id == eleSet.Person.Id))
                         {
-                            var organizationDetails = mapper.Map<OrganizationAttributes>(organization);
-                            if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
+                            if (set.PersonInformation == null)
                             {
-                                organizationDetails.Roles.Add(organizationElementSetRef.Role);
+                                set.PersonInformation = new List<PersonAttributes>();
                             }
-                            organizationInfo.Add(organizationDetails);
+                            set.PersonInformation.Add(eleSet.Person);
                         }
                         else
                         {
-                            var existingOrganization = organizationInfo.Find(x => x.Id == organization.Id);
-                            if (!string.IsNullOrEmpty(organizationElementSetRef.Role))
+                            var person = set.PersonInformation.Find(x => x.Id == eleSet.Person.Id);
+                            if (person != null)
                             {
-                                existingOrganization.Roles.Add(organizationElementSetRef.Role);
+                                if (eleSet.Person.Roles.Any() && !person.Roles.Exists(x => x == eleSet.Person.Roles[0]))
+                                {
+                                    person.Roles.Add(eleSet.Person.Roles[0]);
+                                }
+                            }
+                        }
+                    }
+                    if (eleSet.Organization != null)
+                    {
+                        if (!set.OrganizationInformation.Exists(x => x.Id == eleSet.Organization.Id))
+                        {
+                            if (set.OrganizationInformation == null)
+                            {
+                                set.OrganizationInformation = new List<OrganizationAttributes>();
+                            }
+                            set.OrganizationInformation.Add(eleSet.Organization);
+                        }
+                        else
+                        {
+                            var organization = set.OrganizationInformation.Find(x => x.Id == eleSet.Organization.Id);
+                            if (organization != null)
+                            {
+                                if (eleSet.Organization.Roles.Any() && !organization.Roles.Exists(x => x == eleSet.Organization.Roles[0]))
+                                {
+                                    organization.Roles.Add(eleSet.Organization.Roles[0]);
+                                }
                             }
                         }
                     }
                 }
             }
-
-            return organizationInfo;
-        }
-
-        /// <summary>
-        /// Gets the person details.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        /// <returns></returns>
-        private List<PersonAttributes> GetPersonDetails(int setId)
-        {
-            List<PersonAttributes> personInfo = new List<PersonAttributes>();
-            var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
-
-            if (personElementSetRefs != null && personElementSetRefs.Any())
+            if (isSingleSet)
             {
-                foreach (var personElementSetRef in personElementSetRefs)
-                {
-                    var person = radElementDbContext.Person.Where(x => x.Id == personElementSetRef.PersonID).FirstOrDefault();
-
-                    if (person != null)
-                    {
-                        if (!personInfo.Exists(x => x.Id == person.Id))
-                        {
-                            var personDetails = mapper.Map<PersonAttributes>(person);
-                            if (!string.IsNullOrEmpty(personElementSetRef.Role))
-                            {
-                                personDetails.Roles.Add(personElementSetRef.Role);
-                            }
-                            personInfo.Add(personDetails);
-                        }
-                        else
-                        {
-                            var existingPerson = personInfo.Find(x => x.Id == person.Id);
-                            if (!string.IsNullOrEmpty(personElementSetRef.Role))
-                            {
-                                existingPerson.Roles.Add(personElementSetRef.Role);
-                            }
-                        }
-                    }
-                }
+                return sets.FirstOrDefault();
             }
 
-            return personInfo;
+            return sets;
         }
     }
 }

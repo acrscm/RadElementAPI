@@ -55,20 +55,16 @@ namespace RadElement.Service.Tests
             mockLogger = new Mock<ILogger>();
 
             var elementSetProfile = new ElementSetProfile();
-            var personProfile = new PersonProfile();
-            var organizationProfile = new OrganizationProfile();
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(elementSetProfile);
-                cfg.AddProfile(personProfile);
-                cfg.AddProfile(organizationProfile);
             });
 
             mapper = new Mapper(mapperConfig);
             service = new ElementSetService(mockRadElementContext.Object, mapper, mockLogger.Object);
         }
 
-        #region GetElements
+        #region GetSets
 
         [Fact]
         public async void GetSetsShouldThrowInternalServerErrorForExceptions()
@@ -82,7 +78,7 @@ namespace RadElement.Service.Tests
         }
 
         [Fact]
-        public async void GetSetssShouldReturnAllSets()
+        public async void GetSetsShouldReturnAllSets()
         {
             IntializeMockData(true);
             var result = await service.GetSets();
