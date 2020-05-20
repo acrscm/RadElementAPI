@@ -462,8 +462,8 @@ namespace RadElement.Service
                                 radElementDbContext.Element.Add(element);
                                 radElementDbContext.SaveChanges();
 
-                                AddElementValues(dataElement.Options, element.Id);
                                 AddElementIndexCodeReferences(element.Id, dataElement.IndexCodeReferences);
+                                AddElementValues(dataElement.Options, element.Id);
                                 AddElementSetReferences(setInternalId, (int)element.Id);
                                 AddPersonReferences((int)element.Id, dataElement.Persons);
                                 AddOrganizationReferences((int)element.Id, dataElement.Organizations);
@@ -603,8 +603,8 @@ namespace RadElement.Service
                                 radElementDbContext.SaveChanges();
 
                                 RemoveElementValuesIndexCodeReferences(element.Id);
-                                RemoveElementIndexCodeReferences(element.Id);
                                 RemoveElementValues((int)element.Id);
+                                RemoveElementIndexCodeReferences(element.Id);
                                 RemovePersonReferences(element.Id);
                                 RemoveOrganizationReferences(element.Id);
 
@@ -653,8 +653,8 @@ namespace RadElement.Service
                         if (elementSetRef != null)
                         {
                             RemoveElementValuesIndexCodeReferences((uint)elementInternalId);
-                            RemoveElementIndexCodeReferences((uint)elementInternalId);
                             RemoveElementValues(elementInternalId);
+                            RemoveElementIndexCodeReferences((uint)elementInternalId);
                             RemoveElementSetReferences(elementSetRef);
                             RemovePersonReferences((uint)elementInternalId);
                             RemoveOrganizationReferences((uint)elementInternalId);

@@ -275,9 +275,9 @@ namespace RadElement.Service
                     radElementDbContext.ElementSet.Add(set);
                     radElementDbContext.SaveChanges();
 
+                    AddIndexCodeReferences(set.Id, content.IndexCodeReferences);
                     AddPersonReferences(set.Id, content.Persons);
                     AddOrganizationReferences(set.Id, content.Organizations);
-                    AddIndexCodeReferences(set.Id, content.IndexCodeReferences);
 
                     transaction.Commit();
 
@@ -380,9 +380,8 @@ namespace RadElement.Service
                             RemoveSetElementsReferences(elementSet);
                             RemovePersonReferences(elementSet.Id);
                             RemoveOrganizationReferences(elementSet.Id);
+                            RemoveSet(elementSet.Id);
 
-                            radElementDbContext.ElementSet.Remove(elementSet);
-                            radElementDbContext.SaveChanges();
                             transaction.Commit();
 
                             return await Task.FromResult(new JsonResult(string.Format("Set with id '{0}' is deleted.", setId), HttpStatusCode.OK));
@@ -550,6 +549,20 @@ namespace RadElement.Service
                         radElementDbContext.SaveChanges();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Removes the set.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void RemoveSet(int setId)
+        {
+            var set = radElementDbContext.ElementSet.Where(x => x.Id == setId).FirstOrDefault();
+            if (set != null)
+            {
+                radElementDbContext.ElementSet.Remove(set);
+                radElementDbContext.SaveChanges();
             }
         }
 
