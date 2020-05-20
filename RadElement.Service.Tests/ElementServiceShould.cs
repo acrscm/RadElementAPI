@@ -368,6 +368,7 @@ namespace RadElement.Service.Tests
         [InlineData("RDES72", DataElementType.Numeric)]
         [InlineData("RDES66", DataElementType.Integer)]
         [InlineData("RDES53", DataElementType.MultiChoice)]
+        [InlineData("RDES74", DataElementType.DateTime)]
         public async void CreateElementShouldReturnElementIdIfDataElementIsValidAndDoesnotExists(string setId, DataElementType elementType)
         {
             var dataElement = new CreateElement();
@@ -391,12 +392,58 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
-                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
-                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
+                        new Option { 
+                            Name = "value1", 
+                            Value = "1", 
+                            Definition = "1", 
+                            Images = "1",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value2",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value1",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
                     }
                 );
             }
+            dataElement.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            dataElement.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
+            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
+                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+            };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -436,12 +483,58 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
-                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
-                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
+                        new Option {
+                            Name = "value1",
+                            Value = "1",
+                            Definition = "1",
+                            Images = "1",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value2",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value1",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
                     }
                 );
             }
+            dataElement.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            dataElement.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
+            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
+                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+            };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -537,12 +630,58 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
-                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
-                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
+                        new Option {
+                            Name = "value1",
+                            Value = "1",
+                            Definition = "1",
+                            Images = "1",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value2",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value1",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
                     }
                 );
             }
+            dataElement.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            dataElement.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
+            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
+                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+            };
 
             IntializeMockData(false);
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -580,12 +719,58 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
-                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
-                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
+                        new Option {
+                            Name = "value1",
+                            Value = "1",
+                            Definition = "1",
+                            Images = "1",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value2",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
+                        new Option {
+                            Name = "value1",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<IndexCodeReference>()
+                            {
+                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+                            }
+                        },
                     }
                 );
             }
+            dataElement.Persons = new List<PersonDetails>() {
+                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
+                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
+            };
+            dataElement.Organizations = new List<OrganizationDetails>() {
+                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
+                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
+            };
+            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
+                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
+                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
+                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
+            };
 
             IntializeMockData(true);
             var result = await service.UpdateElement(setId, elementId, dataElement);
