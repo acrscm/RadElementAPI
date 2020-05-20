@@ -112,6 +112,50 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new OrganizationRoleElementSetRef { Id = 4, OrganizationID = 4, ElementSetID = 74, Role = OrganizationRole.Reviewer.ToString() },
         }.AsQueryable();
 
+        public static IQueryable<IndexCodeSystem> indexCodeSystemDb = new List<IndexCodeSystem>()
+            {
+                new IndexCodeSystem { Abbrev = "DICOM", Name = "Digitial Imaging and Communications in Medicine", Oid = "1.2.840.10008",
+                                      SystemURL = "http://dicom.nema.org/", CodeURL = "http://dicom.nema.org/" },
+                new IndexCodeSystem { Abbrev = "LOINC", Name = "Logical Observation Identifiers Names and Codes", Oid = "2.16.840.1.113883.6.1",
+                                      SystemURL = "http://bioportal.bioontology.org/ontologies/LOINC", CodeURL = "http://purl.bioontology.org/ontology/LNC/$code" },
+                new IndexCodeSystem { Abbrev = "RADLEX", Name = "Radiology Lexicon", Oid = "2.16.840.1.113883.6.256",
+                                      SystemURL = "http://bioportal.bioontology.org/ontologies/RADLEX", CodeURL = "http://www.radlex.org/RID/$code" },
+                new IndexCodeSystem { Abbrev = "SNOMEDCT", Name = "Systematized Nomenclature of Medicine - Clinical Terms", Oid = "2.16.840.1.113883.6.96",
+                                      SystemURL = "http://bioportal.bioontology.org/ontologies/SNOMEDCT", CodeURL = "http://purl.bioontology.org/ontology/SNOMEDCT/$code" },
+            }.AsQueryable();
+
+        public static IQueryable<IndexCode> indexCodeDb = new List<IndexCode>()
+            {
+                new IndexCode { Id= 1, Code = "RID28662", System = "RADLEX", Display = "Attenuation", AccessionDate = DateTime.UtcNow },
+                new IndexCode { Id= 2,  Code = "RID11086", System = "RADLEX", Display = "Unenhanced phase", AccessionDate = DateTime.UtcNow },
+                new IndexCode { Id= 3, Code = "LP35056-8", System = "LOINC", Display = "Left", AccessionDate = DateTime.UtcNow},
+                new IndexCode { Id= 4, Code = "7771000", System = "SNOMEDCT", Display = "Left", AccessionDate = DateTime.UtcNow }
+            }.AsQueryable();
+
+        public static IQueryable<IndexCodeElementRef> indexCodeElementDb = new List<IndexCodeElementRef>()
+            {
+                new IndexCodeElementRef { Id = 1, CodeId = 1, ElementId = 340  },
+                new IndexCodeElementRef { Id = 2, CodeId = 2, ElementId = 338  },
+                new IndexCodeElementRef { Id = 3, CodeId = 3, ElementId = 307  },
+                new IndexCodeElementRef { Id = 4, CodeId = 4, ElementId = 283  }
+            }.AsQueryable();
+
+        public static IQueryable<IndexCodeElementSetRef> indexCodeElementSetDb = new List<IndexCodeElementSetRef>()
+            {
+                new IndexCodeElementSetRef { Id = 1, CodeId = 1, ElementSetId = 53  },
+                new IndexCodeElementSetRef { Id = 2, CodeId = 2, ElementSetId = 66  },
+                new IndexCodeElementSetRef { Id = 3, CodeId = 3, ElementSetId = 62  },
+                new IndexCodeElementSetRef { Id = 4, CodeId = 4, ElementSetId = 64  }
+            }.AsQueryable();
+
+        public static IQueryable<IndexCodeElementValueRef> indexCodeElementValueDb = new List<IndexCodeElementValueRef>()
+            {
+                new IndexCodeElementValueRef { Id = 1, CodeId = 1, ElementValueId = 1001  },
+                new IndexCodeElementValueRef { Id = 2, CodeId = 2, ElementValueId = 1002  },
+                new IndexCodeElementValueRef { Id = 3, CodeId = 3, ElementValueId = 1003  },
+                new IndexCodeElementValueRef { Id = 4, CodeId = 4, ElementValueId = 1007  }
+            }.AsQueryable();
+
         #endregion
     }
 }
