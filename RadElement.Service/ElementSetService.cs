@@ -58,6 +58,10 @@ namespace RadElement.Service
             try
             {
                 var sets = (from elementSet in radElementDbContext.ElementSet
+                            join setIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals setIndexCodeRef.ElementSetId into indCodeRef
+                            from indexCodeRef in indCodeRef.DefaultIfEmpty()
+                            join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
+                            from indexCode in indCode.DefaultIfEmpty()
                             join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
                             from personRef in perRef.DefaultIfEmpty()
                             join setPerson in radElementDbContext.Person on personRef.PersonID equals setPerson.Id into pers
@@ -69,6 +73,7 @@ namespace RadElement.Service
                             select new FilteredData
                             {
                                 ElementSet = elementSet,
+                                IndexCode = indexCode,
                                 Person = person == null ? null : new PersonAttributes
                                 {
                                     Id = person.Id,
@@ -114,6 +119,10 @@ namespace RadElement.Service
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
                     var selectedSets = (from elementSet in radElementDbContext.ElementSet
+                                        join setIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals setIndexCodeRef.ElementSetId into indCodeRef
+                                        from indexCodeRef in indCodeRef.DefaultIfEmpty()
+                                        join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
+                                        from indexCode in indCode.DefaultIfEmpty()
                                         join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
                                         from personRef in perRef.DefaultIfEmpty()
                                         join setPerson in radElementDbContext.Person on personRef.PersonID equals setPerson.Id into pers
@@ -126,6 +135,7 @@ namespace RadElement.Service
                                         select new FilteredData
                                         {
                                             ElementSet = elementSet,
+                                            IndexCode = indexCode,
                                             Person = person == null ? null : new PersonAttributes
                                             {
                                                 Id = person.Id,
@@ -176,6 +186,10 @@ namespace RadElement.Service
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var filteredSets = (from elementSet in radElementDbContext.ElementSet
+                                        join setIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals setIndexCodeRef.ElementSetId into indCodeRef
+                                        from indexCodeRef in indCodeRef.DefaultIfEmpty()
+                                        join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
+                                        from indexCode in indCode.DefaultIfEmpty()
                                         join setPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals setPersonRef.ElementSetID into perRef
                                         from personRef in perRef.DefaultIfEmpty()
                                         join setPerson in radElementDbContext.Person on personRef.PersonID equals setPerson.Id into pers
@@ -189,6 +203,7 @@ namespace RadElement.Service
                                         select new FilteredData
                                         {
                                             ElementSet = elementSet,
+                                            IndexCode = indexCode,
                                             Person = person == null ? null : new PersonAttributes
                                             {
                                                 Id = person.Id,
@@ -641,12 +656,28 @@ namespace RadElement.Service
                         set.OrganizationInformation = new List<OrganizationAttributes>();
                         set.OrganizationInformation.Add(eleSet.Organization);
                     }
+                    if (eleSet.IndexCode != null)
+                    {
+                        set.IndexCodes = new List<IndexCode>();
+                        set.IndexCodes.Add(eleSet.IndexCode);
+                    }
 
                     sets.Add(set);
                 }
                 else
                 {
                     var set = sets.Find(x => x.Id == eleSet.ElementSet.Id);
+                    if (eleSet.IndexCode != null)
+                    {
+                        if (!set.IndexCodes.Exists(x => x.Id == eleSet.IndexCode.Id))
+                        {
+                            if (set.IndexCodes == null)
+                            {
+                                set.IndexCodes = new List<IndexCode>();
+                            }
+                            set.IndexCodes.Add(eleSet.IndexCode);
+                        }
+                    }
                     if (eleSet.Person != null)
                     {
                         if (!set.PersonInformation.Exists(x => x.Id == eleSet.Person.Id))

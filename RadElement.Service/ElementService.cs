@@ -99,7 +99,11 @@ namespace RadElement.Service
                                             join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
                                             from elementSet in sets.DefaultIfEmpty()
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                            from elementValues in values.DefaultIfEmpty()                                            
+                                            from elementValues in values.DefaultIfEmpty()
+                                            join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into indCodeRef
+                                            from indexCodeRef in indCodeRef.DefaultIfEmpty()
+                                            join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
+                                            from indexCode in indCode.DefaultIfEmpty()
                                             join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
                                             from personRef in perRef.DefaultIfEmpty()
                                             join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id into pers
@@ -114,6 +118,7 @@ namespace RadElement.Service
                                                 Element = element,
                                                 ElementSet = elementSet,
                                                 ElementValue = elementValues,
+                                                IndexCode = indexCode,
                                                 Person = person == null ? null : new PersonAttributes
                                                 {
                                                     Id = person.Id,
@@ -171,12 +176,17 @@ namespace RadElement.Service
                                             from elementSet in sets.DefaultIfEmpty()
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
                                             from elementValues in values.DefaultIfEmpty()
+                                            join setIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals setIndexCodeRef.ElementSetId into indCodeRef
+                                            from indexCodeRef in indCodeRef.DefaultIfEmpty()
+                                            join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
+                                            from indexCode in indCode.DefaultIfEmpty()
                                             where elementSet.Id == setInternalId
                                             select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
-                                                ElementValue = elementValues
+                                                ElementValue = elementValues,
+                                                IndexCode = indexCode
                                             }).Distinct().ToList();
 
                     if (selectedElements != null && selectedElements.Any())
@@ -1072,6 +1082,11 @@ namespace RadElement.Service
                         element.ElementValues = new List<ElementValue>();
                         element.ElementValues.Add(elem.ElementValue);
                     }
+                    if (elem.IndexCode != null)
+                    {
+                        element.IndexCodes = new List<IndexCode>();
+                        element.IndexCodes.Add(elem.IndexCode);
+                    }
                     if (elem.Person != null)
                     {
                         element.PersonInformation = new List<PersonAttributes>();
@@ -1110,6 +1125,17 @@ namespace RadElement.Service
                                 element.ElementValues = new List<ElementValue>();
                             }
                             element.ElementValues.Add(elem.ElementValue);
+                        }
+                    }
+                    if (elem.IndexCode != null)
+                    {
+                        if (!element.IndexCodes.Exists(x => x.Id == elem.IndexCode.Id))
+                        {
+                            if (element.IndexCodes == null)
+                            {
+                                element.IndexCodes = new List<IndexCode>();
+                            }
+                            element.IndexCodes.Add(elem.IndexCode);
                         }
                     }
                     if (elem.Person != null)

@@ -12,6 +12,12 @@ namespace RadElement.Core.DTO
         public string SetId { get; set; }
 
         /// <summary>
+        /// Gets or sets the index codes.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public List<IndexCode> IndexCodes { get; set; }
+
+        /// <summary>
         /// Gets or sets the person information.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

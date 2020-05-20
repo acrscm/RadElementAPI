@@ -1,4 +1,5 @@
 ﻿using RadElement.Core.Domain;
+
 namespace RadElement.Core.DTO
 {
     public class FilteredData
@@ -27,5 +28,10 @@ namespace RadElement.Core.DTO
         /// Gets or sets the organization.
         /// </summary>
         public OrganizationAttributes Organization { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index codes.
+        /// </summary>
+        public IndexCode IndexCode { get; set; }
     }
 }
