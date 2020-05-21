@@ -57,8 +57,16 @@ namespace RadElement.Service
         {
             try
             {
-                var elements = radElementDbContext.Element.ToList();
-                return await Task.FromResult(new JsonResult(elements, HttpStatusCode.OK));
+                var elements = (from element in radElementDbContext.Element
+                                join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+                                from elementValue in eleValues.DefaultIfEmpty()
+
+                                select new FilteredData
+                                {
+                                    Element = element,
+                                    ElementValue = elementValue
+                                }).Distinct().ToList();
+                return await Task.FromResult(new JsonResult(GetElementDetailsDto(elements, false), HttpStatusCode.OK));
             }
             catch (Exception ex)
             {

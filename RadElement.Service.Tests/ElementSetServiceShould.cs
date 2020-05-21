@@ -90,7 +90,7 @@ namespace RadElement.Service.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<ElementSetDetails>>(result.Value);
+            Assert.IsType<List<ElementSet>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
