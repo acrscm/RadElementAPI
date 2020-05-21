@@ -57,21 +57,8 @@ namespace RadElement.Service
         {
             try
             {
-                var elements = (from element in radElementDbContext.Element
-                                join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                from eleSetRef in setrefs.DefaultIfEmpty()
-                                join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                from elementSet in sets.DefaultIfEmpty()
-                                join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                from elementValues in values.DefaultIfEmpty()
-                                select new FilteredData
-                                {
-                                    Element = element,
-                                    ElementSet = elementSet,
-                                    ElementValue = elementValues
-                                }).Distinct().ToList();
-
-                return await Task.FromResult(new JsonResult(GetElementDetailsDto(elements, false), HttpStatusCode.OK));
+                var elements = radElementDbContext.Element.ToList();
+                return await Task.FromResult(new JsonResult(elements, HttpStatusCode.OK));
             }
             catch (Exception ex)
             {
@@ -94,50 +81,67 @@ namespace RadElement.Service
                 {
                     int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
                     var selectedElements = (from element in radElementDbContext.Element
-                                            join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                            from eleSetRef in setrefs.DefaultIfEmpty()
-                                            join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                            from elementSet in sets.DefaultIfEmpty()
-                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                            from elementValues in values.DefaultIfEmpty()
-                                            join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into indCodeRef
-                                            from indexCodeRef in indCodeRef.DefaultIfEmpty()
-                                            join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
-                                            from indexCode in indCode.DefaultIfEmpty()
-                                            join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
-                                            from personRef in perRef.DefaultIfEmpty()
-                                            join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id into pers
-                                            from person in pers.DefaultIfEmpty()
-                                            join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into orgRef
-                                            from organizaionRef in orgRef.DefaultIfEmpty()
-                                            join eleOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals eleOrganization.Id into org
-                                            from organization in org.DefaultIfEmpty()
+                                            join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+                                            from elementSetRef in eleSetRefs.DefaultIfEmpty()
+
+                                            join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+                                            from elementSet in eleSets.DefaultIfEmpty()
+
+                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+                                            from elementValue in eleValues.DefaultIfEmpty()
+
+                                            join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
+                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
+
+                                            join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
+                                            from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
+
+                                            join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
+                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
+
+                                            join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
+                                            from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
+
+                                            join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
+                                            from elementPersonRef in elePersonRefs.DefaultIfEmpty()
+
+                                            join elePerson in radElementDbContext.Person on elementPersonRef.PersonID equals elePerson.Id into elePersons
+                                            from elementPerson in elePersons.DefaultIfEmpty()
+
+                                            join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into eleOrganizationRefs
+                                            from elementOrganizaionRef in eleOrganizationRefs.DefaultIfEmpty()
+
+                                            join eleOrganization in radElementDbContext.Organization on elementOrganizaionRef.OrganizationID equals eleOrganization.Id into eleOrganizations
+                                            from elementOrganization in eleOrganizations.DefaultIfEmpty()
+
                                             where element.Id == elementInternalId
+
                                             select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
-                                                ElementValue = elementValues,
-                                                IndexCode = indexCode,
-                                                Person = person == null ? null : new PersonAttributes
+                                                ElementValue = elementValue,
+                                                IndexCode = elementIndexCode,
+                                                ElementValueIndexCode = elementValueIndexCode,
+                                                Person = elementPerson == null ? null : new PersonAttributes
                                                 {
-                                                    Id = person.Id,
-                                                    Name = person.Name,
-                                                    Orcid = person.Orcid,
-                                                    TwitterHandle = person.TwitterHandle,
-                                                    Url = person.Url,
-                                                    Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
+                                                    Id = elementPerson.Id,
+                                                    Name = elementPerson.Name,
+                                                    Orcid = elementPerson.Orcid,
+                                                    TwitterHandle = elementPerson.TwitterHandle,
+                                                    Url = elementPerson.Url,
+                                                    Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
                                                 },
-                                                Organization = organization == null ? null : new OrganizationAttributes
+                                                Organization = elementOrganization == null ? null : new OrganizationAttributes
                                                 {
-                                                    Id = organization.Id,
-                                                    Name = organization.Name,
-                                                    Abbreviation = organization.Abbreviation,
-                                                    TwitterHandle = organization.TwitterHandle,
-                                                    Comment = organization.Comment,
-                                                    Email = organization.Email,
-                                                    Url = organization.Url,
-                                                    Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
+                                                    Id = elementOrganization.Id,
+                                                    Name = elementOrganization.Name,
+                                                    Abbreviation = elementOrganization.Abbreviation,
+                                                    TwitterHandle = elementOrganization.TwitterHandle,
+                                                    Comment = elementOrganization.Comment,
+                                                    Email = elementOrganization.Email,
+                                                    Url = elementOrganization.Url,
+                                                    Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
                                                 }
                                             }).Distinct().ToList();
 
@@ -170,23 +174,68 @@ namespace RadElement.Service
                 {
                     int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
                     var selectedElements = (from element in radElementDbContext.Element
-                                            join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                            from eleSetRef in setrefs.DefaultIfEmpty()
-                                            join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                            from elementSet in sets.DefaultIfEmpty()
-                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                            from elementValues in values.DefaultIfEmpty()
-                                            join setIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals setIndexCodeRef.ElementSetId into indCodeRef
-                                            from indexCodeRef in indCodeRef.DefaultIfEmpty()
-                                            join setIndexCode in radElementDbContext.IndexCode on indexCodeRef.CodeId equals setIndexCode.Id into indCode
-                                            from indexCode in indCode.DefaultIfEmpty()
+                                            join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+                                            from elementSetRef in eleSetRefs.DefaultIfEmpty()
+
+                                            join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+                                            from elementSet in eleSets.DefaultIfEmpty()
+
+                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+                                            from elementValue in eleValues.DefaultIfEmpty()
+
+                                            join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
+                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
+
+                                            join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
+                                            from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
+
+                                            join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
+                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
+
+                                            join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
+                                            from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
+
+                                            join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
+                                            from elementPersonRef in elePersonRefs.DefaultIfEmpty()
+
+                                            join elePerson in radElementDbContext.Person on elementPersonRef.PersonID equals elePerson.Id into elePersons
+                                            from elementPerson in elePersons.DefaultIfEmpty()
+
+                                            join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into eleOrganizationRefs
+                                            from elementOrganizaionRef in eleOrganizationRefs.DefaultIfEmpty()
+
+                                            join eleOrganization in radElementDbContext.Organization on elementOrganizaionRef.OrganizationID equals eleOrganization.Id into eleOrganizations
+                                            from elementOrganization in eleOrganizations.DefaultIfEmpty()
+
                                             where elementSet.Id == setInternalId
+
                                             select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
-                                                ElementValue = elementValues,
-                                                IndexCode = indexCode
+                                                ElementValue = elementValue,
+                                                IndexCode = elementIndexCode,
+                                                ElementValueIndexCode = elementValueIndexCode,
+                                                Person = elementPerson == null ? null : new PersonAttributes
+                                                {
+                                                    Id = elementPerson.Id,
+                                                    Name = elementPerson.Name,
+                                                    Orcid = elementPerson.Orcid,
+                                                    TwitterHandle = elementPerson.TwitterHandle,
+                                                    Url = elementPerson.Url,
+                                                    Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
+                                                },
+                                                Organization = elementOrganization == null ? null : new OrganizationAttributes
+                                                {
+                                                    Id = elementOrganization.Id,
+                                                    Name = elementOrganization.Name,
+                                                    Abbreviation = elementOrganization.Abbreviation,
+                                                    TwitterHandle = elementOrganization.TwitterHandle,
+                                                    Comment = elementOrganization.Comment,
+                                                    Email = elementOrganization.Email,
+                                                    Url = elementOrganization.Url,
+                                                    Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
+                                                }
                                             }).Distinct().ToList();
 
                     if (selectedElements != null && selectedElements.Any())
@@ -221,18 +270,22 @@ namespace RadElement.Service
                     }
 
                     var filteredElements = (from element in radElementDbContext.Element
-                                            join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                            from eleSetRef in setrefs.DefaultIfEmpty()
-                                            join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                            from elementSet in sets.DefaultIfEmpty()
-                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                            from elementValues in values.DefaultIfEmpty()
+                                            join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+                                            from elementSetRef in eleSetRefs.DefaultIfEmpty()
+
+                                            join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+                                            from elementSet in eleSets.DefaultIfEmpty()
+
+                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+                                            from elementValue in eleValues.DefaultIfEmpty()
+
                                             where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+
                                             select new FilteredData
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
-                                                ElementValue = elementValues
+                                                ElementValue = elementValue,
                                             }).Distinct().ToList();
 
                     if (filteredElements != null && filteredElements.Any())
@@ -280,74 +333,105 @@ namespace RadElement.Service
                     if (operation == "set")
                     {
                         filteredData = (from element in radElementDbContext.Element
-                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                        from eleSetRef in setrefs.DefaultIfEmpty()
-                                        join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                        from elementSet in sets.DefaultIfEmpty()
-                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                        from elementValues in values.DefaultIfEmpty()
+                                        join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+                                        from elementSetRef in eleSetRefs.DefaultIfEmpty()
+
+                                        join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+                                        from elementSet in eleSets.DefaultIfEmpty()
+
                                         where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
-                                        select new FilteredData { Element = element, ElementSet = elementSet }).Distinct().ToList();
+
+                                        select new FilteredData
+                                        {
+                                            Element = element,
+                                            ElementSet = elementSet
+                                        }).Distinct().ToList();
                     }
                     else if (operation == "values")
                     {
                         filteredData = (from element in radElementDbContext.Element
-                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                        from eleSetRef in setrefs.DefaultIfEmpty()
-                                        join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                        from elementSet in sets.DefaultIfEmpty()
-                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                        from elementValues in values.DefaultIfEmpty()
+                                        join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+                                        from elementSetRef in eleSetRefs.DefaultIfEmpty()
+
+                                        join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+                                        from elementSet in eleSets.DefaultIfEmpty()
+
+                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+                                        from elementValue in eleValues.DefaultIfEmpty()
+
                                         where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+
                                         select new FilteredData
                                         {
                                             Element = element,
                                             ElementSet = elementSet,
-                                            ElementValue = elementValues
+                                            ElementValue = elementValue,
                                         }).Distinct().ToList();
                     }
                     else if (operation == "persorg")
                     {
                         filteredData = (from element in radElementDbContext.Element
-                                        join eleSetRefId in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRefId.ElementId into setrefs
-                                        from eleSetRef in setrefs.DefaultIfEmpty()
-                                        join eleSet in radElementDbContext.ElementSet on eleSetRef.ElementSetId equals eleSet.Id into sets
-                                        from elementSet in sets.DefaultIfEmpty()
-                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into values
-                                        from elementValues in values.DefaultIfEmpty()
-                                        join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into perRef
-                                        from personRef in perRef.DefaultIfEmpty()
-                                        join elePerson in radElementDbContext.Person on personRef.PersonID equals elePerson.Id into pers
-                                        from person in pers.DefaultIfEmpty()
-                                        join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into orgRef
-                                        from organizaionRef in orgRef.DefaultIfEmpty()
-                                        join eleOrganization in radElementDbContext.Organization on organizaionRef.OrganizationID equals eleOrganization.Id into org
-                                        from organization in org.DefaultIfEmpty()
+                                        join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+                                        from elementSetRef in eleSetRefs.DefaultIfEmpty()
+
+                                        join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+                                        from elementSet in eleSets.DefaultIfEmpty()
+
+                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+                                        from elementValue in eleValues.DefaultIfEmpty()
+
+                                        join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
+                                        from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
+
+                                        join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
+                                        from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
+
+                                        join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
+                                        from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
+
+                                        join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
+                                        from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
+
+                                        join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
+                                        from elementPersonRef in elePersonRefs.DefaultIfEmpty()
+
+                                        join elePerson in radElementDbContext.Person on elementPersonRef.PersonID equals elePerson.Id into elePersons
+                                        from elementPerson in elePersons.DefaultIfEmpty()
+
+                                        join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into eleOrganizationRefs
+                                        from elementOrganizaionRef in eleOrganizationRefs.DefaultIfEmpty()
+
+                                        join eleOrganization in radElementDbContext.Organization on elementOrganizaionRef.OrganizationID equals eleOrganization.Id into eleOrganizations
+                                        from elementOrganization in eleOrganizations.DefaultIfEmpty()
+
                                         where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+
                                         select new FilteredData
                                         {
                                             Element = element,
                                             ElementSet = elementSet,
-                                            ElementValue = elementValues,
-                                            Person = person == null ? null : new PersonAttributes
+                                            ElementValue = elementValue,
+                                            IndexCode = elementIndexCode,
+                                            ElementValueIndexCode = elementValueIndexCode,
+                                            Person = elementPerson == null ? null : new PersonAttributes
                                             {
-                                                Id = person.Id,
-                                                Name = person.Name,
-                                                Orcid = person.Orcid,
-                                                TwitterHandle = person.TwitterHandle,
-                                                Url = person.Url,
-                                                Roles = !string.IsNullOrEmpty(personRef.Role) ? new List<string> { personRef.Role } : new List<string>()
+                                                Id = elementPerson.Id,
+                                                Name = elementPerson.Name,
+                                                Orcid = elementPerson.Orcid,
+                                                TwitterHandle = elementPerson.TwitterHandle,
+                                                Url = elementPerson.Url,
+                                                Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
                                             },
-                                            Organization = organization == null ? null : new OrganizationAttributes
+                                            Organization = elementOrganization == null ? null : new OrganizationAttributes
                                             {
-                                                Id = organization.Id,
-                                                Name = organization.Name,
-                                                Abbreviation = organization.Abbreviation,
-                                                TwitterHandle = organization.TwitterHandle,
-                                                Comment = organization.Comment,
-                                                Email = organization.Email,
-                                                Url = organization.Url,
-                                                Roles = !string.IsNullOrEmpty(organizaionRef.Role) ? new List<string> { organizaionRef.Role } : new List<string>()
+                                                Id = elementOrganization.Id,
+                                                Name = elementOrganization.Name,
+                                                Abbreviation = elementOrganization.Abbreviation,
+                                                TwitterHandle = elementOrganization.TwitterHandle,
+                                                Comment = elementOrganization.Comment,
+                                                Email = elementOrganization.Email,
+                                                Url = elementOrganization.Url,
+                                                Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
                                             }
                                         }).Distinct().ToList();
                     }
@@ -1079,8 +1163,15 @@ namespace RadElement.Service
                     }
                     if (elem.ElementValue != null)
                     {
-                        element.ElementValues = new List<ElementValue>();
-                        element.ElementValues.Add(elem.ElementValue);
+                        var elementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
+                        if (elem.ElementValueIndexCode != null)
+                        {
+                            elementValue.IndexCodes = new List<IndexCode>();
+                            elementValue.IndexCodes.Add(elem.ElementValueIndexCode);
+                        }
+
+                        element.ElementValues = new List<ElementValueAttributes>();
+                        element.ElementValues.Add(elementValue);
                     }
                     if (elem.IndexCode != null)
                     {
@@ -1118,13 +1209,30 @@ namespace RadElement.Service
                     }
                     if (elem.ElementValue != null)
                     {
+                        if (elem.ElementValueIndexCode != null)
+                        {
+                            var elementValue = element.ElementValues.Find(x => x.ElementId == elem.Element.Id);
+                            if (elementValue != null)
+                            {
+                                if (!elementValue.IndexCodes.Exists(x => x.Id == elem.ElementValueIndexCode.Id))
+                                {
+                                    if (elementValue.IndexCodes == null)
+                                    {
+                                        elementValue.IndexCodes = new List<IndexCode>();
+                                    }
+                                    elementValue.IndexCodes.Add(elem.ElementValueIndexCode);
+                                }
+                            }
+                        }
                         if (!element.ElementValues.Exists(x => x.Id == elem.ElementValue.Id))
                         {
                             if (element.ElementValues == null)
                             {
-                                element.ElementValues = new List<ElementValue>();
+                                element.ElementValues = new List<ElementValueAttributes>();
                             }
-                            element.ElementValues.Add(elem.ElementValue);
+
+                            var elementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
+                            element.ElementValues.Add(elementValue);
                         }
                     }
                     if (elem.IndexCode != null)

@@ -60,10 +60,12 @@ namespace RadElement.Service.Tests
 
             var elementProfile = new ElementProfile();
             var elementSetProfile = new ElementSetProfile();
+            var elementValueProfile = new ElementValueProfile();
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(elementProfile);
                 cfg.AddProfile(elementSetProfile);
+                cfg.AddProfile(elementValueProfile);
             });
 
             mapper = new Mapper(mapperConfig);

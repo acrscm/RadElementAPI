@@ -39,6 +39,6 @@ namespace RadElement.Core.DTO
         /// Gets or sets the element values.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<ElementValue> ElementValues { get; set; }
+        public List<ElementValueAttributes> ElementValues { get; set; }
     }
 }
