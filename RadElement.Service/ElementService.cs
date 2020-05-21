@@ -98,16 +98,16 @@ namespace RadElement.Service
                                             from elementSet in eleSets.DefaultIfEmpty()
 
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                            from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
+                                            from elementValue in eleValues.DefaultIfEmpty()
 
                                             join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
-                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
+                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
 
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
-                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
+                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
 
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
@@ -176,16 +176,16 @@ namespace RadElement.Service
                                             from elementSet in eleSets.DefaultIfEmpty()
 
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                            from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
+                                            from elementValue in eleValues.DefaultIfEmpty()
 
                                             join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
-                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
+                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
 
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
-                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
+                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
 
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
