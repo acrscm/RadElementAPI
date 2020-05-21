@@ -58,6 +58,7 @@ namespace RadElement.Service
             try
             {
                 var elements = (from element in radElementDbContext.Element
+
                                 join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
                                 from elementValue in eleValues.DefaultIfEmpty()
 
@@ -89,6 +90,7 @@ namespace RadElement.Service
                 {
                     int elementInternalId = Convert.ToInt32(elementId.Remove(0, 3));
                     var selectedElements = (from element in radElementDbContext.Element
+
                                             join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
                                             from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
@@ -96,16 +98,16 @@ namespace RadElement.Service
                                             from elementSet in eleSets.DefaultIfEmpty()
 
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                            from elementValue in eleValues.DefaultIfEmpty()
+                                            from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
 
                                             join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
-                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
+                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
 
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
-                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
+                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
 
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
@@ -166,6 +168,7 @@ namespace RadElement.Service
                 {
                     int setInternalId = Convert.ToInt32(setId.Remove(0, 4));
                     var selectedElements = (from element in radElementDbContext.Element
+
                                             join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
                                             from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
@@ -173,16 +176,16 @@ namespace RadElement.Service
                                             from elementSet in eleSets.DefaultIfEmpty()
 
                                             join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                            from elementValue in eleValues.DefaultIfEmpty()
+                                            from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
 
                                             join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
-                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
+                                            from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
 
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
-                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
+                                            from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
 
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
@@ -246,6 +249,7 @@ namespace RadElement.Service
                     }
 
                     var filteredElements = (from element in radElementDbContext.Element
+
                                             join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
                                             from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
@@ -309,6 +313,7 @@ namespace RadElement.Service
                     if (operation == "set")
                     {
                         filteredData = (from element in radElementDbContext.Element
+
                                         join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
                                         from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
@@ -326,6 +331,7 @@ namespace RadElement.Service
                     else if (operation == "values")
                     {
                         filteredData = (from element in radElementDbContext.Element
+
                                         join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
                                         from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
@@ -347,6 +353,7 @@ namespace RadElement.Service
                     else if (operation == "persorg")
                     {
                         filteredData = (from element in radElementDbContext.Element
+
                                         join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
                                         from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
@@ -354,16 +361,16 @@ namespace RadElement.Service
                                         from elementSet in eleSets.DefaultIfEmpty()
 
                                         join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                        from elementValue in eleValues.DefaultIfEmpty()
+                                        from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
 
                                         join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
-                                        from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty()
+                                        from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
 
                                         join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                         from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
                                         join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
-                                        from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
+                                        from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
 
                                         join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                         from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
