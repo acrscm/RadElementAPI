@@ -81,8 +81,9 @@ namespace RadElement.Service
                 {
                     int id = Convert.ToInt32(setId.Remove(0, 4));
                     var selectedSets = (from elementSet in radElementDbContext.ElementSet
+
                                         join eleSetIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals eleSetIndexCodeRef.ElementSetId into eleSetIndexCodeRefs
-                                        from elementSetIndexCodeRef in eleSetIndexCodeRefs.DefaultIfEmpty()
+                                        from elementSetIndexCodeRef in eleSetIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementSetRef())
 
                                         join eleSetIndexCode in radElementDbContext.IndexCode on elementSetIndexCodeRef.CodeId equals eleSetIndexCode.Id into eleSetIndexCodes
                                         from elementSetIndexCode in eleSetIndexCodes.DefaultIfEmpty()
@@ -139,8 +140,9 @@ namespace RadElement.Service
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
                     var filteredSets = (from elementSet in radElementDbContext.ElementSet
+
                                         join eleSetIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals eleSetIndexCodeRef.ElementSetId into eleSetIndexCodeRefs
-                                        from elementSetIndexCodeRef in eleSetIndexCodeRefs.DefaultIfEmpty()
+                                        from elementSetIndexCodeRef in eleSetIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementSetRef())
 
                                         join eleSetIndexCode in radElementDbContext.IndexCode on elementSetIndexCodeRef.CodeId equals eleSetIndexCode.Id into eleSetIndexCodes
                                         from elementSetIndexCode in eleSetIndexCodes.DefaultIfEmpty()
