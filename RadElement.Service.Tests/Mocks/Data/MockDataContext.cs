@@ -55,9 +55,11 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new ElementValue { Id = 1001, ElementId = 283, Value = "0", Name = "0 Unknown", Definition = "0 Unknown" },
                 new ElementValue { Id = 1002, ElementId = 283, Value = "1", Name = "1 Present", Definition = "1 Present" },
                 new ElementValue { Id = 1003, ElementId = 283, Value = "2", Name = "2 Absent", Definition = "2 Absent" },
-                new ElementValue { Id = 1007, ElementId = 304, Value = "0", Name = "0 No change in size", Definition = "0 No change in size" },
+                new ElementValue { Id = 1007, ElementId = 340, Value = "0", Name = "0 No change in size", Definition = "0 No change in size" },
                 new ElementValue { Id = 1008, ElementId = 340, Value = "1", Name = "1 Increase in size", Definition = "1 Increase in size" },
                 new ElementValue { Id = 1009, ElementId = 340, Value = "2", Name = "2 Decrease in size", Definition = "2 Decrease in size" },
+                new ElementValue { Id = 1010, ElementId = 338, Value = "2", Name = "2 Decrease in size", Definition = "2 Decrease in size" },
+                new ElementValue { Id = 1011, ElementId = 307, Value = "2", Name = "2 Decrease in size", Definition = "2 Decrease in size" }
         }.AsQueryable();
 
         public static IQueryable<Person> personDb = new List<Person>()
@@ -132,7 +134,10 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new IndexCode { Id= 1, Code = "RID28662", System = "RADLEX", Display = "Attenuation", AccessionDate = DateTime.UtcNow },
                 new IndexCode { Id= 2,  Code = "RID11086", System = "RADLEX", Display = "Unenhanced phase", AccessionDate = DateTime.UtcNow },
                 new IndexCode { Id= 3, Code = "LP35056-8", System = "LOINC", Display = "Left", AccessionDate = DateTime.UtcNow},
-                new IndexCode { Id= 4, Code = "7771000", System = "SNOMEDCT", Display = "Left", AccessionDate = DateTime.UtcNow }
+                new IndexCode { Id= 4, Code = "7771000", System = "SNOMEDCT", Display = "Left", AccessionDate = DateTime.UtcNow },
+                new IndexCode { Id= 5,  Code = "RID110861", System = "RADLEX", Display = "Unenhanced phase", AccessionDate = DateTime.UtcNow },
+                new IndexCode { Id= 6, Code = "LP35056-81", System = "LOINC", Display = "Left", AccessionDate = DateTime.UtcNow},
+                new IndexCode { Id= 7, Code = "77710001", System = "SNOMEDCT", Display = "Left", AccessionDate = DateTime.UtcNow }
             }.AsQueryable();
 
         public static IQueryable<IndexCodeElementRef> indexCodeElementDb = new List<IndexCodeElementRef>()
@@ -147,8 +152,8 @@ namespace RadElement.Service.Tests.Mocks.Data
             {
                 new IndexCodeElementSetRef { Id = 1, CodeId = 1, ElementSetId = 53  },
                 new IndexCodeElementSetRef { Id = 2, CodeId = 2, ElementSetId = 66  },
-                new IndexCodeElementSetRef { Id = 3, CodeId = 3, ElementSetId = 62  },
-                new IndexCodeElementSetRef { Id = 4, CodeId = 4, ElementSetId = 64  }
+                new IndexCodeElementSetRef { Id = 3, CodeId = 3, ElementSetId = 72  },
+                new IndexCodeElementSetRef { Id = 4, CodeId = 4, ElementSetId = 74  }
             }.AsQueryable();
 
         public static IQueryable<IndexCodeElementValueRef> indexCodeElementValueDb = new List<IndexCodeElementValueRef>()
@@ -156,7 +161,12 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new IndexCodeElementValueRef { Id = 1, CodeId = 1, ElementValueId = 1001  },
                 new IndexCodeElementValueRef { Id = 2, CodeId = 2, ElementValueId = 1002  },
                 new IndexCodeElementValueRef { Id = 3, CodeId = 3, ElementValueId = 1003  },
-                new IndexCodeElementValueRef { Id = 4, CodeId = 4, ElementValueId = 1007  }
+                new IndexCodeElementValueRef { Id = 4, CodeId = 4, ElementValueId = 1004  },
+                new IndexCodeElementValueRef { Id = 5, CodeId = 5, ElementValueId = 1007  },
+                new IndexCodeElementValueRef { Id = 6, CodeId = 6, ElementValueId = 1008  },
+                new IndexCodeElementValueRef { Id = 7, CodeId = 7, ElementValueId = 1009  },
+                new IndexCodeElementValueRef { Id = 8, CodeId = 7, ElementValueId = 1010  },
+                new IndexCodeElementValueRef { Id = 9, CodeId = 7, ElementValueId = 1011  }
             }.AsQueryable();
 
         #endregion
