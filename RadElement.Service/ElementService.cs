@@ -123,26 +123,10 @@ namespace RadElement.Service
                                                 ElementValue = elementValue,
                                                 IndexCode = elementIndexCode,
                                                 ElementValueIndexCode = elementValueIndexCode,
-                                                Person = elementPerson == null ? null : new PersonAttributes
-                                                {
-                                                    Id = elementPerson.Id,
-                                                    Name = elementPerson.Name,
-                                                    Orcid = elementPerson.Orcid,
-                                                    TwitterHandle = elementPerson.TwitterHandle,
-                                                    Url = elementPerson.Url,
-                                                    Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
-                                                },
-                                                Organization = elementOrganization == null ? null : new OrganizationAttributes
-                                                {
-                                                    Id = elementOrganization.Id,
-                                                    Name = elementOrganization.Name,
-                                                    Abbreviation = elementOrganization.Abbreviation,
-                                                    TwitterHandle = elementOrganization.TwitterHandle,
-                                                    Comment = elementOrganization.Comment,
-                                                    Email = elementOrganization.Email,
-                                                    Url = elementOrganization.Url,
-                                                    Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
-                                                }
+                                                Person = elementPerson,
+                                                Organization = elementOrganization,
+                                                PersonRole = elementPersonRef.Role,
+                                                OrganizationRole = elementOrganizaionRef.Role
                                             }).Distinct().ToList();
 
                     if (selectedElements != null && selectedElements.Any())
@@ -216,26 +200,10 @@ namespace RadElement.Service
                                                 ElementValue = elementValue,
                                                 IndexCode = elementIndexCode,
                                                 ElementValueIndexCode = elementValueIndexCode,
-                                                Person = elementPerson == null ? null : new PersonAttributes
-                                                {
-                                                    Id = elementPerson.Id,
-                                                    Name = elementPerson.Name,
-                                                    Orcid = elementPerson.Orcid,
-                                                    TwitterHandle = elementPerson.TwitterHandle,
-                                                    Url = elementPerson.Url,
-                                                    Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
-                                                },
-                                                Organization = elementOrganization == null ? null : new OrganizationAttributes
-                                                {
-                                                    Id = elementOrganization.Id,
-                                                    Name = elementOrganization.Name,
-                                                    Abbreviation = elementOrganization.Abbreviation,
-                                                    TwitterHandle = elementOrganization.TwitterHandle,
-                                                    Comment = elementOrganization.Comment,
-                                                    Email = elementOrganization.Email,
-                                                    Url = elementOrganization.Url,
-                                                    Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
-                                                }
+                                                Person = elementPerson,
+                                                Organization = elementOrganization,
+                                                PersonRole = elementPersonRef.Role,
+                                                OrganizationRole = elementOrganizaionRef.Role
                                             }).Distinct().ToList();
 
                     if (selectedElements != null && selectedElements.Any())
@@ -285,7 +253,7 @@ namespace RadElement.Service
                                             {
                                                 Element = element,
                                                 ElementSet = elementSet,
-                                                ElementValue = elementValue,
+                                                ElementValue = elementValue
                                             }).Distinct().ToList();
 
                     if (filteredElements != null && filteredElements.Any())
@@ -365,7 +333,7 @@ namespace RadElement.Service
                                         {
                                             Element = element,
                                             ElementSet = elementSet,
-                                            ElementValue = elementValue,
+                                            ElementValue = elementValue
                                         }).Distinct().ToList();
                     }
                     else if (operation == "persorg")
@@ -1161,7 +1129,7 @@ namespace RadElement.Service
                         var setAttributes = new SetBasicAttributes { SetId = elementSet.SetId, SetName = elementSet.Name };
                         element.SetInformation.Add(setAttributes);
                     }
-                    if (elem.ElementValue != null)
+                    if (elem.ElementValue != null && element.ValueType == "valueSet")
                     {
                         var elementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
                         if (elem.ElementValueIndexCode != null)
@@ -1180,13 +1148,25 @@ namespace RadElement.Service
                     }
                     if (elem.Person != null)
                     {
+                        var person = mapper.Map<PersonAttributes>(elem.Person);
+                        if (!string.IsNullOrEmpty(elem.PersonRole))
+                        {
+                            person.Roles.Add(elem.PersonRole);
+                        }
+
                         element.PersonInformation = new List<PersonAttributes>();
-                        element.PersonInformation.Add(elem.Person);
+                        element.PersonInformation.Add(person);
                     }
                     if (elem.Organization != null)
                     {
+                        var organization = mapper.Map<OrganizationAttributes>(elem.Organization);
+                        if (!string.IsNullOrEmpty(elem.OrganizationRole))
+                        {
+                            organization.Roles.Add(elem.OrganizationRole);
+                        }
+
                         element.OrganizationInformation = new List<OrganizationAttributes>();
-                        element.OrganizationInformation.Add(elem.Organization);
+                        element.OrganizationInformation.Add(organization);
                     }
 
                     elements.Add(element);
@@ -1207,32 +1187,35 @@ namespace RadElement.Service
                             element.SetInformation.Add(setAttributes);
                         }
                     }
-                    if (elem.ElementValue != null)
+                    if (elem.ElementValue != null && element.ValueType == "valueSet")
                     {
-                        if (elem.ElementValueIndexCode != null)
+                        var elementValue = element.ElementValues.Find(x => x.Id == elem.ElementValue.Id);
+                        if (elementValue != null)
                         {
-                            var elementValue = element.ElementValues.Find(x => x.ElementId == elem.Element.Id);
-                            if (elementValue != null)
+                            if (elem.ElementValueIndexCode != null && !elementValue.IndexCodes.Exists(x => x.Id == elem.ElementValueIndexCode.Id))
                             {
-                                if (!elementValue.IndexCodes.Exists(x => x.Id == elem.ElementValueIndexCode.Id))
+                                if (elementValue.IndexCodes == null)
                                 {
-                                    if (elementValue.IndexCodes == null)
-                                    {
-                                        elementValue.IndexCodes = new List<IndexCode>();
-                                    }
-                                    elementValue.IndexCodes.Add(elem.ElementValueIndexCode);
+                                    elementValue.IndexCodes = new List<IndexCode>();
                                 }
+                                elementValue.IndexCodes.Add(elem.ElementValueIndexCode);
                             }
                         }
-                        if (!element.ElementValues.Exists(x => x.Id == elem.ElementValue.Id))
+                        else
                         {
                             if (element.ElementValues == null)
                             {
                                 element.ElementValues = new List<ElementValueAttributes>();
                             }
 
-                            var elementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
-                            element.ElementValues.Add(elementValue);
+                            var mappedElementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
+                            mappedElementValue.IndexCodes = new List<IndexCode>();
+                            if (elem.ElementValueIndexCode != null)
+                            {
+                                mappedElementValue.IndexCodes.Add(elem.ElementValueIndexCode);
+                            }
+
+                            element.ElementValues.Add(mappedElementValue);
                         }
                     }
                     if (elem.IndexCode != null)
@@ -1248,46 +1231,50 @@ namespace RadElement.Service
                     }
                     if (elem.Person != null)
                     {
-                        if (!element.PersonInformation.Exists(x => x.Id == elem.Person.Id))
+                        var person = element.PersonInformation.Find(x => x.Id == elem.Person.Id);
+                        if (person != null)
                         {
+                            if (!string.IsNullOrEmpty(elem.PersonRole) && !person.Roles.Exists(x => x == elem.PersonRole))
+                            {
+                                person.Roles.Add(elem.PersonRole);
+                            }
+                        }
+                        else
+                        {
+                            var mappedPerson = mapper.Map<PersonAttributes>(elem.Person);
+                            if (!string.IsNullOrEmpty(elem.PersonRole))
+                            {
+                                mappedPerson.Roles.Add(elem.PersonRole);
+                            }
                             if (element.PersonInformation == null)
                             {
                                 element.PersonInformation = new List<PersonAttributes>();
                             }
-                            element.PersonInformation.Add(elem.Person);
-                        }
-                        else
-                        {
-                            var person = element.PersonInformation.Find(x => x.Id == elem.Person.Id);
-                            if (person != null)
-                            {
-                                if (elem.Person.Roles.Any() && !person.Roles.Exists(x => x == elem.Person.Roles[0]))
-                                {
-                                    person.Roles.Add(elem.Person.Roles[0]);
-                                }
-                            }
+                            element.PersonInformation.Add(mappedPerson);
                         }
                     }
                     if (elem.Organization != null)
                     {
-                        if (!element.OrganizationInformation.Exists(x => x.Id == elem.Organization.Id))
+                        var organization = element.OrganizationInformation.Find(x => x.Id == elem.Organization.Id);
+                        if (organization != null)
                         {
+                            if (!string.IsNullOrEmpty(elem.OrganizationRole) && !organization.Roles.Exists(x => x == elem.OrganizationRole))
+                            {
+                                organization.Roles.Add(elem.OrganizationRole);
+                            }
+                        }
+                        else
+                        {
+                            var mappedOrganization = mapper.Map<OrganizationAttributes>(elem.Organization);
+                            if (!string.IsNullOrEmpty(elem.OrganizationRole))
+                            {
+                                mappedOrganization.Roles.Add(elem.OrganizationRole);
+                            }
                             if (element.OrganizationInformation == null)
                             {
                                 element.OrganizationInformation = new List<OrganizationAttributes>();
                             }
-                            element.OrganizationInformation.Add(elem.Organization);
-                        }
-                        else
-                        {
-                            var organization = element.OrganizationInformation.Find(x => x.Id == elem.Organization.Id);
-                            if (organization != null)
-                            {
-                                if (elem.Organization.Roles.Any() && !organization.Roles.Exists(x => x == elem.Organization.Roles[0]))
-                                {
-                                    organization.Roles.Add(elem.Organization.Roles[0]);
-                                }
-                            }
+                            element.OrganizationInformation.Add(mappedOrganization);
                         }
                     }
                 }

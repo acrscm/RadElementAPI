@@ -22,15 +22,25 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the person.
         /// </summary>
-        public PersonAttributes Person { get; set; }
+        public Person Person { get; set; }
 
         /// <summary>
         /// Gets or sets the organization.
         /// </summary>
-        public OrganizationAttributes Organization { get; set; }
+        public Organization Organization { get; set; }
 
         /// <summary>
-        /// Gets or sets the index codes.
+        /// Gets or sets the person role.
+        /// </summary>
+        public string PersonRole { get; set; }
+
+        /// <summary>
+        /// Gets or sets the organization roles.
+        /// </summary>
+        public string OrganizationRole { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index code.
         /// </summary>
         public IndexCode IndexCode { get; set; }
 
