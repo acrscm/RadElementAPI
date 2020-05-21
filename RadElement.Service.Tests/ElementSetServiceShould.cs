@@ -363,7 +363,7 @@ namespace RadElement.Service.Tests
 
         #endregion
 
-        #region DeleteElement
+        #region DeleteSet
 
         [Theory]
         [InlineData("RDES100")]
