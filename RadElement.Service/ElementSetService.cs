@@ -57,7 +57,7 @@ namespace RadElement.Service
         {
             try
             {
-                var sets = radElementDbContext.Element.ToList();
+                var sets = radElementDbContext.ElementSet.ToList();
                 return await Task.FromResult(new JsonResult(sets, HttpStatusCode.OK));
             }
             catch (Exception ex)
