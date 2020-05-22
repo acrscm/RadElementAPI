@@ -288,166 +288,166 @@ namespace RadElement.Service
             }
         }
 
-        /// <summary>
-        /// Deeps the search elements.
-        /// </summary>
-        /// <param name="searchKeyword">The search keyword.</param>
-        /// <param name="operation">The operation.</param>
-        /// <returns></returns>
-        public async Task<JsonResult> DeepSearchElements(string searchKeyword, string operation)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(searchKeyword))
-                {
-                    if (searchKeyword.Length < 3)
-                    {
-                        return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
-                    }
+        ///// <summary>
+        ///// Deeps the search elements.
+        ///// </summary>
+        ///// <param name="searchKeyword">The search keyword.</param>
+        ///// <param name="operation">The operation.</param>
+        ///// <returns></returns>
+        //public async Task<JsonResult> DeepSearchElements(string searchKeyword, string operation)
+        //{
+        //    try
+        //    {
+        //        if (!string.IsNullOrEmpty(searchKeyword))
+        //        {
+        //            if (searchKeyword.Length < 3)
+        //            {
+        //                return await Task.FromResult(new JsonResult("The Keyword field must be a string with a minimum length of '3'.", HttpStatusCode.BadRequest));
+        //            }
 
-                    var filteredData = new List<FilteredData>();
-                    var deepSearchResponse = new DeepSearchResponse();
-                    var dbExecutionWatch = new System.Diagnostics.Stopwatch();
-                    dbExecutionWatch.Start();
+        //            var filteredData = new List<FilteredData>();
+        //            var deepSearchResponse = new DeepSearchResponse();
+        //            var dbExecutionWatch = new System.Diagnostics.Stopwatch();
+        //            dbExecutionWatch.Start();
 
-                    if (operation == "set")
-                    {
-                        filteredData = (from element in radElementDbContext.Element
+        //            if (operation == "set")
+        //            {
+        //                filteredData = (from element in radElementDbContext.Element
 
-                                        join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
-                                        from elementSetRef in eleSetRefs.DefaultIfEmpty()
+        //                                join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+        //                                from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
-                                        join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
-                                        from elementSet in eleSets.DefaultIfEmpty()
+        //                                join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+        //                                from elementSet in eleSets.DefaultIfEmpty()
 
-                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+        //                                where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
 
-                                        select new FilteredData
-                                        {
-                                            Element = element,
-                                            ElementSet = elementSet
-                                        }).Distinct().ToList();
-                    }
-                    else if (operation == "values")
-                    {
-                        filteredData = (from element in radElementDbContext.Element
+        //                                select new FilteredData
+        //                                {
+        //                                    Element = element,
+        //                                    ElementSet = elementSet
+        //                                }).Distinct().ToList();
+        //            }
+        //            else if (operation == "values")
+        //            {
+        //                filteredData = (from element in radElementDbContext.Element
 
-                                        join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
-                                        from elementSetRef in eleSetRefs.DefaultIfEmpty()
+        //                                join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+        //                                from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
-                                        join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
-                                        from elementSet in eleSets.DefaultIfEmpty()
+        //                                join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+        //                                from elementSet in eleSets.DefaultIfEmpty()
 
-                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                        from elementValue in eleValues.DefaultIfEmpty()
+        //                                join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+        //                                from elementValue in eleValues.DefaultIfEmpty()
 
-                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+        //                                where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
 
-                                        select new FilteredData
-                                        {
-                                            Element = element,
-                                            ElementSet = elementSet,
-                                            ElementValue = elementValue
-                                        }).Distinct().ToList();
-                    }
-                    else if (operation == "persorg")
-                    {
-                        filteredData = (from element in radElementDbContext.Element
+        //                                select new FilteredData
+        //                                {
+        //                                    Element = element,
+        //                                    ElementSet = elementSet,
+        //                                    ElementValue = elementValue
+        //                                }).Distinct().ToList();
+        //            }
+        //            else if (operation == "persorg")
+        //            {
+        //                filteredData = (from element in radElementDbContext.Element
 
-                                        join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
-                                        from elementSetRef in eleSetRefs.DefaultIfEmpty()
+        //                                join eleSetRef in radElementDbContext.ElementSetRef on (int)element.Id equals eleSetRef.ElementId into eleSetRefs
+        //                                from elementSetRef in eleSetRefs.DefaultIfEmpty()
 
-                                        join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
-                                        from elementSet in eleSets.DefaultIfEmpty()
+        //                                join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
+        //                                from elementSet in eleSets.DefaultIfEmpty()
 
-                                        join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                        from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
+        //                                join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
+        //                                from elementValue in eleValues.DefaultIfEmpty(new ElementValue())
 
-                                        join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
-                                        from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
+        //                                join eleIndexCodeRef in radElementDbContext.IndexCodeElementRef on element.Id equals eleIndexCodeRef.ElementId into eleIndexCodeRefs
+        //                                from elementIndexCodeRef in eleIndexCodeRefs.DefaultIfEmpty(new IndexCodeElementRef())
 
-                                        join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
-                                        from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
+        //                                join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
+        //                                from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
-                                        join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
-                                        from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
+        //                                join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
+        //                                from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty(new IndexCodeElementValueRef())
 
-                                        join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
-                                        from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
+        //                                join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
+        //                                from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
 
-                                        join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
-                                        from elementPersonRef in elePersonRefs.DefaultIfEmpty()
+        //                                join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
+        //                                from elementPersonRef in elePersonRefs.DefaultIfEmpty()
 
-                                        join elePerson in radElementDbContext.Person on elementPersonRef.PersonID equals elePerson.Id into elePersons
-                                        from elementPerson in elePersons.DefaultIfEmpty()
+        //                                join elePerson in radElementDbContext.Person on elementPersonRef.PersonID equals elePerson.Id into elePersons
+        //                                from elementPerson in elePersons.DefaultIfEmpty()
 
-                                        join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into eleOrganizationRefs
-                                        from elementOrganizaionRef in eleOrganizationRefs.DefaultIfEmpty()
+        //                                join eleOrganizationRef in radElementDbContext.OrganizationRoleElementRef on (int)element.Id equals eleOrganizationRef.ElementID into eleOrganizationRefs
+        //                                from elementOrganizaionRef in eleOrganizationRefs.DefaultIfEmpty()
 
-                                        join eleOrganization in radElementDbContext.Organization on elementOrganizaionRef.OrganizationID equals eleOrganization.Id into eleOrganizations
-                                        from elementOrganization in eleOrganizations.DefaultIfEmpty()
+        //                                join eleOrganization in radElementDbContext.Organization on elementOrganizaionRef.OrganizationID equals eleOrganization.Id into eleOrganizations
+        //                                from elementOrganization in eleOrganizations.DefaultIfEmpty()
 
-                                        where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+        //                                where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
 
-                                        select new FilteredData
-                                        {
-                                            Element = element,
-                                            ElementSet = elementSet,
-                                            ElementValue = elementValue,
-                                            IndexCode = elementIndexCode,
-                                            ElementValueIndexCode = elementValueIndexCode,
-                                            Person = elementPerson == null ? null : new PersonAttributes
-                                            {
-                                                Id = elementPerson.Id,
-                                                Name = elementPerson.Name,
-                                                Orcid = elementPerson.Orcid,
-                                                TwitterHandle = elementPerson.TwitterHandle,
-                                                Url = elementPerson.Url,
-                                                Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
-                                            },
-                                            Organization = elementOrganization == null ? null : new OrganizationAttributes
-                                            {
-                                                Id = elementOrganization.Id,
-                                                Name = elementOrganization.Name,
-                                                Abbreviation = elementOrganization.Abbreviation,
-                                                TwitterHandle = elementOrganization.TwitterHandle,
-                                                Comment = elementOrganization.Comment,
-                                                Email = elementOrganization.Email,
-                                                Url = elementOrganization.Url,
-                                                Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
-                                            }
-                                        }).Distinct().ToList();
-                    }
+        //                                select new FilteredData
+        //                                {
+        //                                    Element = element,
+        //                                    ElementSet = elementSet,
+        //                                    ElementValue = elementValue,
+        //                                    IndexCode = elementIndexCode,
+        //                                    ElementValueIndexCode = elementValueIndexCode,
+        //                                    Person = elementPerson == null ? null : new PersonAttributes
+        //                                    {
+        //                                        Id = elementPerson.Id,
+        //                                        Name = elementPerson.Name,
+        //                                        Orcid = elementPerson.Orcid,
+        //                                        TwitterHandle = elementPerson.TwitterHandle,
+        //                                        Url = elementPerson.Url,
+        //                                        Roles = !string.IsNullOrEmpty(elementPersonRef.Role) ? new List<string> { elementPersonRef.Role } : new List<string>()
+        //                                    },
+        //                                    Organization = elementOrganization == null ? null : new OrganizationAttributes
+        //                                    {
+        //                                        Id = elementOrganization.Id,
+        //                                        Name = elementOrganization.Name,
+        //                                        Abbreviation = elementOrganization.Abbreviation,
+        //                                        TwitterHandle = elementOrganization.TwitterHandle,
+        //                                        Comment = elementOrganization.Comment,
+        //                                        Email = elementOrganization.Email,
+        //                                        Url = elementOrganization.Url,
+        //                                        Roles = !string.IsNullOrEmpty(elementOrganizaionRef.Role) ? new List<string> { elementOrganizaionRef.Role } : new List<string>()
+        //                                    }
+        //                                }).Distinct().ToList();
+        //            }
 
-                    dbExecutionWatch.Stop();
-                    deepSearchResponse.DBExecutionTime = string.Format("Execution Time: {0} ms", dbExecutionWatch.ElapsedMilliseconds);
+        //            dbExecutionWatch.Stop();
+        //            deepSearchResponse.DBExecutionTime = string.Format("Execution Time: {0} ms", dbExecutionWatch.ElapsedMilliseconds);
 
-                    if (filteredData != null && filteredData.Any())
-                    {
-                        var loopExecutionWatch = new System.Diagnostics.Stopwatch();
-                        loopExecutionWatch.Start();
-                        var elements = GetElementDetailsDto(filteredData, false);
-                        loopExecutionWatch.Stop();
-                        deepSearchResponse.LoopExecutionTime = string.Format("Execution Time: {0} ms", loopExecutionWatch.ElapsedMilliseconds);
-                        deepSearchResponse.Elements = elements;
+        //            if (filteredData != null && filteredData.Any())
+        //            {
+        //                var loopExecutionWatch = new System.Diagnostics.Stopwatch();
+        //                loopExecutionWatch.Start();
+        //                var elements = GetElementDetailsDto(filteredData, false);
+        //                loopExecutionWatch.Stop();
+        //                deepSearchResponse.LoopExecutionTime = string.Format("Execution Time: {0} ms", loopExecutionWatch.ElapsedMilliseconds);
+        //                deepSearchResponse.Elements = elements;
 
-                        return await Task.FromResult(new JsonResult(deepSearchResponse, HttpStatusCode.OK));
-                    }
-                    else
-                    {
-                        return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
-                    }
-                }
+        //                return await Task.FromResult(new JsonResult(deepSearchResponse, HttpStatusCode.OK));
+        //            }
+        //            else
+        //            {
+        //                return await Task.FromResult(new JsonResult(string.Format("No such element with keyword '{0}'.", searchKeyword), HttpStatusCode.NotFound));
+        //            }
+        //        }
 
-                return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception in method 'SearchElements(SearchKeyword searchKeyword)'");
-                var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
-            }
-        }
+        //        return await Task.FromResult(new JsonResult("Keyword given is invalid.", HttpStatusCode.BadRequest));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Error(ex, "Exception in method 'SearchElements(SearchKeyword searchKeyword)'");
+        //        var exMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+        //        return await Task.FromResult(new JsonResult(exMessage, HttpStatusCode.InternalServerError));
+        //    }
+        //}
 
         /// <summary>
         /// Creates the element.

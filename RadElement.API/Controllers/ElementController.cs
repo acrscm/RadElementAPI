@@ -83,18 +83,18 @@ namespace RadElement.API.Controllers
             return StatusCode((int)result.Code, result.Value);
         }
 
-        /// <summary>
-        /// Deeps the search elements.
-        /// </summary>
-        /// <param name="keyword">The keyword.</param>
-        /// <param name="operation">The operation.</param>
-        /// <returns></returns>
-        [HttpGet("elements/deepsearch")]
-        public async Task<IActionResult> DeepSearchElements([FromQuery]string keyword, [FromQuery]string operation)
-        {
-            var result = await radElementService.DeepSearchElements(keyword, operation);
-            return StatusCode((int)result.Code, result.Value);
-        }
+        ///// <summary>
+        ///// Deeps the search elements.
+        ///// </summary>
+        ///// <param name="keyword">The keyword.</param>
+        ///// <param name="operation">The operation.</param>
+        ///// <returns></returns>
+        //[HttpGet("elements/deepsearch")]
+        //public async Task<IActionResult> DeepSearchElements([FromQuery]string keyword, [FromQuery]string operation)
+        //{
+        //    var result = await radElementService.DeepSearchElements(keyword, operation);
+        //    return StatusCode((int)result.Code, result.Value);
+        //}
 
         /// <summary>
         /// Creates a element under specific set identifier.
