@@ -256,16 +256,12 @@ namespace RadElement.Service
                                             join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
                                             from elementSet in eleSets.DefaultIfEmpty()
 
-                                            join eleValue in radElementDbContext.ElementValue on element.Id equals eleValue.ElementId into eleValues
-                                            from elementValue in eleValues.DefaultIfEmpty()
-
                                             where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
 
                                             select new FilteredData
                                             {
                                                 Element = element,
-                                                ElementSet = elementSet,
-                                                ElementValue = elementValue
+                                                ElementSet = elementSet
                                             }).Distinct().ToList();
 
                     if (filteredElements != null && filteredElements.Any())

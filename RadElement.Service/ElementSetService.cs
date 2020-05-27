@@ -141,35 +141,12 @@ namespace RadElement.Service
                 {
                     var filteredSets = (from elementSet in radElementDbContext.ElementSet
 
-                                        join eleSetIndexCodeRef in radElementDbContext.IndexCodeElementSetRef on elementSet.Id equals eleSetIndexCodeRef.ElementSetId into eleSetIndexCodeRefs
-                                        from elementSetIndexCodeRef in eleSetIndexCodeRefs.DefaultIfEmpty()
-
-                                        join eleSetIndexCode in radElementDbContext.IndexCode on elementSetIndexCodeRef.CodeId equals eleSetIndexCode.Id into eleSetIndexCodes
-                                        from elementSetIndexCode in eleSetIndexCodes.DefaultIfEmpty()
-
-                                        join eleSetPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals eleSetPersonRef.ElementSetID into eleSetPersonRefs
-                                        from elementSetPersonRef in eleSetPersonRefs.DefaultIfEmpty()
-
-                                        join eleSetPerson in radElementDbContext.Person on elementSetPersonRef.PersonID equals eleSetPerson.Id into eleSetPersons
-                                        from elementSetPerson in eleSetPersons.DefaultIfEmpty()
-
-                                        join eleSetOrganizationRef in radElementDbContext.OrganizationRoleElementSetRef on elementSet.Id equals eleSetOrganizationRef.ElementSetID into eleSetOrganizationRefs
-                                        from elementSetOrganizationRef in eleSetOrganizationRefs.DefaultIfEmpty()
-
-                                        join eleSetOrganization in radElementDbContext.Organization on elementSetOrganizationRef.OrganizationID equals eleSetOrganization.Id into eleSetOrganizations
-                                        from elementSetOrganization in eleSetOrganizations.DefaultIfEmpty()
-
                                         where (elementSet.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
                                                ("RDES" + elementSet.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
 
                                         select new FilteredData
                                         {
-                                            ElementSet = elementSet,
-                                            IndexCode = elementSetIndexCode,
-                                            Person = elementSetPerson,
-                                            Organization = elementSetOrganization,
-                                            PersonRole = elementSetPersonRef.Role,
-                                            OrganizationRole = elementSetOrganizationRef.Role
+                                            ElementSet = elementSet
                                         }).Distinct().ToList();
 
                     if (filteredSets != null && filteredSets.Any())
