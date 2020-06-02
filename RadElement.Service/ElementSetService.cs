@@ -88,6 +88,12 @@ namespace RadElement.Service
                                         join eleSetIndexCode in radElementDbContext.IndexCode on elementSetIndexCodeRef.CodeId equals eleSetIndexCode.Id into eleSetIndexCodes
                                         from elementSetIndexCode in eleSetIndexCodes.DefaultIfEmpty()
 
+                                        join eleSetReferenceRef in radElementDbContext.ReferenceRef on elementSet.Id equals eleSetReferenceRef.Reference_For_Id into eleSetReferenceRefs
+                                        from elementSetReferenceRef in eleSetReferenceRefs.DefaultIfEmpty()
+
+                                        join eleSetReference in radElementDbContext.Reference on elementSetReferenceRef.Reference_Id equals eleSetReference.Id into eleSetReferences
+                                        from elementSetReference in eleSetReferences.DefaultIfEmpty()
+
                                         join eleSetPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals eleSetPersonRef.ElementSetID into eleSetPersonRefs
                                         from elementSetPersonRef in eleSetPersonRefs.DefaultIfEmpty()
 
@@ -106,6 +112,7 @@ namespace RadElement.Service
                                         {
                                             ElementSet = elementSet,
                                             IndexCode = elementSetIndexCode,
+                                            Reference = elementSetReference,
                                             Person = elementSetPerson,
                                             Organization = elementSetOrganization,
                                             PersonRole = elementSetPersonRef.Role,
@@ -205,9 +212,10 @@ namespace RadElement.Service
                     radElementDbContext.ElementSet.Add(set);
                     radElementDbContext.SaveChanges();
 
-                    AddIndexCodeReferences(set.Id, content.IndexCodeReferences);
-                    AddPersonReferences(set.Id, content.Persons);
-                    AddOrganizationReferences(set.Id, content.Organizations);
+                    AddElementSetIndexCodeRefs(set.Id, content.IndexCodeReferences);
+                    AddElementSetReferenceRefs(set.Id, content.ReferencesRef);
+                    AddElementSetPersonRefs(set.Id, content.Persons);
+                    AddElementSetOrganizationRefs(set.Id, content.Organizations);
 
                     transaction.Commit();
 
@@ -262,13 +270,15 @@ namespace RadElement.Service
 
                             radElementDbContext.SaveChanges();
 
-                            RemoveIndexCodeReferences(id);
-                            RemovePersonReferences(id);
-                            RemoveOrganizationReferences(id);
+                            RemoveElementSetIndexCodeRefs(id);
+                            RemoveElementSetReferenceRefs(id);
+                            RemoveElementSetPersonRefs(id);
+                            RemoveElementSetOrganizationRefs(id);
 
-                            AddIndexCodeReferences(id, content.IndexCodeReferences);
-                            AddPersonReferences(id, content.Persons);
-                            AddOrganizationReferences(id, content.Organizations);
+                            AddElementSetIndexCodeRefs(id, content.IndexCodeReferences);
+                            AddElementSetReferenceRefs(id, content.ReferencesRef);
+                            AddElementSetPersonRefs(id, content.Persons);
+                            AddElementSetOrganizationRefs(id, content.Organizations);
 
                             transaction.Commit();
 
@@ -306,10 +316,11 @@ namespace RadElement.Service
 
                         if (elementSet != null)
                         {
-                            RemoveIndexCodeReferences(elementSet.Id);
-                            RemoveSetElementsReferences(elementSet);
-                            RemovePersonReferences(elementSet.Id);
-                            RemoveOrganizationReferences(elementSet.Id);
+                            RemoveElementSetIndexCodeRefs(elementSet.Id);
+                            RemoveElementSetReferenceRefs(id);
+                            RemoveElementSetRefs(elementSet);
+                            RemoveElementSetPersonRefs(elementSet.Id);
+                            RemoveElementSetOrganizationRefs(elementSet.Id);
                             RemoveSet(elementSet.Id);
 
                             transaction.Commit();
@@ -333,7 +344,7 @@ namespace RadElement.Service
         /// Removes the set elements.
         /// </summary>
         /// <param name="elementSet">The element set.</param>
-        private void RemoveSetElementsReferences(ElementSet elementSet)
+        private void RemoveElementSetRefs(ElementSet elementSet)
         {
             var elementSetRefs = radElementDbContext.ElementSetRef.Where(x => x.ElementSetId == elementSet.Id).ToList();
             if (elementSetRefs != null && elementSetRefs.Any())
@@ -347,7 +358,7 @@ namespace RadElement.Service
         /// Adds the person references.
         /// </summary>
         /// <param name="personIds">The person ids.</param>
-        private void AddPersonReferences(int setId, List<PersonDetails> personRefs)
+        private void AddElementSetPersonRefs(int setId, List<PersonDetails> personRefs)
         {
             if (personRefs != null && personRefs.Any())
             {
@@ -393,7 +404,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="orgRefs">The org refs.</param>
-        private void AddOrganizationReferences(int setId, List<OrganizationDetails> orgRefs)
+        private void AddElementSetOrganizationRefs(int setId, List<OrganizationDetails> orgRefs)
         {
             if (orgRefs != null && orgRefs.Any())
             {
@@ -439,43 +450,48 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="codeReference">The code reference.</param>
-        private void AddIndexCodeReferences(int setId, List<IndexCodeReference> codeReferences)
+        private void AddElementSetIndexCodeRefs(int setId, List<int> indexCodeReferences)
         {
-            if (codeReferences != null && codeReferences.Any())
+            if (indexCodeReferences != null && indexCodeReferences.Any())
             {
-                foreach (var codeReference in codeReferences)
+                foreach (var indexCodeReference in indexCodeReferences)
                 {
-                    int codeId = 0;
-                    var indexCodeSystem = radElementDbContext.IndexCodeSystem.Where(x => string.Equals(x.Abbrev, codeReference.System, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                    if (indexCodeSystem != null)
+                    if (indexCodeReference != 0)
                     {
-                        var indexCode = radElementDbContext.IndexCode.Where(x => string.Equals(x.System, indexCodeSystem.Abbrev, StringComparison.InvariantCultureIgnoreCase) &&
-                                                                                 string.Equals(x.Code, codeReference.Code, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                        if (indexCode != null)
-                        {
-                            codeId = indexCode.Id;
-                        }
-                        else
-                        {
-                            var indexCodeSys = new IndexCode
-                            {
-                                Code = codeReference.Code,
-                                System = indexCodeSystem.Abbrev,
-                                Display = codeReference.Display,
-                                AccessionDate = DateTime.UtcNow
-                            };
-                            radElementDbContext.IndexCode.Add(indexCodeSys);
-                            radElementDbContext.SaveChanges();
-
-                            codeId = indexCodeSys.Id;
-                        }
                         var setIndexCode = new IndexCodeElementSetRef
                         {
                             ElementSetId = setId,
-                            CodeId = codeId
+                            CodeId = indexCodeReference
                         };
 
                         radElementDbContext.IndexCodeElementSetRef.Add(setIndexCode);
+                        radElementDbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the reference refs.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="references">The references.</param>
+        private void AddElementSetReferenceRefs(int setId, List<int> references)
+        {
+            if (references != null && references.Any())
+            {
+                foreach (var reference in references)
+                {
+                    if (reference != 0)
+                    {
+                        var referenceRef = new ReferenceRef
+                        {
+                            Reference_For_Id = setId,
+                            Reference_Id = reference,
+                            Reference_For_Type = "set"
+                        };
+
+                        radElementDbContext.ReferenceRef.Add(referenceRef);
                         radElementDbContext.SaveChanges();
                     }
                 }
@@ -500,7 +516,7 @@ namespace RadElement.Service
         /// Removes the person references.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        private void RemovePersonReferences(int setId)
+        private void RemoveElementSetPersonRefs(int setId)
         {
             var personElementSetRefs = radElementDbContext.PersonRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
             if (personElementSetRefs != null && personElementSetRefs.Any())
@@ -514,7 +530,7 @@ namespace RadElement.Service
         /// Removes the organization references.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        private void RemoveOrganizationReferences(int setId)
+        private void RemoveElementSetOrganizationRefs(int setId)
         {
             var organizationElementSetRefs = radElementDbContext.OrganizationRoleElementSetRef.Where(x => x.ElementSetID == setId).ToList();
             if (organizationElementSetRefs != null && organizationElementSetRefs.Any())
@@ -527,12 +543,26 @@ namespace RadElement.Service
         /// Removes the index code references.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        private void  RemoveIndexCodeReferences(int setId)
+        private void RemoveElementSetIndexCodeRefs(int setId)
         {
             var indexCodeSetRefs = radElementDbContext.IndexCodeElementSetRef.Where(x => x.ElementSetId == setId).ToList();
             if (indexCodeSetRefs != null && indexCodeSetRefs.Any())
             {
                 radElementDbContext.IndexCodeElementSetRef.RemoveRange(indexCodeSetRefs);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Removes the reference refs.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void RemoveElementSetReferenceRefs(int setId)
+        {
+            var referenceRefs = radElementDbContext.ReferenceRef.Where(x => x.Reference_For_Id == setId).ToList();
+            if (referenceRefs != null && referenceRefs.Any())
+            {
+                radElementDbContext.ReferenceRef.RemoveRange(referenceRefs);
                 radElementDbContext.SaveChanges();
             }
         }
@@ -574,6 +604,11 @@ namespace RadElement.Service
                         set.IndexCodes = new List<IndexCode>();
                         set.IndexCodes.Add(eleSet.IndexCode);
                     }
+                    if (eleSet.Reference != null)
+                    {
+                        set.References = new List<Reference>();
+                        set.References.Add(eleSet.Reference);
+                    }
                     if (eleSet.Person != null)
                     {
                         var person = mapper.Map<PersonAttributes>(eleSet.Person);
@@ -611,6 +646,17 @@ namespace RadElement.Service
                                 set.IndexCodes = new List<IndexCode>();
                             }
                             set.IndexCodes.Add(eleSet.IndexCode);
+                        }
+                    }
+                    if (eleSet.Reference != null)
+                    {
+                        if (!set.References.Exists(x => x.Id == eleSet.Reference.Id))
+                        {
+                            if (set.References == null)
+                            {
+                                set.References = new List<Reference>();
+                            }
+                            set.References.Add(eleSet.Reference);
                         }
                     }
                     if (eleSet.Person != null)

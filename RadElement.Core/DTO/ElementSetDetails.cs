@@ -18,6 +18,12 @@ namespace RadElement.Core.DTO
         public List<IndexCode> IndexCodes { get; set; }
 
         /// <summary>
+        /// Gets or sets the references.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public List<Reference> References { get; set; }
+
+        /// <summary>
         /// Gets or sets the person information.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

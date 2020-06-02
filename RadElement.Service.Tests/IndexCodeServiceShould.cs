@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using RadElement.Core.Domain;
 using RadElement.Core.DTO;
 using RadElement.Core.Data;
-using RadElement.Core.Profile;
 using RadElement.Service.Tests.Mocks.Data;
 using Serilog;
 using System.Collections.Generic;
@@ -16,12 +14,12 @@ using RadElement.Core.Infrastructure;
 
 namespace RadElement.Service.Tests
 {
-    public class ElementSetServiceShould
+    public class IndexCodeServiceShould
     {
         /// <summary>
-        /// The service
+        /// The person service
         /// </summary>
-        private readonly ElementSetService service;
+        private readonly IndexCodeService service;
 
         /// <summary>
         /// The mock RAD element context
@@ -33,78 +31,62 @@ namespace RadElement.Service.Tests
         /// </summary>
         private readonly Mock<ILogger> mockLogger;
 
-        /// <summary>
-        /// The mapper
-        /// </summary>
-        private readonly IMapper mapper;
-
         private const string connectionString = "server=localhost;user id=root;password=root;persistsecurityinfo=True;database=radelement;Convert Zero Datetime=True";
-        private const string setNotFoundMessage = "No such set with id '{0}'.";
-        private const string setNotFoundMessageWithSearchMessage = "No such set with keyword '{0}'.";
-        private const string setInvalidMessage = "Set fileds are invalid.";
+        private const string indexCodeNotFoundMessage = "No such index code with id '{0}'.";
+        private const string indexCodeSystemNotFoundMessage = "No such index code system with code '{0}'.";
+        private const string indexCodeNotFoundMessageWithSearchMessage = "No such index code with keyword '{0}'.";
         private const string invalidSearchMessage = "Keyword given is invalid.";
-        private const string setUpdatedMessage = "Set with id '{0}' is updated.";
-        private const string setDeletedMessage = "Set with id '{0}' is deleted.";
+        private const string indexCodeInvalidMessage = "Index code fields are invalid.";
+        private const string indexCodeUpdateMessage = "Index code with id '{0}' is updated.";
+        private const string indexCodeDeletedMessage = "Index code with id '{0}' is deleted.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementSetServiceShould"/> class.
+        /// Initializes a new instance of the <see cref="IndexCodeServiceShould"/> class.
         /// </summary>
-        public ElementSetServiceShould()
+        public IndexCodeServiceShould()
         {
             mockRadElementContext = new Mock<RadElementDbContext>();
             mockLogger = new Mock<ILogger>();
 
-            var elementSetProfile = new ElementSetProfile();
-            var personProfileProfile = new PersonProfile();
-            var organizationProfileProfile = new OrganizationProfile();
-
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(elementSetProfile);
-                cfg.AddProfile(personProfileProfile);
-                cfg.AddProfile(organizationProfileProfile);
-            });
-
-            mapper = new Mapper(mapperConfig);
-            service = new ElementSetService(mockRadElementContext.Object, mapper, mockLogger.Object);
+            service = new IndexCodeService(mockRadElementContext.Object, mockLogger.Object);
         }
 
-        #region GetSets
+        #region GetIndexCodes
 
         [Fact]
-        public async void GetSetsShouldThrowInternalServerErrorForExceptions()
+        public async void GetIndexCodesShouldThrowInternalServerErrorForExceptions()
         {
             IntializeMockData(false);
-            var result = await service.GetSets();
-            
+            var result = await service.GetIndexCodes();
+
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.Equal(HttpStatusCode.InternalServerError, result.Code);
         }
 
         [Fact]
-        public async void GetSetsShouldReturnAllSets()
+        public async void GetIndexCodesShouldReturnAllIndexCodes()
         {
             IntializeMockData(true);
-            var result = await service.GetSets();
+            var result = await service.GetIndexCodes();
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<ElementSet>>(result.Value);
+            Assert.IsType<List<IndexCode>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
         #endregion
 
-        #region GetSet By SetId
+        #region GetIndexCode
 
         [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void GetSetByIdShouldThrowInternalServerErrorForExceptions(string setId)
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void GetIndexCodeShouldThrowInternalServerErrorForExceptions(int indexCodeId)
         {
             IntializeMockData(false);
-            var result = await service.GetSet(setId);
+            var result = await service.GetIndexCode(indexCodeId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -112,45 +94,45 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RD1")]
-        [InlineData("RD2")]
-        public async void GetSetByIdShouldReturnNotFoundIfDoesnotExists(string setId)
+        [InlineData(100)]
+        [InlineData(101)]
+        public async void GetIndexCodeShouldReturnNotFoundIfDoesnotExists(int indexCodeId)
         {
             IntializeMockData(true);
-            var result = await service.GetSet(setId);
+            var result = await service.GetIndexCode(indexCodeId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
+            Assert.Equal(string.Format(indexCodeNotFoundMessage, indexCodeId), result.Value);
         }
 
         [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void GetSetByIdShouldReturnSetsBasedOnSetId(string setId)
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void GetIndexCodeShouldReturnIndexCodeBasedOnIndexCodeId(int indexCodeId)
         {
             IntializeMockData(true);
-            var result = await service.GetSet(setId);
+            var result = await service.GetIndexCode(indexCodeId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<ElementSetDetails>(result.Value);
+            Assert.IsType<IndexCode>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
         #endregion
 
-        #region SearchSet
+        #region SearchIndexCodes
 
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
+        public async void SearchIndexCodesShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchSets(searchKeyword);
+            var result = await service.SearchIndexCodes(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -160,27 +142,26 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("test")]
-        [InlineData("test1")]
-        public async void SearchSetShouldReturnEmpySetIfSearchKeywordDoesnotExists(string searchKeyword)
+        [InlineData("RADLEX1")]
+        [InlineData("RADLEX2")]
+        public async void SearchIndexCodesShouldReturnNotFoundIfSearchKeywordDoesnotExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchSets(searchKeyword);
+            var result = await service.SearchIndexCodes(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setNotFoundMessageWithSearchMessage, searchKeyword), result.Value);
+            Assert.Equal(string.Format(indexCodeNotFoundMessageWithSearchMessage, searchKeyword), result.Value);
         }
-    
+
         [Theory]
-        [InlineData("Pulmonary")]
-        [InlineData("Kimberly")]
-        public async void GetSetShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
+        [InlineData("RADLEX")]
+        public async void SearchIndexCodesShouldReturnThrowInternalServerErrorForExceptions(string searchKeyword)
         {
             IntializeMockData(false);
-            var result = await service.SearchSets(searchKeyword);
+            var result = await service.SearchIndexCodes(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -188,58 +169,48 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("Tumor")]
-        [InlineData("Tissue")]
-        public async void GetSetShouldReturnSetIfSearchedElementExists(string searchKeyword)
+        [InlineData("RADLEX")]
+        public async void SearchIndexCodesShouldReturnIndexCodesIfSearchedIndexCodeExists(string searchKeyword)
         {
             IntializeMockData(true);
-            var result = await service.SearchSets(searchKeyword);
+            var result = await service.SearchIndexCodes(searchKeyword);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<List<ElementSetDetails>>(result.Value);
+            Assert.IsType<List<IndexCode>>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
         }
 
         #endregion
 
-        #region CreateSet
+        #region CreateIndexCode
 
         [Theory]
         [InlineData(null)]
-        public async void CreateSetShouldReturnBadRequestIfSetIsInvalid(CreateUpdateSet set)
+        public async void CreateIndexCodeShouldReturnBadRequestIfIndexCodeDetailsAreInvalid(CreateUpdateIndexCode indexCode)
         {
             IntializeMockData(true);
-            var result = await service.CreateSet(set);
+            var result = await service.CreateIndexCode(indexCode);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(setInvalidMessage, result.Value);
+            Assert.Equal(indexCodeInvalidMessage, result.Value);
         }
 
         [Theory]
-        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("Sinus1", "Sinus2", "Sinus3")]
-        public async void CreateSetShouldThrowInternalServerErrorForExceptions(string moduleName, string contactName, string description)
+        [InlineData("RID28662", "RADLEX", "Attenuation 1")]
+        [InlineData("RID11086", "RADLEX", "Attenuation 2")]
+        public async void CreateIndexCodeShouldReturnThrowInternalServerErrorForExceptions(string code, string system, string display)
         {
-            var set = new CreateUpdateSet();
-            set.Name = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-            set.ReferencesRef = new List<int> { 1, 2, 3 };
-            set.Persons = new List<PersonDetails>() {
-                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
-                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
-            };
-            set.Organizations = new List<OrganizationDetails>() {
-                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
-                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
-            };
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = code;
+            indexCode.System = system;
+            indexCode.Display = display;
 
             IntializeMockData(false);
-            var result = await service.CreateSet(set);
+            var result = await service.CreateIndexCode(indexCode);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -247,65 +218,113 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("Sinus1", "Sinus2", "Sinus3")]
-        public async void CreateSetShouldReturnSetIdIfSetIsValid(string moduleName, string contactName, string description)
+        [InlineData("RID28662", "RADCT", "Attenuation 1")]
+        [InlineData("RID11086", "RADCT", "Attenuation 2")]
+        public async void CreateIndexCodeShouldReturnNotFoundIfIndexCodeSystemDoesnotExists(string code, string system, string display)
         {
-            var set = new CreateUpdateSet();
-            set.Name = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-            set.ReferencesRef = new List<int> { 1, 2, 3 };
-            set.Persons = new List<PersonDetails>() {
-                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
-                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
-            };
-            set.Organizations = new List<OrganizationDetails>() {
-                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
-                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
-            };
-            set.IndexCodeReferences = new List<int>() { 1, 2, 3};
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = code;
+            indexCode.System = system;
+            indexCode.Display = display;
 
             IntializeMockData(true);
-            var result = await service.CreateSet(set);
+            var result = await service.CreateIndexCode(indexCode);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<SetIdDetails>(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(indexCodeSystemNotFoundMessage, system), result.Value);
+        }
+
+        [Theory]
+        [InlineData("RID28662", "RADLEX", "Attenuation 1")]
+        [InlineData("RID11086", "RADLEX", "Attenuation 2")]
+        public async void CreateIndexCodeShouldReturnIndexCodeIdIfAlreadyExists(string code, string system, string display)
+        {
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = code;
+            indexCode.System = system;
+            indexCode.Display = display;
+
+            IntializeMockData(true);
+            var result = await service.CreateIndexCode(indexCode);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<IndexCodeIdDetails>(result.Value);
+            Assert.Equal(HttpStatusCode.OK, result.Code);
+        }
+
+        [Theory]
+        [InlineData("RID2866256", "RADLEX", "Attenuation 1")]
+        [InlineData("RID1108657", "RADLEX", "Attenuation 2")]
+        public async void CreateIndexCodeShouldReturnIndexCodeIdIfCreated(string code, string system, string display)
+        {
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = code;
+            indexCode.System = system;
+            indexCode.Display = display;
+
+            IntializeMockData(true);
+            var result = await service.CreateIndexCode(indexCode);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<IndexCodeIdDetails>(result.Value);
             Assert.Equal(HttpStatusCode.Created, result.Code);
         }
 
         #endregion
 
-        #region UpdateSet
+        #region UpdateIndexCode
 
         [Theory]
-        [InlineData("RDES53", null)]
-        public async void UpdateSetShouldReturnBadRequestIfSetIsInvalid(string setId, CreateUpdateSet set)
+        [InlineData(1, null)]
+        [InlineData(2, null)]
+        public async void UpdateIndexCodeShouldReturnBadRequestIfIndexCodeDetailsAreInvalid(int indexCodeId, CreateUpdateIndexCode indexCode)
         {
             IntializeMockData(true);
-            var result = await service.UpdateSet(setId, set);
+            var result = await service.UpdateIndexCode(indexCodeId, indexCode);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
-            Assert.Equal(setInvalidMessage, result.Value);
+            Assert.Equal(indexCodeInvalidMessage, result.Value);
         }
 
         [Theory]
-        [InlineData("RDES53", "Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("RDES66", "Sinus1", "Sinus2", "Sinus3")]
-        public async void UpdateSetShouldThrowInternalServerErrorForExceptions(string setId, string moduleName, string contactName, string description)
+        [InlineData(60)]
+        [InlineData(70)]
+        public async void UpdateIndexCodeShouldReturnENotFoundIfIndexCodeDoesNotExists(int indexCodeId)
         {
-            var set = new CreateUpdateSet();
-            set.Name = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-            set.ReferencesRef = new List<int> { 1, 2, 3 };
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = "RID2866256";
+            indexCode.System = "RADLEX";
+            indexCode.Display = "Attenuation";
+
+            IntializeMockData(true);
+            var result = await service.UpdateIndexCode(indexCodeId, indexCode);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.NotFound, result.Code);
+            Assert.Equal(string.Format(indexCodeNotFoundMessage, indexCodeId), result.Value);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public async void UpdateIndexCodeShouldReturnThrowInternalServerErrorForExceptions(int indexCodeId)
+        {
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = "RID2866256";
+            indexCode.System = "RADLEX";
+            indexCode.Display = "Attenuation";
 
             IntializeMockData(false);
-            var result = await service.UpdateSet(setId, set);
+            var result = await service.UpdateIndexCode(indexCodeId, indexCode);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -313,81 +332,54 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RD1")]
-        [InlineData("RD2")]
-        public async void UpdateSetShouldReturnNotFoundIfDoesnotExists(string setId)
+        [InlineData(2)]
+        public async void UpdateIndexCodeShouldReturnIndexCodeIdIfIndexCodeDetailsAreValid(int indexCodeId)
         {
-            var set = new CreateUpdateSet();
-            set.Name = "name";
-            set.ContactName = "contact";
-            set.Description = "description";
-            set.ReferencesRef = new List<int> { 1, 2, 3 };
+            var indexCode = new CreateUpdateIndexCode();
+            indexCode.Code = "RID2866256";
+            indexCode.System = "RADLEX";
+            indexCode.Display = "Attenuation";
 
             IntializeMockData(true);
-            var result = await service.UpdateSet(setId, set);
+            var result = await service.UpdateIndexCode(indexCodeId, indexCode);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
-            Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
-        }
-
-        [Theory]
-        [InlineData("RDES53", "Tumuor1", "Tumuor2", "Tumuor3")]
-        [InlineData("RDES66", "Sinus1", "Sinus2", "Sinus3")]
-        public async void UpdateSetShouldReturnSetIdIfSetIsValid(string setId, string moduleName, string contactName, string description)
-        {
-            var set = new CreateUpdateSet();
-            set.Name = moduleName;
-            set.ContactName = contactName;
-            set.Description = description;
-            set.ReferencesRef = new List<int> { 1, 2, 3 };
-            set.Persons = new List<PersonDetails>() {
-                new PersonDetails { PersonId = 1, Roles = new List<PersonRole> { PersonRole.Author, PersonRole.Contributor } },
-                new PersonDetails { PersonId = 2, Roles = new List<PersonRole> { } }
-            };
-            set.Organizations = new List<OrganizationDetails>() {
-                new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
-                new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
-            };
-
-            IntializeMockData(true);
-            var result = await service.UpdateSet(setId, set);
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value);
-            Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Equal(string.Format(setUpdatedMessage, setId), result.Value);
+            Assert.Equal(string.Format(indexCodeUpdateMessage, indexCodeId), result.Value);
         }
 
         #endregion
 
-        #region DeleteSet
+        #region DeleteIndexCode
 
         [Theory]
-        [InlineData("RDES100")]
-        [InlineData("RDES200")]
-        public async void DeleteSetShouldReturnNotFoundIfSetIdDoesNotExists(string setId)
+        [InlineData(100)]
+        [InlineData(101)]
+        [InlineData(102)]
+        [InlineData(103)]
+        [InlineData(104)]
+        public async void DeleteIndexCodeShouldReturnNotFoundIfIndexCodeIdIsInvalid(int indexCodeId)
         {
             IntializeMockData(true);
-            var result = await service.DeleteSet(setId);
+            var result = await service.DeleteIndexCode(indexCodeId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.NotFound, result.Code);
-            Assert.Equal(string.Format(setNotFoundMessage, setId), result.Value);
+            Assert.Equal(string.Format(indexCodeNotFoundMessage, indexCodeId), result.Value);
         }
 
         [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void DeleteSetShouldThrowInternalServerErrorForExceptions(string setId)
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        public async void DeleteIndexCodeShouldThrowInternalServerErrorForExceptions(int indexCodeId)
         {
             IntializeMockData(false);
-            var result = await service.DeleteSet(setId);
+            var result = await service.DeleteIndexCode(indexCodeId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
@@ -395,18 +387,20 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RDES53")]
-        [InlineData("RDES66")]
-        public async void DeleteSetShouldDeleteSetIfSetIdIsValid(string setId)
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public async void DeleteIndexCodeShouldDeleteIndexCodeIfIndexCodeIdIsValid(int indexCodeId)
         {
             IntializeMockData(true);
-            var result = await service.DeleteSet(setId);
+            var result = await service.DeleteIndexCode(indexCodeId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.OK, result.Code);
-            Assert.Equal(string.Format(setDeletedMessage, setId), result.Value);
+            Assert.Equal(string.Format(indexCodeDeletedMessage, indexCodeId), result.Value);
         }
 
         #endregion
@@ -471,24 +465,6 @@ namespace RadElement.Service.Tests
                 mockIndexCodeElementValueRef.As<IQueryable<IndexCodeElementValueRef>>().Setup(m => m.ElementType).Returns(MockDataContext.indexCodeElementValueDb.ElementType);
                 mockIndexCodeElementValueRef.As<IQueryable<IndexCodeElementValueRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.indexCodeElementValueDb.GetEnumerator());
 
-                var mockOrganization = new Mock<DbSet<Organization>>();
-                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Provider).Returns(MockDataContext.organizationDb.Provider);
-                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.Expression).Returns(MockDataContext.organizationDb.Expression);
-                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationDb.ElementType);
-                mockOrganization.As<IQueryable<Organization>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationDb.GetEnumerator());
-                
-                var mockOrganizationElementRef = new Mock<DbSet<OrganizationRoleElementRef>>();
-                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementRefDb.Provider);
-                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementRefDb.Expression);
-                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementRefDb.ElementType);
-                mockOrganizationElementRef.As<IQueryable<OrganizationRoleElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementRefDb.GetEnumerator());
-                
-                var mockOrganizationElementSetRef = new Mock<DbSet<OrganizationRoleElementSetRef>>();
-                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.organizationElementSetRefDb.Provider);
-                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.organizationElementSetRefDb.Expression);
-                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.organizationElementSetRefDb.ElementType);
-                mockOrganizationElementSetRef.As<IQueryable<OrganizationRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.organizationElementSetRefDb.GetEnumerator());
-
                 var mockPerson = new Mock<DbSet<Person>>();
                 mockPerson.As<IQueryable<Person>>().Setup(m => m.Provider).Returns(MockDataContext.personDb.Provider);
                 mockPerson.As<IQueryable<Person>>().Setup(m => m.Expression).Returns(MockDataContext.personDb.Expression);
@@ -507,18 +483,6 @@ namespace RadElement.Service.Tests
                 mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.personElementSetRefDb.ElementType);
                 mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personElementSetRefDb.GetEnumerator());
 
-                var mockRerence = new Mock<DbSet<Reference>>();
-                mockRerence.As<IQueryable<Reference>>().Setup(m => m.Provider).Returns(MockDataContext.referenceDb.Provider);
-                mockRerence.As<IQueryable<Reference>>().Setup(m => m.Expression).Returns(MockDataContext.referenceDb.Expression);
-                mockRerence.As<IQueryable<Reference>>().Setup(m => m.ElementType).Returns(MockDataContext.referenceDb.ElementType);
-                mockRerence.As<IQueryable<Reference>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.referenceDb.GetEnumerator());
-
-                var mockRerenceRef = new Mock<DbSet<ReferenceRef>>();
-                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.Provider).Returns(MockDataContext.referenceRefDb.Provider);
-                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.Expression).Returns(MockDataContext.referenceRefDb.Expression);
-                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.ElementType).Returns(MockDataContext.referenceRefDb.ElementType);
-                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.referenceRefDb.GetEnumerator());
-
                 mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
                 mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
                 mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
@@ -531,11 +495,6 @@ namespace RadElement.Service.Tests
                 mockRadElementContext.Setup(c => c.Person).Returns(mockPerson.Object);
                 mockRadElementContext.Setup(c => c.PersonRoleElementRef).Returns(mockPersonElementRef.Object);
                 mockRadElementContext.Setup(c => c.PersonRoleElementSetRef).Returns(mockPersonElementSetRef.Object);
-                mockRadElementContext.Setup(c => c.Organization).Returns(mockOrganization.Object);
-                mockRadElementContext.Setup(c => c.OrganizationRoleElementRef).Returns(mockOrganizationElementRef.Object);
-                mockRadElementContext.Setup(c => c.OrganizationRoleElementSetRef).Returns(mockOrganizationElementSetRef.Object);
-                mockRadElementContext.Setup(c => c.Reference).Returns(mockRerence.Object);
-                mockRadElementContext.Setup(c => c.ReferenceRef).Returns(mockRerenceRef.Object);
             }
 
             var mockConfigurationManager = new Mock<IConfigurationManager>();

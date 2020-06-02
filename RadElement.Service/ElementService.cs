@@ -106,11 +106,23 @@ namespace RadElement.Service
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
+                                            join eleReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleReferenceRef.Reference_For_Id into eleReferenceRefs
+                                            from elementReferenceRef in eleReferenceRefs.DefaultIfEmpty()
+
+                                            join eleReference in radElementDbContext.Reference on elementReferenceRef.Reference_Id equals eleReference.Id into eleReferences
+                                            from elementReference in eleReferences.DefaultIfEmpty()
+
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
                                             from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
 
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
+
+                                            join eleValueReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleValueReferenceRef.Reference_For_Id into eleValueReferenceRefs
+                                            from elementValueReferenceRef in eleValueReferenceRefs.DefaultIfEmpty()
+
+                                            join eleValueReference in radElementDbContext.Reference on elementValueReferenceRef.Reference_Id equals eleValueReference.Id into eleValueReferences
+                                            from elementValueReference in eleValueReferences.DefaultIfEmpty()
 
                                             join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
                                             from elementPersonRef in elePersonRefs.DefaultIfEmpty()
@@ -132,7 +144,9 @@ namespace RadElement.Service
                                                 ElementSet = elementSet,
                                                 ElementValue = elementValue,
                                                 IndexCode = elementIndexCode,
+                                                Reference = elementReference,
                                                 ElementValueIndexCode = elementValueIndexCode,
+                                                ElementValueReference = elementValueReference,
                                                 Person = elementPerson,
                                                 Organization = elementOrganization,
                                                 PersonRole = elementPersonRef.Role,
@@ -184,11 +198,23 @@ namespace RadElement.Service
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
+                                            join eleReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleReferenceRef.Reference_For_Id into eleReferenceRefs
+                                            from elementReferenceRef in eleReferenceRefs.DefaultIfEmpty()
+
+                                            join eleReference in radElementDbContext.Reference on elementReferenceRef.Reference_Id equals eleReference.Id into eleReferences
+                                            from elementReference in eleReferences.DefaultIfEmpty()
+
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
                                             from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
 
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
+
+                                            join eleValueReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleValueReferenceRef.Reference_For_Id into eleValueReferenceRefs
+                                            from elementValueReferenceRef in eleValueReferenceRefs.DefaultIfEmpty()
+
+                                            join eleValueReference in radElementDbContext.Reference on elementValueReferenceRef.Reference_Id equals eleValueReference.Id into eleValueReferences
+                                            from elementValueReference in eleValueReferences.DefaultIfEmpty()
 
                                             join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
                                             from elementPersonRef in elePersonRefs.DefaultIfEmpty()
@@ -210,7 +236,9 @@ namespace RadElement.Service
                                                 ElementSet = elementSet,
                                                 ElementValue = elementValue,
                                                 IndexCode = elementIndexCode,
+                                                Reference = elementReference,
                                                 ElementValueIndexCode = elementValueIndexCode,
+                                                ElementValueReference = elementValueReference,
                                                 Person = elementPerson,
                                                 Organization = elementOrganization,
                                                 PersonRole = elementPersonRef.Role,
@@ -374,11 +402,12 @@ namespace RadElement.Service
                                 radElementDbContext.Element.Add(element);
                                 radElementDbContext.SaveChanges();
 
-                                AddElementIndexCodeReferences(element.Id, dataElement.IndexCodeReferences);
                                 AddElementValues(dataElement.Options, element.Id);
-                                AddElementSetReferences(setInternalId, (int)element.Id);
-                                AddPersonReferences((int)element.Id, dataElement.Persons);
-                                AddOrganizationReferences((int)element.Id, dataElement.Organizations);
+                                AddElementIndexCodeRefs(element.Id, dataElement.IndexCodeReferences);
+                                AddReferenceRefs((int)element.Id, dataElement.ReferencesRef, "element");
+                                AddElementSetRefs(setInternalId, (int)element.Id);
+                                AddElementPersonRefs((int)element.Id, dataElement.Persons);
+                                AddElementOrganizationRefs((int)element.Id, dataElement.Organizations);
 
                                 radElementDbContext.SaveChanges();
                                 transaction.Commit();
@@ -397,7 +426,7 @@ namespace RadElement.Service
                                         var elementsetRefs = radElementDbContext.ElementSetRef.ToList();
                                         if (!elementsetRefs.Exists(x => x.ElementId == elementInternalId && x.ElementSetId == setInternalId))
                                         {
-                                            AddElementSetReferences(setInternalId, elementInternalId);
+                                            AddElementSetRefs(setInternalId, elementInternalId);
                                             radElementDbContext.SaveChanges();
                                             transaction.Commit();
                                         }
@@ -514,16 +543,17 @@ namespace RadElement.Service
 
                                 radElementDbContext.SaveChanges();
 
-                                RemoveElementValuesIndexCodeReferences(element.Id);
                                 RemoveElementValues((int)element.Id);
-                                RemoveElementIndexCodeReferences(element.Id);
-                                RemovePersonReferences(element.Id);
-                                RemoveOrganizationReferences(element.Id);
+                                RemoveElementIndexCodeRefs(element.Id);
+                                RemoveReferenceRefs((int)element.Id);
+                                RemoveElementPersonRefs(element.Id);
+                                RemoveElementOrganizationRefs(element.Id);
 
                                 AddElementValues(dataElement.Options, element.Id);
-                                AddElementIndexCodeReferences(element.Id, dataElement.IndexCodeReferences);
-                                AddPersonReferences((int)element.Id, dataElement.Persons);
-                                AddOrganizationReferences((int)element.Id, dataElement.Organizations);
+                                AddElementIndexCodeRefs(element.Id, dataElement.IndexCodeReferences);
+                                AddReferenceRefs((int)element.Id, dataElement.ReferencesRef, "element");
+                                AddElementPersonRefs((int)element.Id, dataElement.Persons);
+                                AddElementOrganizationRefs((int)element.Id, dataElement.Organizations);
 
                                 transaction.Commit();
 
@@ -564,12 +594,12 @@ namespace RadElement.Service
 
                         if (elementSetRef != null)
                         {
-                            RemoveElementValuesIndexCodeReferences((uint)elementInternalId);
                             RemoveElementValues(elementInternalId);
-                            RemoveElementIndexCodeReferences((uint)elementInternalId);
-                            RemoveElementSetReferences(elementSetRef);
-                            RemovePersonReferences((uint)elementInternalId);
-                            RemoveOrganizationReferences((uint)elementInternalId);
+                            RemoveElementIndexCodeRefs((uint)elementInternalId);
+                            RemoveReferenceRefs(elementInternalId);
+                            RemoveElementSetRefs(elementSetRef);
+                            RemoveElementPersonRefs((uint)elementInternalId);
+                            RemoveElementOrganizationRefs((uint)elementInternalId);
                             RemoveElement(elementInternalId);
 
                             radElementDbContext.SaveChanges();
@@ -595,7 +625,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="setId">The set identifier.</param>
         /// <param name="elementId">The element identifier.</param>
-        private void AddElementSetReferences(int setId, int elementId)
+        private void AddElementSetRefs(int setId, int elementId)
         {
             ElementSetRef setRef = new ElementSetRef()
             {
@@ -630,7 +660,8 @@ namespace RadElement.Service
                     radElementDbContext.ElementValue.Add(elementvalue);
                     radElementDbContext.SaveChanges();
 
-                    AddElementValuesIndexCodeReferences(elementvalue.Id, option.IndexCodeReferences);
+                    AddElementValuesIndexCodeRefs(elementvalue.Id, option.IndexCodeReferences);
+                    AddReferenceRefs(elementvalue.Id, option.ReferencesRef, "element_value");
                 }
             }
         }
@@ -640,7 +671,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
         /// <param name="personRefs">The person refs.</param>
-        private void AddPersonReferences(int elementId, List<PersonDetails> personRefs)
+        private void AddElementPersonRefs(int elementId, List<PersonDetails> personRefs)
         {
             if (personRefs != null && personRefs.Any())
             {
@@ -686,7 +717,7 @@ namespace RadElement.Service
         /// </summary>
         /// <param name="elementId">The set identifier.</param>
         /// <param name="orgRefs">The org refs.</param>
-        private void AddOrganizationReferences(int elementId, List<OrganizationDetails> orgRefs)
+        private void AddElementOrganizationRefs(int elementId, List<OrganizationDetails> orgRefs)
         {
             if (orgRefs != null && orgRefs.Any())
             {
@@ -730,45 +761,47 @@ namespace RadElement.Service
         /// Adds the element index code references.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        /// <param name="codeReferences">The code references.</param>
-        private void AddElementIndexCodeReferences(uint elementId, List<IndexCodeReference> codeReferences)
+        /// <param name="indexCodeReferences">The code references.</param>
+        private void AddElementIndexCodeRefs(uint elementId, List<int> indexCodeReferences)
         {
-            if (codeReferences != null && codeReferences.Any())
+            if (indexCodeReferences != null && indexCodeReferences.Any())
             {
-                foreach (var codeReference in codeReferences)
+                foreach (var indexCodeReference in indexCodeReferences)
                 {
-                    int codeId = 0;
-                    var indexCodeSystem = radElementDbContext.IndexCodeSystem.Where(x => string.Equals(x.Abbrev, codeReference.System, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                    if (indexCodeSystem != null)
+                    var elementIndexCode = new IndexCodeElementRef
                     {
-                        var indexCode = radElementDbContext.IndexCode.Where(x => string.Equals(x.System, indexCodeSystem.Abbrev, StringComparison.InvariantCultureIgnoreCase) &&
-                                                                                 string.Equals(x.Code, codeReference.Code, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                        if (indexCode != null)
-                        {
-                            codeId = indexCode.Id;
-                        }
-                        else
-                        {
-                            var indexCodeSys = new IndexCode
-                            {
-                                Code = codeReference.Code,
-                                System = indexCodeSystem.Abbrev,
-                                Display = codeReference.Display,
-                                AccessionDate = DateTime.UtcNow
-                            };
-                            radElementDbContext.IndexCode.Add(indexCodeSys);
-                            radElementDbContext.SaveChanges();
+                        ElementId = elementId,
+                        CodeId = indexCodeReference
+                    };
 
-                            codeId = indexCodeSys.Id;
-                        }
+                    radElementDbContext.IndexCodeElementRef.Add(elementIndexCode);
+                    radElementDbContext.SaveChanges();
+                }
+            }
+        }
 
-                        var elementIndexCode = new IndexCodeElementRef
+        /// <summary>
+        /// Adds the reference refs.
+        /// </summary>
+        /// <param name="id">The element identifier.</param>
+        /// <param name="references">The references.</param>
+        /// <param name="refereceType">Type of the referece.</param>
+        private void AddReferenceRefs(int id, List<int> references, string referenceType)
+        {
+            if (references != null && references.Any())
+            {
+                foreach (var reference in references)
+                {
+                    if (reference != 0)
+                    {
+                        var referenceRef = new ReferenceRef
                         {
-                            ElementId = elementId,
-                            CodeId = codeId
+                            Reference_For_Id = id,
+                            Reference_Id = reference,
+                            Reference_For_Type = referenceType
                         };
 
-                        radElementDbContext.IndexCodeElementRef.Add(elementIndexCode);
+                        radElementDbContext.ReferenceRef.Add(referenceRef);
                         radElementDbContext.SaveChanges();
                     }
                 }
@@ -779,48 +812,21 @@ namespace RadElement.Service
         /// Adds the element values index code references.
         /// </summary>
         /// <param name="elementValueId">The element value identifier.</param>
-        /// <param name="codeReferences">The code references.</param>
-        private void AddElementValuesIndexCodeReferences(int elementValueId, List<IndexCodeReference> codeReferences)
+        /// <param name="indexCodeReferences">The code references.</param>
+        private void AddElementValuesIndexCodeRefs(int elementValueId, List<int> indexCodeReferences)
         {
-            if (codeReferences != null && codeReferences.Any())
+            if (indexCodeReferences != null && indexCodeReferences.Any())
             {
-                foreach (var codeReference in codeReferences)
+                foreach (var indexCodeReference in indexCodeReferences)
                 {
-                    int codeId = 0;
-                    var indexCodeSystem = radElementDbContext.IndexCodeSystem.Where(x => string.Equals(x.Abbrev, codeReference.System, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                    if (indexCodeSystem != null)
+                    var elementValueIndexCode = new IndexCodeElementValueRef
                     {
-                        var indexCode = radElementDbContext.IndexCode.Where(x => string.Equals(x.System, indexCodeSystem.Abbrev, StringComparison.InvariantCultureIgnoreCase) &&
-                                                                                 string.Equals(x.Code, codeReference.Code, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                        if (indexCode != null)
-                        {
-                            codeId = indexCode.Id;
-                        }
-                        else
-                        {
-                            var indexCodeSys = new IndexCode
-                            {
-                                Code = codeReference.Code,
-                                System = indexCodeSystem.Abbrev,
-                                Display = codeReference.Display,
-                                AccessionDate = DateTime.UtcNow
-                            };
+                        ElementValueId = elementValueId,
+                        CodeId = indexCodeReference
+                    };
 
-                            radElementDbContext.IndexCode.Add(indexCodeSys);
-                            radElementDbContext.SaveChanges();
-
-                            codeId = indexCodeSys.Id;
-                        }
-
-                        var elementValueIndexCode = new IndexCodeElementValueRef
-                        {
-                            ElementValueId = elementValueId,
-                            CodeId = codeId
-                        };
-
-                        radElementDbContext.IndexCodeElementValueRef.Add(elementValueIndexCode);
-                        radElementDbContext.SaveChanges();
-                    }
+                    radElementDbContext.IndexCodeElementValueRef.Add(elementValueIndexCode);
+                    radElementDbContext.SaveChanges();
                 }
             }
         }
@@ -848,6 +854,12 @@ namespace RadElement.Service
             var elementValues = radElementDbContext.ElementValue.Where(x => x.ElementId == elementId).ToList();
             if (elementValues != null && elementValues.Any())
             {
+                foreach (var elementValue in elementValues)
+                {
+                    RemoveElementValuesIndexCodeRefs(elementValue.Id);
+                    RemoveReferenceRefs(elementValue.Id);
+                }
+
                 radElementDbContext.ElementValue.RemoveRange(elementValues);
                 radElementDbContext.SaveChanges();
             };
@@ -857,7 +869,7 @@ namespace RadElement.Service
         /// Removes the element set references.
         /// </summary>
         /// <param name="setRef">The set reference.</param>
-        private void RemoveElementSetReferences(ElementSetRef setRef)
+        private void RemoveElementSetRefs(ElementSetRef setRef)
         {
             radElementDbContext.ElementSetRef.Remove(setRef);
             radElementDbContext.SaveChanges();
@@ -867,7 +879,7 @@ namespace RadElement.Service
         /// Removes the person elements references.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        private void RemovePersonReferences(uint elementId)
+        private void RemoveElementPersonRefs(uint elementId)
         {
             var personElementsRefs = radElementDbContext.PersonRoleElementRef.Where(x => x.ElementID == elementId).ToList();
             if (personElementsRefs != null && personElementsRefs.Any())
@@ -881,7 +893,7 @@ namespace RadElement.Service
         /// Removes the organization element references.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        private void RemoveOrganizationReferences(uint elementId)
+        private void RemoveElementOrganizationRefs(uint elementId)
         {
             var organizationElementsRefs = radElementDbContext.OrganizationRoleElementRef.Where(x => x.ElementID == elementId).ToList();
             if (organizationElementsRefs != null && organizationElementsRefs.Any())
@@ -895,7 +907,7 @@ namespace RadElement.Service
         /// Removes the element index code references.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        private void RemoveElementIndexCodeReferences(uint elementId)
+        private void RemoveElementIndexCodeRefs(uint elementId)
         {
             var indexCodeElementRefs = radElementDbContext.IndexCodeElementRef.Where(x => x.ElementId == elementId).ToList();
             if (indexCodeElementRefs != null && indexCodeElementRefs.Any())
@@ -908,16 +920,27 @@ namespace RadElement.Service
         /// <summary>
         /// Removes the element values index code references.
         /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        private void RemoveElementValuesIndexCodeReferences(uint elementId)
+        /// <param name="elementValueId">The element identifier.</param>
+        private void RemoveElementValuesIndexCodeRefs(int elementValueId)
         {
-            var elementValueIndexCodes = (from elementValue in radElementDbContext.ElementValue
-                                          join elementIndexCode in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals (int)elementIndexCode.ElementValueId
-                                          where elementValue.ElementId == (uint)elementId
-                                          select elementIndexCode).Distinct().ToList();
+            var elementValueIndexCodes = radElementDbContext.IndexCodeElementValueRef.Where(x => x.ElementValueId == elementValueId).ToList(); ;
             if (elementValueIndexCodes != null && elementValueIndexCodes.Any())
             {
                 radElementDbContext.IndexCodeElementValueRef.RemoveRange(elementValueIndexCodes);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Removes the reference refs.
+        /// </summary>
+        /// <param name="id">The element identifier.</param>
+        private void RemoveReferenceRefs(int id)
+        {
+            var referenceRefs = radElementDbContext.ReferenceRef.Where(x => x.Reference_For_Id == id).ToList();
+            if (referenceRefs != null && referenceRefs.Any())
+            {
+                radElementDbContext.ReferenceRef.RemoveRange(referenceRefs);
                 radElementDbContext.SaveChanges();
             }
         }
@@ -987,6 +1010,11 @@ namespace RadElement.Service
                             elementValue.IndexCodes = new List<IndexCode>();
                             elementValue.IndexCodes.Add(elem.ElementValueIndexCode);
                         }
+                        if (elem.ElementValueReference != null)
+                        {
+                            elementValue.References = new List<Reference>();
+                            elementValue.References.Add(elem.ElementValueReference);
+                        }
 
                         element.ElementValues = new List<ElementValueAttributes>();
                         element.ElementValues.Add(elementValue);
@@ -995,6 +1023,11 @@ namespace RadElement.Service
                     {
                         element.IndexCodes = new List<IndexCode>();
                         element.IndexCodes.Add(elem.IndexCode);
+                    }
+                    if (elem.Reference != null)
+                    {
+                        element.ElementReferences = new List<Reference>();
+                        element.ElementReferences.Add(elem.Reference);
                     }
                     if (elem.Person != null)
                     {
@@ -1050,6 +1083,14 @@ namespace RadElement.Service
                                 }
                                 elementValue.IndexCodes.Add(elem.ElementValueIndexCode);
                             }
+                            if (elem.ElementValueReference != null && !elementValue.References.Exists(x => x.Id == elem.ElementValueReference.Id))
+                            {
+                                if (elementValue.References == null)
+                                {
+                                    elementValue.References = new List<Reference>();
+                                }
+                                elementValue.References.Add(elem.ElementValueReference);
+                            }
                         }
                         else
                         {
@@ -1060,9 +1101,15 @@ namespace RadElement.Service
 
                             var mappedElementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
                             mappedElementValue.IndexCodes = new List<IndexCode>();
+                            mappedElementValue.References = new List<Reference>();
+
                             if (elem.ElementValueIndexCode != null)
                             {
                                 mappedElementValue.IndexCodes.Add(elem.ElementValueIndexCode);
+                            }
+                            if (elem.ElementValueReference != null)
+                            {
+                                mappedElementValue.References.Add(elem.ElementValueReference);
                             }
 
                             element.ElementValues.Add(mappedElementValue);
@@ -1077,6 +1124,17 @@ namespace RadElement.Service
                                 element.IndexCodes = new List<IndexCode>();
                             }
                             element.IndexCodes.Add(elem.IndexCode);
+                        }
+                    }
+                    if (elem.Reference != null)
+                    {
+                        if (!element.ElementReferences.Exists(x => x.Id == elem.Reference.Id))
+                        {
+                            if (element.ElementReferences == null)
+                            {
+                                element.ElementReferences = new List<Reference>();
+                            }
+                            element.ElementReferences.Add(elem.Reference);
                         }
                     }
                     if (elem.Person != null)
@@ -1163,10 +1221,6 @@ namespace RadElement.Service
 
                 case DataElementType.DateTime:
                     valueType = "date";
-                    break;
-
-                case DataElementType.String:
-                    valueType = "string";
                     break;
             }
 

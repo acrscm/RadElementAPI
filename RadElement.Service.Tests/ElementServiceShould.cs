@@ -41,6 +41,7 @@ namespace RadElement.Service.Tests
         private const string elementNotFoundMessage = "No such element with id '{0}'.";
         private const string elementSetIdNotFoundMessage = "No such elements with set id '{0}'.";
         private const string elementNotFoundMessageWithSearchMessage = "No such element with keyword '{0}'.";
+        private const string invalidKeyWordMessage = "The Keyword field must be a string with a minimum length of '3'.";
         private const string invalidSearchMessage = "Keyword given is invalid.";
         private const string dataElementInvalidMessage = "Element fields are invalid.";
         private const string choiceInvalidMessage = "'Options' field are missing for Choice type elements.";
@@ -201,7 +202,7 @@ namespace RadElement.Service.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async void SearchSetShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
+        public async void SearchElementShouldReturnBadRequestIfSearchKeywordIsInvalid(string searchKeyword)
         {
             IntializeMockData(true);
             var result = await service.SearchElements(searchKeyword);
@@ -211,6 +212,21 @@ namespace RadElement.Service.Tests
             Assert.IsType<string>(result.Value);
             Assert.Equal(HttpStatusCode.BadRequest, result.Code);
             Assert.Equal(string.Format(invalidSearchMessage, searchKeyword), result.Value);
+        }
+
+        [Theory]
+        [InlineData("t")]
+        [InlineData("te")]
+        public async void SearchElementShouldReturnBadRequestIfSearchKeywordIsLessThan3Characters(string searchKeyword)
+        {
+            IntializeMockData(true);
+            var result = await service.SearchElements(searchKeyword);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<string>(result.Value);
+            Assert.Equal(HttpStatusCode.BadRequest, result.Code);
+            Assert.Equal(invalidKeyWordMessage, result.Value);
         }
 
         [Theory]
@@ -280,6 +296,7 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -299,6 +316,7 @@ namespace RadElement.Service.Tests
             var dataElement = new CreateElement();
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             var result = await service.CreateElement(setId, dataElement);
             Assert.NotNull(result);
@@ -316,6 +334,7 @@ namespace RadElement.Service.Tests
             dataElement.ElementId = elementId;
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -338,6 +357,7 @@ namespace RadElement.Service.Tests
             dataElement.Name = "Tumuor";
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             if (dataElement.ValueType == DataElementType.Integer)
             {
@@ -404,36 +424,21 @@ namespace RadElement.Service.Tests
                             Value = "1", 
                             Definition = "1", 
                             Images = "1",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                     }
                 );
@@ -446,11 +451,8 @@ namespace RadElement.Service.Tests
                 new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
                 new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
             };
-            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
-                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-            };
+            dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -495,36 +497,21 @@ namespace RadElement.Service.Tests
                             Value = "1",
                             Definition = "1",
                             Images = "1",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                     }
                 );
@@ -537,11 +524,8 @@ namespace RadElement.Service.Tests
                 new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
                 new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
             };
-            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
-                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-            };
+            dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -642,36 +626,21 @@ namespace RadElement.Service.Tests
                             Value = "1",
                             Definition = "1",
                             Images = "1",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                     }
                 );
@@ -684,11 +653,8 @@ namespace RadElement.Service.Tests
                 new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
                 new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
             };
-            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
-                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-            };
+            dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(false);
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -731,36 +697,21 @@ namespace RadElement.Service.Tests
                             Value = "1",
                             Definition = "1",
                             Images = "1",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<IndexCodeReference>()
-                            {
-                                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-                            }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
                         },
                     }
                 );
@@ -773,11 +724,8 @@ namespace RadElement.Service.Tests
                 new OrganizationDetails { OrganizationId = 1, Roles = new List<OrganizationRole> { OrganizationRole.Author, OrganizationRole.Contributor } },
                 new OrganizationDetails { OrganizationId = 2, Roles = new List<OrganizationRole> { } }
             };
-            dataElement.IndexCodeReferences = new List<IndexCodeReference>() {
-                new IndexCodeReference { System = "RADLEX", Code = "RID28662", Display = "Digitial" },
-                new IndexCodeReference { System = "RADLEX", Code = "RID2", Display = "Digitial" },
-                new IndexCodeReference { System = "TEST", Code = "RID28662", Display = "Digitial" }
-            };
+            dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
+            dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -934,6 +882,18 @@ namespace RadElement.Service.Tests
                 mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.personElementSetRefDb.ElementType);
                 mockPersonElementSetRef.As<IQueryable<PersonRoleElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.personElementSetRefDb.GetEnumerator());
 
+                var mockRerence = new Mock<DbSet<Reference>>();
+                mockRerence.As<IQueryable<Reference>>().Setup(m => m.Provider).Returns(MockDataContext.referenceDb.Provider);
+                mockRerence.As<IQueryable<Reference>>().Setup(m => m.Expression).Returns(MockDataContext.referenceDb.Expression);
+                mockRerence.As<IQueryable<Reference>>().Setup(m => m.ElementType).Returns(MockDataContext.referenceDb.ElementType);
+                mockRerence.As<IQueryable<Reference>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.referenceDb.GetEnumerator());
+
+                var mockRerenceRef = new Mock<DbSet<ReferenceRef>>();
+                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.Provider).Returns(MockDataContext.referenceRefDb.Provider);
+                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.Expression).Returns(MockDataContext.referenceRefDb.Expression);
+                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.ElementType).Returns(MockDataContext.referenceRefDb.ElementType);
+                mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.referenceRefDb.GetEnumerator());
+
                 mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
                 mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
                 mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
@@ -949,6 +909,8 @@ namespace RadElement.Service.Tests
                 mockRadElementContext.Setup(c => c.Organization).Returns(mockOrganization.Object);
                 mockRadElementContext.Setup(c => c.OrganizationRoleElementRef).Returns(mockOrganizationElementRef.Object);
                 mockRadElementContext.Setup(c => c.OrganizationRoleElementSetRef).Returns(mockOrganizationElementSetRef.Object);
+                mockRadElementContext.Setup(c => c.Reference).Returns(mockRerence.Object);
+                mockRadElementContext.Setup(c => c.ReferenceRef).Returns(mockRerenceRef.Object);
             }
 
             var mockConfigurationManager = new Mock<IConfigurationManager>();

@@ -211,6 +211,66 @@
             </summary>
             <returns>Returns "Hello World" </returns>
         </member>
+        <member name="T:RadElement.API.Controllers.IndexCodeController">
+            <summary>
+            Endpoint for index code controller
+            </summary>
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
+        </member>
+        <member name="F:RadElement.API.Controllers.IndexCodeController.indexCodeService">
+            <summary>
+            The index code service
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.#ctor(RadElement.Core.Services.IIndexCodeService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.IndexCodeController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.IndexCodeController" /> class.
+            </summary>
+            <param name="indexCodeService">The index code service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.GetIndexCodes">
+            <summary>
+            Gets the index codes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.GetIndexCode(System.Int32)">
+            <summary>
+            Gets the index code.
+            </summary>
+            <param name="indexCodeId">The index code identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.SearchIndexCodes(System.String)">
+            <summary>
+            Searches the index codes.
+            </summary>
+            <param name="searchKeyword">The search keyword.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.CreateIndexCode(RadElement.Core.DTO.CreateUpdateIndexCode)">
+            <summary>
+            Creates the index code.
+            </summary>
+            <param name="indexCode">The index code.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.UpdateIndexCode(System.Int32,RadElement.Core.DTO.CreateUpdateIndexCode)">
+            <summary>
+            Updates the index code.
+            </summary>
+            <param name="indexCodeId">The index code identifier.</param>
+            <param name="indexCode">The index code.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.IndexCodeController.DeleteIndexCode(System.Int32)">
+            <summary>
+            Deletes the index code.
+            </summary>
+            <param name="indexCodeId">The index code identifier.</param>
+            <returns></returns>
+        </member>
         <member name="T:RadElement.API.Controllers.OrganizationController">
             <summary>
             Endpoint for elements set controller
@@ -329,6 +389,66 @@
             Deletes the person.
             </summary>
             <param name="personId">The person identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="T:RadElement.API.Controllers.ReferenceController">
+            <summary>
+            Endpoint for reference controller
+            </summary>
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
+        </member>
+        <member name="F:RadElement.API.Controllers.ReferenceController.referenceService">
+            <summary>
+            The reference service
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.#ctor(RadElement.Core.Services.IReferenceService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ReferenceController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.ReferenceController" /> class.
+            </summary>
+            <param name="referenceService">The reference service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.GetReferences">
+            <summary>
+            Gets the references.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.GetReference(System.Int32)">
+            <summary>
+            Gets the reference.
+            </summary>
+            <param name="referencesId">The references identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.SearchReferences(System.String)">
+            <summary>
+            Searches the references.
+            </summary>
+            <param name="searchKeyword">The search keyword.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.CreateReference(RadElement.Core.DTO.CreateUpdateReference)">
+            <summary>
+            Creates the reference.
+            </summary>
+            <param name="reference">The reference.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.UpdateReference(System.Int32,RadElement.Core.DTO.CreateUpdateReference)">
+            <summary>
+            Updates the reference.
+            </summary>
+            <param name="referencesId">The references identifier.</param>
+            <param name="reference">The reference.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ReferenceController.DeleteReference(System.Int32)">
+            <summary>
+            Deletes the reference.
+            </summary>
+            <param name="referencesId">The references identifier.</param>
             <returns></returns>
         </member>
         <member name="T:RadElement.API.Filters.AuthorizationHeaderOperationFilter">

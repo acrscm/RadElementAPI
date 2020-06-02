@@ -1,7 +1,6 @@
-﻿
-namespace RadElement.Core.DTO
+﻿namespace RadElement.Core.DTO
 {
-    public class IndexCodeReference
+    public class CreateUpdateIndexCode
     {
         /// <summary>
         /// Gets or sets the system.
@@ -17,5 +16,10 @@ namespace RadElement.Core.DTO
         /// Gets or sets the code.
         /// </summary>
         public string Code { get; set; }
+
+        /// <summary>
+        /// Gets or sets the href.
+        /// </summary>
+        public string Href { get; set; }
     }
 }

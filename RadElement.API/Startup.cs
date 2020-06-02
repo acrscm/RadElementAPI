@@ -153,6 +153,8 @@ namespace RadElement.API
             services.AddTransient<IElementSetService, ElementSetService>();
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IOrganizationService, OrganizationService>();
+            services.AddTransient<IIndexCodeService, IndexCodeService>();
+            services.AddTransient<IReferenceService, ReferenceService>(); 
             services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();
             services.AddSingleton<ILogger>(Log.Logger);
 

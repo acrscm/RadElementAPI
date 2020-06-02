@@ -139,6 +139,16 @@ namespace RadElement.Core.Data
         public virtual DbSet<IndexCodeElementValueRef> IndexCodeElementValueRef { get; set; }
 
         /// <summary>
+        /// Gets or sets the reference.
+        /// </summary>
+        public virtual DbSet<Reference> Reference { get; set; }
+        /// <summary>
+        /// 
+        /// Gets or sets the reference reference.
+        /// </summary>
+        public virtual DbSet<ReferenceRef> ReferenceRef { get; set; }
+
+        /// <summary>
         /// <para>
         /// Override this method to configure the database (and other options) to be used for this context.
         /// This method is called for each instance of the context that is created.

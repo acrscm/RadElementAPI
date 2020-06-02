@@ -48,5 +48,15 @@ namespace RadElement.Core.DTO
         /// Gets or sets the element value index code.
         /// </summary>
         public IndexCode ElementValueIndexCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reference.
+        /// </summary>
+        public Reference Reference { get; set; }
+
+        /// <summary>
+        /// Gets or sets the element value reference.
+        /// </summary>
+        public Reference ElementValueReference { get; set; }
     }
 }

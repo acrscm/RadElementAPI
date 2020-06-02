@@ -130,6 +130,11 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the index code references.
         /// </summary>
-        public List<IndexCodeReference> IndexCodeReferences { get; set; }
+        public List<int> IndexCodeReferences { get; set; }
+
+        /// <summary>
+        /// Gets or sets the references reference.
+        /// </summary>
+        public List<int> ReferencesRef { get; set; }
     }
 }

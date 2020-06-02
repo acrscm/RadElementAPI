@@ -11,5 +11,11 @@ namespace RadElement.Core.DTO
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<IndexCode> IndexCodes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the references.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public List<Reference> References { get; set; }
     }
 }
