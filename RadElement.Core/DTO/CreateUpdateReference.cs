@@ -15,7 +15,7 @@
         /// <summary>
         /// Gets or sets the pubmed identifier.
         /// </summary>
-        public int PubmedId { get; set; }
+        public int? PubmedId { get; set; }
 
         /// <summary>
         /// Gets or sets the URL.

@@ -545,6 +545,7 @@ namespace RadElement.Service
 
                                 RemoveElementValues((int)element.Id);
                                 RemoveElementIndexCodeRefs(element.Id);
+                                RemoveReferences((int)element.Id);
                                 RemoveReferenceRefs((int)element.Id);
                                 RemoveElementPersonRefs(element.Id);
                                 RemoveElementOrganizationRefs(element.Id);
@@ -596,6 +597,7 @@ namespace RadElement.Service
                         {
                             RemoveElementValues(elementInternalId);
                             RemoveElementIndexCodeRefs((uint)elementInternalId);
+                            RemoveReferences(elementInternalId);
                             RemoveReferenceRefs(elementInternalId);
                             RemoveElementSetRefs(elementSetRef);
                             RemoveElementPersonRefs((uint)elementInternalId);
@@ -858,6 +860,7 @@ namespace RadElement.Service
                 {
                     RemoveElementValuesIndexCodeRefs(elementValue.Id);
                     RemoveReferenceRefs(elementValue.Id);
+                    RemoveReferences(elementValue.Id);
                 }
 
                 radElementDbContext.ElementValue.RemoveRange(elementValues);
@@ -942,6 +945,30 @@ namespace RadElement.Service
             {
                 radElementDbContext.ReferenceRef.RemoveRange(referenceRefs);
                 radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Removes the references.
+        /// </summary>
+        /// <param name="id">The element identifier.</param>
+        private void RemoveReferences(int id)
+        {
+            var references = (from reference in radElementDbContext.Reference
+
+                              join eleReferenceRef in radElementDbContext.ReferenceRef on (int)reference.Id equals eleReferenceRef.Reference_Id into eleReferenceRef
+                              from elementReferenceRef in eleReferenceRef.DefaultIfEmpty()
+
+                              where elementReferenceRef.Reference_For_Id == id
+                              select new { reference }).Distinct().ToList();
+
+            if (references != null && references.Any())
+            {
+                foreach (var reference in references)
+                {
+                    radElementDbContext.Reference.RemoveRange(reference.reference);
+                    radElementDbContext.SaveChanges();
+                }
             }
         }
 

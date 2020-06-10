@@ -26,7 +26,7 @@ namespace RadElement.Core.Domain
         /// Gets or sets the pubmed identifier.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public int Pubmed_Id { get; set; }
+        public int? Pubmed_Id { get; set; }
 
         /// <summary>
         /// Gets or sets the URL.
