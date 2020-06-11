@@ -118,7 +118,7 @@ namespace RadElement.Service
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
 
-                                            join eleValueReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleValueReferenceRef.Reference_For_Id into eleValueReferenceRefs
+                                            join eleValueReferenceRef in radElementDbContext.ReferenceRef on elementValue.Id equals eleValueReferenceRef.Reference_For_Id into eleValueReferenceRefs
                                             from elementValueReferenceRef in eleValueReferenceRefs.DefaultIfEmpty()
 
                                             join eleValueReference in radElementDbContext.Reference on elementValueReferenceRef.Reference_Id equals eleValueReference.Id into eleValueReferences
@@ -210,7 +210,7 @@ namespace RadElement.Service
                                             join eleValueIndexCode in radElementDbContext.IndexCode on indexCodeValueRef.CodeId equals eleValueIndexCode.Id into eleValueIndexCodes
                                             from elementValueIndexCode in eleValueIndexCodes.DefaultIfEmpty()
 
-                                            join eleValueReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleValueReferenceRef.Reference_For_Id into eleValueReferenceRefs
+                                            join eleValueReferenceRef in radElementDbContext.ReferenceRef on elementValue.Id equals eleValueReferenceRef.Reference_For_Id into eleValueReferenceRefs
                                             from elementValueReferenceRef in eleValueReferenceRefs.DefaultIfEmpty()
 
                                             join eleValueReference in radElementDbContext.Reference on elementValueReferenceRef.Reference_Id equals eleValueReference.Id into eleValueReferences
