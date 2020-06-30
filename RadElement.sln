@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.API", "RadElement.API\RadElement.API.csproj", "{22EAE7D3-0794-4541-AE9A-DC77974F00F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.API", "src\RadElement.API\RadElement.API.csproj", "{22EAE7D3-0794-4541-AE9A-DC77974F00F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service.Tests", "RadElement.Service.Tests\RadElement.Service.Tests.csproj", "{CB9A9B38-4F38-46E0-9CCC-3933787A0C0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service.Tests", "tests\RadElement.Service.Tests\RadElement.Service.Tests.csproj", "{CB9A9B38-4F38-46E0-9CCC-3933787A0C0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Core", "RadElement.Core\RadElement.Core.csproj", "{973256E1-51A7-4993-99F4-95262568EC4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Core", "src\RadElement.Core\RadElement.Core.csproj", "{973256E1-51A7-4993-99F4-95262568EC4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Infrastructure", "RadElement.Infrastructure\RadElement.Infrastructure.csproj", "{7AF13984-AB10-426B-A813-E4CE9556EAE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Infrastructure", "src\RadElement.Infrastructure\RadElement.Infrastructure.csproj", "{7AF13984-AB10-426B-A813-E4CE9556EAE7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service", "RadElement.Service\RadElement.Service.csproj", "{D14C7550-85EE-48E8-ACDC-260748BE3AAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadElement.Service", "src\RadElement.Service\RadElement.Service.csproj", "{D14C7550-85EE-48E8-ACDC-260748BE3AAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

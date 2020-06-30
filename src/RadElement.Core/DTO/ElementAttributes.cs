@@ -86,9 +86,6 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the editor.
         /// </summary>
-        /// <value>
-        /// The editor.
-        /// </value>
         [MaxLength(12)]
         public string Editor { get; set; }
 
@@ -136,5 +133,11 @@ namespace RadElement.Core.DTO
         /// Gets or sets the references reference.
         /// </summary>
         public List<int> ReferencesRef { get; set; }
+
+        /// <summary>
+        /// Gets or sets the specialties.
+        /// </summary>
+        [MaxLength(2)]
+        public List<SpecialtyValue> Specialties { get; set; }
     }
 }

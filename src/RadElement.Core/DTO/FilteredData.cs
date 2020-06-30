@@ -45,6 +45,11 @@ namespace RadElement.Core.DTO
         public IndexCode IndexCode { get; set; }
 
         /// <summary>
+        /// Gets or sets the specialty.
+        /// </summary>
+        public Specialty Specialty { get; set; }
+
+        /// <summary>
         /// Gets or sets the element value index code.
         /// </summary>
         public IndexCode ElementValueIndexCode { get; set; }

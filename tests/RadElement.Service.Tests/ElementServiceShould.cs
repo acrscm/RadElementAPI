@@ -526,6 +526,12 @@ namespace RadElement.Service.Tests
             };
             dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.Specialties = new List<SpecialtyValue>()
+            { 
+                new SpecialtyValue { Value = "BR" }, 
+                new SpecialtyValue { Value = "CA" }, 
+                new SpecialtyValue { Value = "CH" }
+            };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -726,6 +732,12 @@ namespace RadElement.Service.Tests
             };
             dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.Specialties = new List<SpecialtyValue>()
+            {
+                new SpecialtyValue { Value = "BR" },
+                new SpecialtyValue { Value = "CA" },
+                new SpecialtyValue { Value = "CH" }
+            };
 
             IntializeMockData(true);
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -893,6 +905,24 @@ namespace RadElement.Service.Tests
                 mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.Expression).Returns(MockDataContext.referenceRefDb.Expression);
                 mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.ElementType).Returns(MockDataContext.referenceRefDb.ElementType);
                 mockRerenceRef.As<IQueryable<ReferenceRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.referenceRefDb.GetEnumerator());
+                
+                var mockSpecialty = new Mock<DbSet<Specialty>>();
+                mockSpecialty.As<IQueryable<Specialty>>().Setup(m => m.Provider).Returns(MockDataContext.specialtyDb.Provider);
+                mockSpecialty.As<IQueryable<Specialty>>().Setup(m => m.Expression).Returns(MockDataContext.specialtyDb.Expression);
+                mockSpecialty.As<IQueryable<Specialty>>().Setup(m => m.ElementType).Returns(MockDataContext.specialtyDb.ElementType);
+                mockSpecialty.As<IQueryable<Specialty>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.specialtyDb.GetEnumerator());
+
+                var mockSpecialtyElementSetRef = new Mock<DbSet<SpecialtyElementSetRef>>();
+                mockSpecialtyElementSetRef.As<IQueryable<SpecialtyElementSetRef>>().Setup(m => m.Provider).Returns(MockDataContext.specialtyElementSetDb.Provider);
+                mockSpecialtyElementSetRef.As<IQueryable<SpecialtyElementSetRef>>().Setup(m => m.Expression).Returns(MockDataContext.specialtyElementSetDb.Expression);
+                mockSpecialtyElementSetRef.As<IQueryable<SpecialtyElementSetRef>>().Setup(m => m.ElementType).Returns(MockDataContext.specialtyElementSetDb.ElementType);
+                mockSpecialtyElementSetRef.As<IQueryable<SpecialtyElementSetRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.specialtyElementSetDb.GetEnumerator());
+
+                var mockSpecialtyElementRef = new Mock<DbSet<SpecialtyElementRef>>();
+                mockSpecialtyElementRef.As<IQueryable<SpecialtyElementRef>>().Setup(m => m.Provider).Returns(MockDataContext.specialtyElementDb.Provider);
+                mockSpecialtyElementRef.As<IQueryable<SpecialtyElementRef>>().Setup(m => m.Expression).Returns(MockDataContext.specialtyElementDb.Expression);
+                mockSpecialtyElementRef.As<IQueryable<SpecialtyElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.specialtyElementDb.ElementType);
+                mockSpecialtyElementRef.As<IQueryable<SpecialtyElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.specialtyElementDb.GetEnumerator());
 
                 mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
                 mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
@@ -911,6 +941,9 @@ namespace RadElement.Service.Tests
                 mockRadElementContext.Setup(c => c.OrganizationRoleElementSetRef).Returns(mockOrganizationElementSetRef.Object);
                 mockRadElementContext.Setup(c => c.Reference).Returns(mockRerence.Object);
                 mockRadElementContext.Setup(c => c.ReferenceRef).Returns(mockRerenceRef.Object);
+                mockRadElementContext.Setup(c => c.Specialty).Returns(mockSpecialty.Object);
+                mockRadElementContext.Setup(c => c.SpecialtyElementSetRef).Returns(mockSpecialtyElementSetRef.Object);
+                mockRadElementContext.Setup(c => c.SpecialtyElementRef).Returns(mockSpecialtyElementRef.Object);
             }
 
             var mockConfigurationManager = new Mock<IConfigurationManager>();

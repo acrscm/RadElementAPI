@@ -106,6 +106,12 @@ namespace RadElement.Service
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
+                                            join eleSpecialtyRef in radElementDbContext.SpecialtyElementRef on element.Id equals eleSpecialtyRef.ElementId into eleSpecialtyRefs
+                                            from elementSpecialtyRef in eleSpecialtyRefs.DefaultIfEmpty()
+
+                                            join eleSpecialty in radElementDbContext.Specialty on elementSpecialtyRef.SpecialtyId equals eleSpecialty.Id into eleSpecialities
+                                            from elementSpecialty in eleSpecialities.DefaultIfEmpty()
+
                                             join eleReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleReferenceRef.Reference_For_Id into eleReferenceRefs
                                             from elementReferenceRef in eleReferenceRefs.DefaultIfEmpty()
 
@@ -144,6 +150,7 @@ namespace RadElement.Service
                                                 ElementSet = elementSet,
                                                 ElementValue = elementValue,
                                                 IndexCode = elementIndexCode,
+                                                Specialty = elementSpecialty,
                                                 Reference = elementReference,
                                                 ElementValueIndexCode = elementValueIndexCode,
                                                 ElementValueReference = elementValueReference,
@@ -198,6 +205,12 @@ namespace RadElement.Service
                                             join eleIndexCode in radElementDbContext.IndexCode on elementIndexCodeRef.CodeId equals eleIndexCode.Id into eleIndexCodes
                                             from elementIndexCode in eleIndexCodes.DefaultIfEmpty()
 
+                                            join eleSpecialtyRef in radElementDbContext.SpecialtyElementRef on element.Id equals eleSpecialtyRef.ElementId into eleSpecialtyRefs
+                                            from elementSpecialtyRef in eleSpecialtyRefs.DefaultIfEmpty()
+
+                                            join eleSpecialty in radElementDbContext.Specialty on elementSpecialtyRef.SpecialtyId equals eleSpecialty.Id into eleSpecialities
+                                            from elementSpecialty in eleSpecialities.DefaultIfEmpty()
+
                                             join eleReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleReferenceRef.Reference_For_Id into eleReferenceRefs
                                             from elementReferenceRef in eleReferenceRefs.DefaultIfEmpty()
 
@@ -236,6 +249,7 @@ namespace RadElement.Service
                                                 ElementSet = elementSet,
                                                 ElementValue = elementValue,
                                                 IndexCode = elementIndexCode,
+                                                Specialty = elementSpecialty,
                                                 Reference = elementReference,
                                                 ElementValueIndexCode = elementValueIndexCode,
                                                 ElementValueReference = elementValueReference,
@@ -404,6 +418,7 @@ namespace RadElement.Service
 
                                 AddElementValues(dataElement.Options, element.Id);
                                 AddElementIndexCodeRefs(element.Id, dataElement.IndexCodeReferences);
+                                AddElementSpecialtyRefs(element.Id, dataElement.Specialties);
                                 AddReferenceRefs((int)element.Id, dataElement.ReferencesRef, "element");
                                 AddElementSetRefs(setInternalId, (int)element.Id);
                                 AddElementPersonRefs((int)element.Id, dataElement.Persons);
@@ -545,6 +560,7 @@ namespace RadElement.Service
 
                                 RemoveElementValues((int)element.Id);
                                 RemoveElementIndexCodeRefs(element.Id);
+                                RemoveElementSpecialtyRefs(element.Id);
                                 RemoveReferences((int)element.Id);
                                 RemoveReferenceRefs((int)element.Id);
                                 RemoveElementPersonRefs(element.Id);
@@ -552,6 +568,7 @@ namespace RadElement.Service
 
                                 AddElementValues(dataElement.Options, element.Id);
                                 AddElementIndexCodeRefs(element.Id, dataElement.IndexCodeReferences);
+                                AddElementSpecialtyRefs(element.Id, dataElement.Specialties);
                                 AddReferenceRefs((int)element.Id, dataElement.ReferencesRef, "element");
                                 AddElementPersonRefs((int)element.Id, dataElement.Persons);
                                 AddElementOrganizationRefs((int)element.Id, dataElement.Organizations);
@@ -597,6 +614,7 @@ namespace RadElement.Service
                         {
                             RemoveElementValues(elementInternalId);
                             RemoveElementIndexCodeRefs((uint)elementInternalId);
+                            RemoveElementSpecialtyRefs((uint)elementInternalId);
                             RemoveReferences(elementInternalId);
                             RemoveReferenceRefs(elementInternalId);
                             RemoveElementSetRefs(elementSetRef);
@@ -783,6 +801,33 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Adds the element specialty refs.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <param name="specialities">The specialities.</param>
+        private void AddElementSpecialtyRefs(uint elementId, List<SpecialtyValue> specialities)
+        {
+            if (specialities != null && specialities.Any())
+            {
+                foreach (var specialty in specialities)
+                {
+                    var spec = radElementDbContext.Specialty.Where(x => string.Equals(x.Code, specialty.Value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (spec != null)
+                    {
+                        var specialtyRef = new SpecialtyElementRef
+                        {
+                            ElementId = elementId,
+                            SpecialtyId = spec.Id
+                        };
+
+                        radElementDbContext.SpecialtyElementRef.Add(specialtyRef);
+                        radElementDbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds the reference refs.
         /// </summary>
         /// <param name="id">The element identifier.</param>
@@ -921,6 +966,20 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Removes the element specialty refs.
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        private void RemoveElementSpecialtyRefs(uint elementId)
+        {
+            var specialtyRefs = radElementDbContext.SpecialtyElementRef.Where(x => x.ElementId == elementId).ToList();
+            if (specialtyRefs != null && specialtyRefs.Any())
+            {
+                radElementDbContext.SpecialtyElementRef.RemoveRange(specialtyRefs);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Removes the element values index code references.
         /// </summary>
         /// <param name="elementValueId">The element identifier.</param>
@@ -1051,6 +1110,11 @@ namespace RadElement.Service
                         element.IndexCodes = new List<IndexCode>();
                         element.IndexCodes.Add(elem.IndexCode);
                     }
+                    if (elem.Specialty != null)
+                    {
+                        element.Specialties = new List<Specialty>();
+                        element.Specialties.Add(elem.Specialty);
+                    }
                     if (elem.Reference != null)
                     {
                         element.ElementReferences = new List<Reference>();
@@ -1151,6 +1215,17 @@ namespace RadElement.Service
                                 element.IndexCodes = new List<IndexCode>();
                             }
                             element.IndexCodes.Add(elem.IndexCode);
+                        }
+                    }
+                    if (elem.Specialty != null)
+                    {
+                        if (!element.Specialties.Exists(x => x.Id == elem.Specialty.Id))
+                        {
+                            if (element.Specialties == null)
+                            {
+                                element.Specialties = new List<Specialty>();
+                            }
+                            element.Specialties.Add(elem.Specialty);
                         }
                     }
                     if (elem.Reference != null)

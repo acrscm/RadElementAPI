@@ -149,6 +149,21 @@ namespace RadElement.Core.Data
         public virtual DbSet<ReferenceRef> ReferenceRef { get; set; }
 
         /// <summary>
+        /// Gets or sets the specialty.
+        /// </summary>
+        public virtual DbSet<Specialty> Specialty { get; set; }
+
+        /// <summary>
+        /// Gets or sets the specialty element set reference.
+        /// </summary>
+        public virtual DbSet<SpecialtyElementSetRef> SpecialtyElementSetRef { get; set; }
+
+        /// <summary>
+        /// Gets or sets the specialty element reference.
+        /// </summary>
+        public virtual DbSet<SpecialtyElementRef> SpecialtyElementRef { get; set; }
+
+        /// <summary>
         /// <para>
         /// Override this method to configure the database (and other options) to be used for this context.
         /// This method is called for each instance of the context that is created.

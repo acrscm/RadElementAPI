@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RadElement.Core\RadElement.Core.csproj" />
-    <ProjectReference Include="..\RadElement.Service\RadElement.Service.csproj" />
+    <ProjectReference Include="..\..\src\RadElement.Core\RadElement.Core.csproj" />
+    <ProjectReference Include="..\..\src\RadElement.Service\RadElement.Service.csproj" />
   </ItemGroup>
 
 </Project>

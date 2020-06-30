@@ -1,0 +1,1320 @@
+openapi: 3.0.1
+info:
+  title: RadElement
+  version: v1
+paths:
+  "/radelement/api/v1/elements":
+    get:
+      tags:
+      - Element
+      summary: Fetches all the elements.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/elements/{elementId}":
+    get:
+      tags:
+      - Element
+      summary: Fetch a element by element identifier.
+      parameters:
+      - name: elementId
+        in: path
+        description: The element identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/sets/{setId}/elements":
+    get:
+      tags:
+      - Element
+      summary: Fetch the elements by set identifier.
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    post:
+      tags:
+      - Element
+      summary: Creates a element under specific set identifier.
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The content.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateElement"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/elements/search":
+    get:
+      tags:
+      - Element
+      summary: Searches the element with provided keyword.
+      parameters:
+      - name: searchKeyword
+        in: query
+        description: The search keyword.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/sets/{setId}/elements/{elementId}":
+    put:
+      tags:
+      - Element
+      summary: Updates the element based on set identifier and element identifier.
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      - name: elementId
+        in: path
+        description: The element identifier.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The content.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateElement"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    delete:
+      tags:
+      - Element
+      summary: Deletes the element based on set identifier and element identifier..
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      - name: elementId
+        in: path
+        description: The element identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/sets":
+    get:
+      tags:
+      - ElementSet
+      summary: Fetches all the sets.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    post:
+      tags:
+      - ElementSet
+      summary: Creates a set.
+      requestBody:
+        description: The content.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateSet"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/sets/{setId}":
+    get:
+      tags:
+      - ElementSet
+      summary: Fetches the set by set identifier.
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    put:
+      tags:
+      - ElementSet
+      summary: Updates a set by set identifier.
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The content.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateSet"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    delete:
+      tags:
+      - ElementSet
+      summary: Removes a set by set identifier.
+      parameters:
+      - name: setId
+        in: path
+        description: The set identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/sets/search":
+    get:
+      tags:
+      - ElementSet
+      summary: Searches the set with provided keyword.
+      parameters:
+      - name: searchKeyword
+        in: query
+        description: The search keyword.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/api/HelloWorld":
+    get:
+      tags:
+      - HelloWorld
+      summary: Method used to check if service is running
+      responses:
+        '200':
+          description: Success
+    post:
+      tags:
+      - HelloWorld
+      summary: Method used to check if service is running
+      responses:
+        '200':
+          description: Success
+  "/radelement/api/v1/indexcodes":
+    get:
+      tags:
+      - IndexCode
+      summary: Gets the index codes.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    post:
+      tags:
+      - IndexCode
+      summary: Creates the index code.
+      requestBody:
+        description: The index code.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateIndexCode"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/indexcodes/{indexCodeId}":
+    get:
+      tags:
+      - IndexCode
+      summary: Gets the index code.
+      parameters:
+      - name: indexCodeId
+        in: path
+        description: The index code identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    put:
+      tags:
+      - IndexCode
+      summary: Updates the index code.
+      parameters:
+      - name: indexCodeId
+        in: path
+        description: The index code identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: The index code.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateIndexCode"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    delete:
+      tags:
+      - IndexCode
+      summary: Deletes the index code.
+      parameters:
+      - name: indexCodeId
+        in: path
+        description: The index code identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/indexcodes/search":
+    get:
+      tags:
+      - IndexCode
+      summary: Searches the index codes.
+      parameters:
+      - name: searchKeyword
+        in: query
+        description: The search keyword.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/organizations":
+    get:
+      tags:
+      - Organization
+      summary: Gets the organizations.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    post:
+      tags:
+      - Organization
+      summary: Creates the organization.
+      requestBody:
+        description: The organization.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateOrganization"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/organizations/{organizationId}":
+    get:
+      tags:
+      - Organization
+      summary: Gets the organization.
+      parameters:
+      - name: organizationId
+        in: path
+        description: The organization identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    put:
+      tags:
+      - Organization
+      summary: Updates the organization.
+      parameters:
+      - name: organizationId
+        in: path
+        description: The organization identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: The organization.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateOrganization"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    delete:
+      tags:
+      - Organization
+      summary: Deletes the organization.
+      parameters:
+      - name: organizationId
+        in: path
+        description: The organization identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/organizations/search":
+    get:
+      tags:
+      - Organization
+      summary: Searches the organizations.
+      parameters:
+      - name: searchKeyword
+        in: query
+        description: The search keyword.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/persons":
+    get:
+      tags:
+      - Person
+      summary: Gets the persons.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    post:
+      tags:
+      - Person
+      summary: Creates the person.
+      requestBody:
+        description: The person.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdatePerson"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/persons/{personId}":
+    get:
+      tags:
+      - Person
+      summary: Gets the person.
+      parameters:
+      - name: personId
+        in: path
+        description: The person identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    put:
+      tags:
+      - Person
+      summary: Updates the person.
+      parameters:
+      - name: personId
+        in: path
+        description: The person identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: The person.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdatePerson"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    delete:
+      tags:
+      - Person
+      summary: Deletes the person.
+      parameters:
+      - name: personId
+        in: path
+        description: The person identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/persons/search":
+    get:
+      tags:
+      - Person
+      summary: Searches the persons.
+      parameters:
+      - name: searchKeyword
+        in: query
+        description: The search keyword.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/references":
+    get:
+      tags:
+      - Reference
+      summary: Gets the references.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    post:
+      tags:
+      - Reference
+      summary: Creates the reference.
+      requestBody:
+        description: The reference.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateReference"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/references/{referencesId}":
+    get:
+      tags:
+      - Reference
+      summary: Gets the reference.
+      parameters:
+      - name: referencesId
+        in: path
+        description: The references identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    put:
+      tags:
+      - Reference
+      summary: Updates the reference.
+      parameters:
+      - name: referencesId
+        in: path
+        description: The references identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: The reference.
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUpdateReference"
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+    delete:
+      tags:
+      - Reference
+      summary: Deletes the reference.
+      parameters:
+      - name: referencesId
+        in: path
+        description: The references identifier.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+  "/radelement/api/v1/references/search":
+    get:
+      tags:
+      - Reference
+      summary: Searches the references.
+      parameters:
+      - name: searchKeyword
+        in: query
+        description: The search keyword.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - Bearer:
+        - UserIdExists
+components:
+  schemas:
+    DataElementType:
+      enum:
+      - Integer
+      - Numeric
+      - Choice
+      - MultiChoice
+      - DateTime
+      type: string
+    ModalityType:
+      enum:
+      - CR
+      - CT
+      - DX
+      - IVUS
+      - MG
+      - MR
+      - NM
+      - PT
+      - RF
+      - RG
+      - US
+      - XA
+      type: string
+    BiologicalSex:
+      enum:
+      - M
+      - F
+      type: string
+    Option:
+      type: object
+      properties:
+        value:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        definition:
+          type: string
+          nullable: true
+        images:
+          type: string
+          nullable: true
+        indexCodeReferences:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        referencesRef:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+      additionalProperties: false
+    PersonRole:
+      enum:
+      - Author
+      - Editor
+      - Translator
+      - Reviewer
+      - Contributor
+      type: string
+    PersonDetails:
+      type: object
+      properties:
+        personId:
+          type: integer
+          format: int32
+        roles:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PersonRole"
+          nullable: true
+      additionalProperties: false
+    OrganizationRole:
+      enum:
+      - Author
+      - Sponsor
+      - Translator
+      - Reviewer
+      - Contributor
+      type: string
+    OrganizationDetails:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          format: int32
+        roles:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OrganizationRole"
+          nullable: true
+      additionalProperties: false
+    SpecialtyValue:
+      type: object
+      properties:
+        value:
+          maxLength: 2
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateElement:
+      required:
+      - name
+      - valueType
+      type: object
+      properties:
+        elementId:
+          type: string
+          nullable: true
+        name:
+          maxLength: 255
+          type: string
+        shortName:
+          maxLength: 24
+          type: string
+          nullable: true
+        definition:
+          type: string
+          nullable: true
+        valueType:
+          allOf:
+          - "$ref": "#/components/schemas/DataElementType"
+        valueMin:
+          type: number
+          format: float
+          nullable: true
+        valueMax:
+          type: number
+          format: float
+          nullable: true
+        unit:
+          type: string
+          nullable: true
+        question:
+          type: string
+          nullable: true
+        instructions:
+          type: string
+          nullable: true
+        references:
+          type: string
+          nullable: true
+        version:
+          maxLength: 8
+          type: string
+          nullable: true
+        versionDate:
+          type: string
+          format: date-time
+          nullable: true
+        synonyms:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        editor:
+          maxLength: 12
+          type: string
+          nullable: true
+        modality:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ModalityType"
+          nullable: true
+        biologicalSex:
+          type: array
+          items:
+            "$ref": "#/components/schemas/BiologicalSex"
+          nullable: true
+        ageUpperBound:
+          type: number
+          format: float
+          nullable: true
+        ageLowerBound:
+          type: number
+          format: float
+          nullable: true
+        options:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Option"
+          nullable: true
+        persons:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PersonDetails"
+          nullable: true
+        organizations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OrganizationDetails"
+          nullable: true
+        indexCodeReferences:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        referencesRef:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        specialties:
+          maxLength: 2
+          type: array
+          items:
+            "$ref": "#/components/schemas/SpecialtyValue"
+          nullable: true
+      additionalProperties: false
+    UpdateElement:
+      required:
+      - name
+      - valueType
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        shortName:
+          maxLength: 24
+          type: string
+          nullable: true
+        definition:
+          type: string
+          nullable: true
+        valueType:
+          allOf:
+          - "$ref": "#/components/schemas/DataElementType"
+        valueMin:
+          type: number
+          format: float
+          nullable: true
+        valueMax:
+          type: number
+          format: float
+          nullable: true
+        unit:
+          type: string
+          nullable: true
+        question:
+          type: string
+          nullable: true
+        instructions:
+          type: string
+          nullable: true
+        references:
+          type: string
+          nullable: true
+        version:
+          maxLength: 8
+          type: string
+          nullable: true
+        versionDate:
+          type: string
+          format: date-time
+          nullable: true
+        synonyms:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        editor:
+          maxLength: 12
+          type: string
+          nullable: true
+        modality:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ModalityType"
+          nullable: true
+        biologicalSex:
+          type: array
+          items:
+            "$ref": "#/components/schemas/BiologicalSex"
+          nullable: true
+        ageUpperBound:
+          type: number
+          format: float
+          nullable: true
+        ageLowerBound:
+          type: number
+          format: float
+          nullable: true
+        options:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Option"
+          nullable: true
+        persons:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PersonDetails"
+          nullable: true
+        organizations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OrganizationDetails"
+          nullable: true
+        indexCodeReferences:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        referencesRef:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        specialties:
+          maxLength: 2
+          type: array
+          items:
+            "$ref": "#/components/schemas/SpecialtyValue"
+          nullable: true
+      additionalProperties: false
+    CreateUpdateSet:
+      required:
+      - contactName
+      - description
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        contactName:
+          type: string
+        parentId:
+          type: integer
+          format: int32
+          nullable: true
+        modality:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ModalityType"
+          nullable: true
+        biologicalSex:
+          type: array
+          items:
+            "$ref": "#/components/schemas/BiologicalSex"
+          nullable: true
+        ageUpperBound:
+          type: number
+          format: float
+          nullable: true
+        ageLowerBound:
+          type: number
+          format: float
+          nullable: true
+        version:
+          maxLength: 8
+          type: string
+          nullable: true
+        versionDate:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+        persons:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PersonDetails"
+          nullable: true
+        organizations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OrganizationDetails"
+          nullable: true
+        indexCodeReferences:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        referencesRef:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        specialties:
+          type: array
+          items:
+            "$ref": "#/components/schemas/SpecialtyValue"
+          nullable: true
+      additionalProperties: false
+    CreateUpdateIndexCode:
+      type: object
+      properties:
+        system:
+          type: string
+          nullable: true
+        display:
+          type: string
+          nullable: true
+        code:
+          type: string
+          nullable: true
+        href:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateUpdateOrganization:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        abbreviation:
+          maxLength: 255
+          type: string
+          nullable: true
+        url:
+          maxLength: 255
+          type: string
+          nullable: true
+        comment:
+          maxLength: 255
+          type: string
+          nullable: true
+        twitterHandle:
+          maxLength: 255
+          type: string
+          nullable: true
+        email:
+          maxLength: 255
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateUpdatePerson:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        orcid:
+          maxLength: 255
+          type: string
+          nullable: true
+        url:
+          maxLength: 255
+          type: string
+          nullable: true
+        twitterHandle:
+          maxLength: 255
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateUpdateReference:
+      type: object
+      properties:
+        citation:
+          type: string
+          nullable: true
+        doiUri:
+          type: string
+          nullable: true
+        pubmedId:
+          type: integer
+          format: int32
+          nullable: true
+        url:
+          type: string
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: http
+      description: 'JWT Authorization header. Example: {token}'
+      scheme: bearer
+      bearerFormat: JWT

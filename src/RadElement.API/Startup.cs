@@ -189,6 +189,13 @@ namespace RadElement.API
                 await next();
             });
 
+            app.Use(async (context, next) => {
+                using (LogContext.PushProperty("IPAddress", context.Connection.RemoteIpAddress))
+                {
+                    await next();
+                }
+            });
+
             app.UseHsts();
             app.UseHttpsRedirection();
 

@@ -88,6 +88,12 @@ namespace RadElement.Service
                                         join eleSetIndexCode in radElementDbContext.IndexCode on elementSetIndexCodeRef.CodeId equals eleSetIndexCode.Id into eleSetIndexCodes
                                         from elementSetIndexCode in eleSetIndexCodes.DefaultIfEmpty()
 
+                                        join eleSetSpecialtyRef in radElementDbContext.SpecialtyElementSetRef on elementSet.Id equals eleSetSpecialtyRef.ElementSetId into eleSetSpecialtyRefs
+                                        from elementSetSpecialtyRef in eleSetSpecialtyRefs.DefaultIfEmpty()
+
+                                        join eleSetSpecialty in radElementDbContext.Specialty on elementSetSpecialtyRef.SpecialtyId equals eleSetSpecialty.Id into eleSetSpecialities
+                                        from elementSetSpecialty in eleSetSpecialities.DefaultIfEmpty()
+
                                         join eleSetReferenceRef in radElementDbContext.ReferenceRef on elementSet.Id equals eleSetReferenceRef.Reference_For_Id into eleSetReferenceRefs
                                         from elementSetReferenceRef in eleSetReferenceRefs.DefaultIfEmpty()
 
@@ -112,6 +118,7 @@ namespace RadElement.Service
                                         {
                                             ElementSet = elementSet,
                                             IndexCode = elementSetIndexCode,
+                                            Specialty = elementSetSpecialty,
                                             Reference = elementSetReference,
                                             Person = elementSetPerson,
                                             Organization = elementSetOrganization,
@@ -213,6 +220,7 @@ namespace RadElement.Service
                     radElementDbContext.SaveChanges();
 
                     AddElementSetIndexCodeRefs(set.Id, content.IndexCodeReferences);
+                    AddElementSetSpecialtyRefs(set.Id, content.Specialties);
                     AddElementSetReferenceRefs(set.Id, content.ReferencesRef);
                     AddElementSetPersonRefs(set.Id, content.Persons);
                     AddElementSetOrganizationRefs(set.Id, content.Organizations);
@@ -271,12 +279,14 @@ namespace RadElement.Service
                             radElementDbContext.SaveChanges();
 
                             RemoveElementSetIndexCodeRefs(id);
+                            RemoveElementSetSpecialtyRefs(id);
                             RemoveElementSetReferences(id);
                             RemoveElementSetReferenceRefs(id);
                             RemoveElementSetPersonRefs(id);
                             RemoveElementSetOrganizationRefs(id);
 
                             AddElementSetIndexCodeRefs(id, content.IndexCodeReferences);
+                            AddElementSetSpecialtyRefs(id, content.Specialties);
                             AddElementSetReferenceRefs(id, content.ReferencesRef);
                             AddElementSetPersonRefs(id, content.Persons);
                             AddElementSetOrganizationRefs(id, content.Organizations);
@@ -318,6 +328,7 @@ namespace RadElement.Service
                         if (elementSet != null)
                         {
                             RemoveElementSetIndexCodeRefs(elementSet.Id);
+                            RemoveElementSetSpecialtyRefs(id);
                             RemoveElementSetRefs(elementSet);
                             RemoveElementSetReferenceRefs(id);
                             RemoveElementSetPersonRefs(elementSet.Id);
@@ -473,6 +484,33 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Adds the element set specialty refs.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="specialities">The specialities.</param>
+        private void AddElementSetSpecialtyRefs(int setId, List<SpecialtyValue> specialities)
+        {
+            if (specialities != null && specialities.Any())
+            {
+                foreach (var specialty in specialities)
+                {
+                    var spec = radElementDbContext.Specialty.Where(x => string.Equals(x.Code, specialty.Value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (spec != null)
+                    {
+                        var specialtyRef = new SpecialtyElementSetRef
+                        {
+                            ElementSetId = setId,
+                            SpecialtyId = spec.Id
+                        };
+
+                        radElementDbContext.SpecialtyElementSetRef.Add(specialtyRef);
+                        radElementDbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds the reference refs.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
@@ -555,6 +593,20 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Removes the element set specialty refs.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void RemoveElementSetSpecialtyRefs(int setId)
+        {
+            var specialtyRefs = radElementDbContext.SpecialtyElementSetRef.Where(x => x.ElementSetId == setId).ToList();
+            if (specialtyRefs != null && specialtyRefs.Any())
+            {
+                radElementDbContext.SpecialtyElementSetRef.RemoveRange(specialtyRefs);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Removes the reference refs.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
@@ -629,6 +681,11 @@ namespace RadElement.Service
                         set.IndexCodes = new List<IndexCode>();
                         set.IndexCodes.Add(eleSet.IndexCode);
                     }
+                    if (eleSet.Specialty != null)
+                    {
+                        set.Specialties = new List<Specialty>();
+                        set.Specialties.Add(eleSet.Specialty);
+                    }
                     if (eleSet.Reference != null)
                     {
                         set.References = new List<Reference>();
@@ -671,6 +728,17 @@ namespace RadElement.Service
                                 set.IndexCodes = new List<IndexCode>();
                             }
                             set.IndexCodes.Add(eleSet.IndexCode);
+                        }
+                    }
+                    if (eleSet.Specialty != null)
+                    {
+                        if (!set.Specialties.Exists(x => x.Id == eleSet.Specialty.Id))
+                        {
+                            if (set.Specialties == null)
+                            {
+                                set.Specialties = new List<Specialty>();
+                            }
+                            set.Specialties.Add(eleSet.Specialty);
                         }
                     }
                     if (eleSet.Reference != null)

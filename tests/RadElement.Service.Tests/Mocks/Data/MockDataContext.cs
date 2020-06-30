@@ -207,6 +207,35 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new ReferenceRef { Id = 18, Reference_Id = 4, Reference_For_Id = 1011, Reference_For_Type = "element_value"  },
             }.AsQueryable();
 
+        public static IQueryable<Specialty> specialtyDb = new List<Specialty>()
+            {
+                new Specialty { Id = 1, Code = "BR", Short_Name = "Breast", Name = "Breast Imaging" },
+                new Specialty { Id = 2, Code = "CA", Short_Name = "Cardiac", Name = "Cardiac Radiology" },
+                new Specialty { Id = 3, Code = "CH", Short_Name = "Chest", Name = "Chest Radiology" },
+                new Specialty { Id = 4, Code = "CT", Short_Name = "CT", Name = "Computed Tomography" }
+            }.AsQueryable();
+
+        public static IQueryable<SpecialtyElementSetRef> specialtyElementSetDb = new List<SpecialtyElementSetRef>()
+            {
+                new SpecialtyElementSetRef { Id = 1, SpecialtyId = 1, ElementSetId = 53  },
+                new SpecialtyElementSetRef { Id = 2, SpecialtyId = 2, ElementSetId = 53  },
+                new SpecialtyElementSetRef { Id = 3, SpecialtyId = 2, ElementSetId = 66  },
+                new SpecialtyElementSetRef { Id = 4, SpecialtyId = 3, ElementSetId = 72  },
+                new SpecialtyElementSetRef { Id = 5, SpecialtyId = 4, ElementSetId = 74  }
+            }.AsQueryable();
+
+        public static IQueryable<SpecialtyElementRef> specialtyElementDb = new List<SpecialtyElementRef>()
+            {
+                new SpecialtyElementRef { Id = 1, SpecialtyId = 1, ElementId = 340  },
+                new SpecialtyElementRef { Id = 2, SpecialtyId = 2, ElementId = 340  },
+                new SpecialtyElementRef { Id = 3, SpecialtyId = 3, ElementId = 340  },
+                new SpecialtyElementRef { Id = 4, SpecialtyId = 1, ElementId = 338  },
+                new SpecialtyElementRef { Id = 5, SpecialtyId = 2, ElementId = 338  },
+                new SpecialtyElementRef { Id = 6, SpecialtyId = 1, ElementId = 307  },
+                new SpecialtyElementRef { Id = 7, SpecialtyId = 3, ElementId = 307  },
+                new SpecialtyElementRef { Id = 8, SpecialtyId = 4, ElementId = 283  }
+            }.AsQueryable();
+
         #endregion
     }
 }
