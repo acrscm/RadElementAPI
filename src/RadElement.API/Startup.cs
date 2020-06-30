@@ -27,6 +27,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using AutoMapper;
 using RadElement.Core.Data;
+using Serilog.Context;
 
 namespace RadElement.API
 {   
