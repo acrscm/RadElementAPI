@@ -26,6 +26,7 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the specialties.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<Specialty> Specialties { get; set; }
 
         /// <summary>

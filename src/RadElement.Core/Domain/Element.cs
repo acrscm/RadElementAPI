@@ -11,6 +11,11 @@ namespace RadElement.Core.Domain
         public uint Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the parent id.
+        /// </summary>
+        public int? ParentId { get; set; }
+
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
