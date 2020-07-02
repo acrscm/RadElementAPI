@@ -118,6 +118,12 @@ namespace RadElement.Service
                                             join eleReference in radElementDbContext.Reference on elementReferenceRef.Reference_Id equals eleReference.Id into eleReferences
                                             from elementReference in eleReferences.DefaultIfEmpty()
 
+                                            join eleImageRef in radElementDbContext.ImageRef on (int)element.Id equals eleImageRef.Image_For_Id into eleImageRefs
+                                            from elementImageRef in eleImageRefs.DefaultIfEmpty()
+
+                                            join eleImage in radElementDbContext.Image on elementImageRef.Image_Id equals eleImage.Id into eleImages
+                                            from elementImage in eleImages.DefaultIfEmpty()
+
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
                                             from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
 
@@ -129,6 +135,12 @@ namespace RadElement.Service
 
                                             join eleValueReference in radElementDbContext.Reference on elementValueReferenceRef.Reference_Id equals eleValueReference.Id into eleValueReferences
                                             from elementValueReference in eleValueReferences.DefaultIfEmpty()
+
+                                            join eleValueImageRef in radElementDbContext.ImageRef on elementValue.Id equals eleValueImageRef.Image_For_Id into eleValueImageRefs
+                                            from elementValueImageRef in eleValueImageRefs.DefaultIfEmpty()
+
+                                            join eleValueImage in radElementDbContext.Image on elementValueImageRef.Image_Id equals eleValueImage.Id into eleValueImages
+                                            from elementValueImage in eleValueImages.DefaultIfEmpty()
 
                                             join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
                                             from elementPersonRef in elePersonRefs.DefaultIfEmpty()
@@ -152,8 +164,10 @@ namespace RadElement.Service
                                                 IndexCode = elementIndexCode,
                                                 Specialty = elementSpecialty,
                                                 Reference = elementReference,
+                                                Image = elementImage,
                                                 ElementValueIndexCode = elementValueIndexCode,
                                                 ElementValueReference = elementValueReference,
+                                                ElementValueImage = elementValueImage,
                                                 Person = elementPerson,
                                                 Organization = elementOrganization,
                                                 PersonRole = elementPersonRef.Role,
@@ -217,6 +231,12 @@ namespace RadElement.Service
                                             join eleReference in radElementDbContext.Reference on elementReferenceRef.Reference_Id equals eleReference.Id into eleReferences
                                             from elementReference in eleReferences.DefaultIfEmpty()
 
+                                            join eleImageRef in radElementDbContext.ImageRef on (int)element.Id equals eleImageRef.Image_For_Id into eleImageRefs
+                                            from elementImageRef in eleImageRefs.DefaultIfEmpty()
+
+                                            join eleImage in radElementDbContext.Image on elementImageRef.Image_Id equals eleImage.Id into eleImages
+                                            from elementImage in eleImages.DefaultIfEmpty()
+
                                             join eleIndexCodeValueRef in radElementDbContext.IndexCodeElementValueRef on elementValue.Id equals eleIndexCodeValueRef.ElementValueId into eleIndexCodeValueRefs
                                             from indexCodeValueRef in eleIndexCodeValueRefs.DefaultIfEmpty()
 
@@ -228,6 +248,12 @@ namespace RadElement.Service
 
                                             join eleValueReference in radElementDbContext.Reference on elementValueReferenceRef.Reference_Id equals eleValueReference.Id into eleValueReferences
                                             from elementValueReference in eleValueReferences.DefaultIfEmpty()
+
+                                            join eleValueImageRef in radElementDbContext.ImageRef on elementValue.Id equals eleValueImageRef.Image_For_Id into eleValueImageRefs
+                                            from elementValueImageRef in eleValueImageRefs.DefaultIfEmpty()
+
+                                            join eleValueImage in radElementDbContext.Image on elementValueImageRef.Image_Id equals eleValueImage.Id into eleValueImages
+                                            from elementValueImage in eleValueImages.DefaultIfEmpty()
 
                                             join elePersonRef in radElementDbContext.PersonRoleElementRef on (int)element.Id equals elePersonRef.ElementID into elePersonRefs
                                             from elementPersonRef in elePersonRefs.DefaultIfEmpty()
@@ -251,8 +277,10 @@ namespace RadElement.Service
                                                 IndexCode = elementIndexCode,
                                                 Specialty = elementSpecialty,
                                                 Reference = elementReference,
+                                                Image = elementImage,
                                                 ElementValueIndexCode = elementValueIndexCode,
                                                 ElementValueReference = elementValueReference,
+                                                ElementValueImage = elementValueImage,
                                                 Person = elementPerson,
                                                 Organization = elementOrganization,
                                                 PersonRole = elementPersonRef.Role,
@@ -420,6 +448,7 @@ namespace RadElement.Service
                                 AddElementIndexCodeRefs(element.Id, dataElement.IndexCodeReferences);
                                 AddElementSpecialtyRefs(element.Id, dataElement.Specialties);
                                 AddReferenceRefs((int)element.Id, dataElement.ReferencesRef, "element");
+                                AddImageRefs((int)element.Id, dataElement.ImagesRef, "element");
                                 AddElementSetRefs(setInternalId, (int)element.Id);
                                 AddElementPersonRefs((int)element.Id, dataElement.Persons);
                                 AddElementOrganizationRefs((int)element.Id, dataElement.Organizations);
@@ -563,6 +592,7 @@ namespace RadElement.Service
                                 RemoveElementSpecialtyRefs(element.Id);
                                 RemoveReferences((int)element.Id);
                                 RemoveReferenceRefs((int)element.Id);
+                                RemoveImageRefs((int)element.Id);
                                 RemoveElementPersonRefs(element.Id);
                                 RemoveElementOrganizationRefs(element.Id);
 
@@ -570,6 +600,7 @@ namespace RadElement.Service
                                 AddElementIndexCodeRefs(element.Id, dataElement.IndexCodeReferences);
                                 AddElementSpecialtyRefs(element.Id, dataElement.Specialties);
                                 AddReferenceRefs((int)element.Id, dataElement.ReferencesRef, "element");
+                                AddImageRefs((int)element.Id, dataElement.ImagesRef, "element");
                                 AddElementPersonRefs((int)element.Id, dataElement.Persons);
                                 AddElementOrganizationRefs((int)element.Id, dataElement.Organizations);
 
@@ -617,6 +648,7 @@ namespace RadElement.Service
                             RemoveElementSpecialtyRefs((uint)elementInternalId);
                             RemoveReferences(elementInternalId);
                             RemoveReferenceRefs(elementInternalId);
+                            RemoveImageRefs(elementInternalId);
                             RemoveElementSetRefs(elementSetRef);
                             RemoveElementPersonRefs((uint)elementInternalId);
                             RemoveElementOrganizationRefs((uint)elementInternalId);
@@ -682,6 +714,7 @@ namespace RadElement.Service
 
                     AddElementValuesIndexCodeRefs(elementvalue.Id, option.IndexCodeReferences);
                     AddReferenceRefs(elementvalue.Id, option.ReferencesRef, "element_value");
+                    AddImageRefs(elementvalue.Id, option.ImagesRef, "element_value");
                 }
             }
         }
@@ -856,6 +889,34 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Adds the image refs.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="images">The images.</param>
+        /// <param name="imageType">Type of the image.</param>
+        private void AddImageRefs(int id, List<int> images, string imageType)
+        {
+            if (images != null && images.Any())
+            {
+                foreach (var image in images)
+                {
+                    if (image != 0)
+                    {
+                        var imagesRef = new ImageRef
+                        {
+                            Image_For_Id = id,
+                            Image_Id = image,
+                            Image_For_Type = imageType
+                        };
+
+                        radElementDbContext.ImageRef.Add(imagesRef);
+                        radElementDbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds the element values index code references.
         /// </summary>
         /// <param name="elementValueId">The element value identifier.</param>
@@ -905,6 +966,7 @@ namespace RadElement.Service
                 {
                     RemoveElementValuesIndexCodeRefs(elementValue.Id);
                     RemoveReferenceRefs(elementValue.Id);
+                    RemoveImageRefs(elementValue.Id);
                     RemoveReferences(elementValue.Id);
                 }
 
@@ -1008,6 +1070,20 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Removes the image refs.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        private void RemoveImageRefs(int id)
+        {
+            var imageRefs = radElementDbContext.ImageRef.Where(x => x.Image_For_Id == id).ToList();
+            if (imageRefs != null && imageRefs.Any())
+            {
+                radElementDbContext.ImageRef.RemoveRange(imageRefs);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Removes the references.
         /// </summary>
         /// <param name="id">The element identifier.</param>
@@ -1101,6 +1177,11 @@ namespace RadElement.Service
                             elementValue.References = new List<Reference>();
                             elementValue.References.Add(elem.ElementValueReference);
                         }
+                        if (elem.ElementValueImage != null)
+                        {
+                            elementValue.Images = new List<Image>();
+                            elementValue.Images.Add(elem.ElementValueImage);
+                        }
 
                         element.ElementValues = new List<ElementValueAttributes>();
                         element.ElementValues.Add(elementValue);
@@ -1119,6 +1200,11 @@ namespace RadElement.Service
                     {
                         element.ElementReferences = new List<Reference>();
                         element.ElementReferences.Add(elem.Reference);
+                    }
+                    if (elem.Image != null)
+                    {
+                        element.ElementImages = new List<Image>();
+                        element.ElementImages.Add(elem.Image);
                     }
                     if (elem.Person != null)
                     {
@@ -1182,6 +1268,14 @@ namespace RadElement.Service
                                 }
                                 elementValue.References.Add(elem.ElementValueReference);
                             }
+                            if (elem.ElementValueImage != null && !elementValue.Images.Exists(x => x.Id == elem.ElementValueImage.Id))
+                            {
+                                if (elementValue.Images == null)
+                                {
+                                    elementValue.Images = new List<Image>();
+                                }
+                                elementValue.Images.Add(elem.ElementValueImage);
+                            }
                         }
                         else
                         {
@@ -1193,6 +1287,7 @@ namespace RadElement.Service
                             var mappedElementValue = mapper.Map<ElementValueAttributes>(elem.ElementValue);
                             mappedElementValue.IndexCodes = new List<IndexCode>();
                             mappedElementValue.References = new List<Reference>();
+                            mappedElementValue.Images = new List<Image>();
 
                             if (elem.ElementValueIndexCode != null)
                             {
@@ -1201,6 +1296,10 @@ namespace RadElement.Service
                             if (elem.ElementValueReference != null)
                             {
                                 mappedElementValue.References.Add(elem.ElementValueReference);
+                            }
+                            if (elem.ElementValueImage != null)
+                            {
+                                mappedElementValue.Images.Add(elem.ElementValueImage);
                             }
 
                             element.ElementValues.Add(mappedElementValue);
@@ -1237,6 +1336,17 @@ namespace RadElement.Service
                                 element.ElementReferences = new List<Reference>();
                             }
                             element.ElementReferences.Add(elem.Reference);
+                        }
+                    }
+                    if (elem.Image != null)
+                    {
+                        if (!element.ElementImages.Exists(x => x.Id == elem.Image.Id))
+                        {
+                            if (element.ElementImages == null)
+                            {
+                                element.ElementImages = new List<Image>();
+                            }
+                            element.ElementImages.Add(elem.Image);
                         }
                     }
                     if (elem.Person != null)

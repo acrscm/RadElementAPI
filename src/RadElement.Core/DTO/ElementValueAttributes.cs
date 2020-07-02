@@ -17,5 +17,11 @@ namespace RadElement.Core.DTO
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<Reference> References { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public new List<Image> Images { get; set; }
     }
 }

@@ -211,6 +211,66 @@
             </summary>
             <returns>Returns "Hello World" </returns>
         </member>
+        <member name="T:RadElement.API.Controllers.ImageController">
+            <summary>
+            Endpoint for reference controller
+            </summary>
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
+        </member>
+        <member name="F:RadElement.API.Controllers.ImageController.imageService">
+            <summary>
+            The image service
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.#ctor(RadElement.Core.Services.IImageService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.ImageController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.ImageController"/> class.
+            </summary>
+            <param name="imageService">The image service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.GetImages">
+            <summary>
+            Gets the references.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.GetImage(System.Int32)">
+            <summary>
+            Gets the image.
+            </summary>
+            <param name="imageId">The image identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.SearchImages(System.String)">
+            <summary>
+            Searches the images.
+            </summary>
+            <param name="searchKeyword">The search keyword.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.CreateImage(RadElement.Core.DTO.CreateUpdateImage)">
+            <summary>
+            Creates the image.
+            </summary>
+            <param name="image">The image.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.UpdateImage(System.Int32,RadElement.Core.DTO.CreateUpdateImage)">
+            <summary>
+            Updates the image.
+            </summary>
+            <param name="imageId">The image identifier.</param>
+            <param name="image">The image.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.ImageController.DeleteImage(System.Int32)">
+            <summary>
+            Deletes the image.
+            </summary>
+            <param name="imageId">The image identifier.</param>
+            <returns></returns>
+        </member>
         <member name="T:RadElement.API.Controllers.IndexCodeController">
             <summary>
             Endpoint for index code controller

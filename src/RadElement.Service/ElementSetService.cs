@@ -100,6 +100,12 @@ namespace RadElement.Service
                                         join eleSetReference in radElementDbContext.Reference on elementSetReferenceRef.Reference_Id equals eleSetReference.Id into eleSetReferences
                                         from elementSetReference in eleSetReferences.DefaultIfEmpty()
 
+                                        join eleSetImageRef in radElementDbContext.ImageRef on elementSet.Id equals eleSetImageRef.Image_For_Id into eleSetImageRefs
+                                        from elementSetImageRef in eleSetImageRefs.DefaultIfEmpty()
+
+                                        join eleSetImage in radElementDbContext.Image on elementSetImageRef.Image_Id equals eleSetImage.Id into eleSetImages
+                                        from elementSetImage in eleSetImages.DefaultIfEmpty()
+
                                         join eleSetPersonRef in radElementDbContext.PersonRoleElementSetRef on elementSet.Id equals eleSetPersonRef.ElementSetID into eleSetPersonRefs
                                         from elementSetPersonRef in eleSetPersonRefs.DefaultIfEmpty()
 
@@ -120,6 +126,7 @@ namespace RadElement.Service
                                             IndexCode = elementSetIndexCode,
                                             Specialty = elementSetSpecialty,
                                             Reference = elementSetReference,
+                                            Image = elementSetImage,
                                             Person = elementSetPerson,
                                             Organization = elementSetOrganization,
                                             PersonRole = elementSetPersonRef.Role,
@@ -222,6 +229,7 @@ namespace RadElement.Service
                     AddElementSetIndexCodeRefs(set.Id, content.IndexCodeReferences);
                     AddElementSetSpecialtyRefs(set.Id, content.Specialties);
                     AddElementSetReferenceRefs(set.Id, content.ReferencesRef);
+                    AddElementSetImageRefs(set.Id, content.ImagesRef);
                     AddElementSetPersonRefs(set.Id, content.Persons);
                     AddElementSetOrganizationRefs(set.Id, content.Organizations);
 
@@ -282,12 +290,14 @@ namespace RadElement.Service
                             RemoveElementSetSpecialtyRefs(id);
                             RemoveElementSetReferences(id);
                             RemoveElementSetReferenceRefs(id);
+                            RemoveElementSetImageRefs(id);
                             RemoveElementSetPersonRefs(id);
                             RemoveElementSetOrganizationRefs(id);
 
                             AddElementSetIndexCodeRefs(id, content.IndexCodeReferences);
                             AddElementSetSpecialtyRefs(id, content.Specialties);
                             AddElementSetReferenceRefs(id, content.ReferencesRef);
+                            AddElementSetImageRefs(id, content.ImagesRef);
                             AddElementSetPersonRefs(id, content.Persons);
                             AddElementSetOrganizationRefs(id, content.Organizations);
 
@@ -331,6 +341,7 @@ namespace RadElement.Service
                             RemoveElementSetSpecialtyRefs(id);
                             RemoveElementSetRefs(elementSet);
                             RemoveElementSetReferenceRefs(id);
+                            RemoveElementSetImageRefs(id);
                             RemoveElementSetPersonRefs(elementSet.Id);
                             RemoveElementSetOrganizationRefs(elementSet.Id);
                             RemoveSet(elementSet.Id);
@@ -538,6 +549,33 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Adds the element set image refs.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        /// <param name="images">The images.</param>
+        private void AddElementSetImageRefs(int setId, List<int> images)
+        {
+            if (images != null && images.Any())
+            {
+                foreach (var image in images)
+                {
+                    if (image != 0)
+                    {
+                        var imageRef = new ImageRef
+                        {
+                            Image_For_Id = setId,
+                            Image_Id = image,
+                            Image_For_Type = "set"
+                        };
+
+                        radElementDbContext.ImageRef.Add(imageRef);
+                        radElementDbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Removes the set.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
@@ -621,6 +659,20 @@ namespace RadElement.Service
         }
 
         /// <summary>
+        /// Removes the element set image refs.
+        /// </summary>
+        /// <param name="setId">The set identifier.</param>
+        private void RemoveElementSetImageRefs(int setId)
+        {
+            var imageRefs = radElementDbContext.ImageRef.Where(x => x.Image_For_Id == setId).ToList();
+            if (imageRefs != null && imageRefs.Any())
+            {
+                radElementDbContext.ImageRef.RemoveRange(imageRefs);
+                radElementDbContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Removes the element set references.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
@@ -691,6 +743,11 @@ namespace RadElement.Service
                         set.References = new List<Reference>();
                         set.References.Add(eleSet.Reference);
                     }
+                    if (eleSet.Image != null)
+                    {
+                        set.Images = new List<Image>();
+                        set.Images.Add(eleSet.Image);
+                    }
                     if (eleSet.Person != null)
                     {
                         var person = mapper.Map<PersonAttributes>(eleSet.Person);
@@ -750,6 +807,17 @@ namespace RadElement.Service
                                 set.References = new List<Reference>();
                             }
                             set.References.Add(eleSet.Reference);
+                        }
+                    }
+                    if (eleSet.Image != null)
+                    {
+                        if (!set.Images.Exists(x => x.Id == eleSet.Image.Id))
+                        {
+                            if (set.Images == null)
+                            {
+                                set.Images = new List<Image>();
+                            }
+                            set.Images.Add(eleSet.Image);
                         }
                     }
                     if (eleSet.Person != null)

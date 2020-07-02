@@ -172,9 +172,12 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new IndexCodeElementValueRef { Id = 4, CodeId = 4, ElementValueId = 1004  },
                 new IndexCodeElementValueRef { Id = 5, CodeId = 5, ElementValueId = 1007  },
                 new IndexCodeElementValueRef { Id = 6, CodeId = 6, ElementValueId = 1008  },
-                new IndexCodeElementValueRef { Id = 7, CodeId = 7, ElementValueId = 1009  },
-                new IndexCodeElementValueRef { Id = 8, CodeId = 7, ElementValueId = 1010  },
-                new IndexCodeElementValueRef { Id = 9, CodeId = 7, ElementValueId = 1011  }
+                new IndexCodeElementValueRef { Id = 7, CodeId = 1, ElementValueId = 1008  },
+                new IndexCodeElementValueRef { Id = 8, CodeId = 7, ElementValueId = 1009  },
+                new IndexCodeElementValueRef { Id = 9, CodeId = 1, ElementValueId = 1010  },
+                new IndexCodeElementValueRef { Id = 10, CodeId = 2, ElementValueId = 1010  },
+                new IndexCodeElementValueRef { Id = 11, CodeId = 3, ElementValueId = 1010  },
+                new IndexCodeElementValueRef { Id = 12, CodeId = 7, ElementValueId = 1011  }
             }.AsQueryable();
 
         public static IQueryable<Reference> referenceDb = new List<Reference>()
@@ -202,9 +205,10 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new ReferenceRef { Id = 13, Reference_Id = 3, Reference_For_Id = 1003, Reference_For_Type = "element_value"  },
                 new ReferenceRef { Id = 14, Reference_Id = 4, Reference_For_Id = 1007, Reference_For_Type = "element_value"  },
                 new ReferenceRef { Id = 15, Reference_Id = 1, Reference_For_Id = 1008, Reference_For_Type = "element_value" },
-                new ReferenceRef { Id = 16, Reference_Id = 2, Reference_For_Id = 1009, Reference_For_Type = "element_value"  },
-                new ReferenceRef { Id = 17, Reference_Id = 3, Reference_For_Id = 1010, Reference_For_Type = "element_value"  },
-                new ReferenceRef { Id = 18, Reference_Id = 4, Reference_For_Id = 1011, Reference_For_Type = "element_value"  },
+                new ReferenceRef { Id = 16, Reference_Id = 2, Reference_For_Id = 1008, Reference_For_Type = "element_value" },
+                new ReferenceRef { Id = 17, Reference_Id = 2, Reference_For_Id = 1009, Reference_For_Type = "element_value"  },
+                new ReferenceRef { Id = 18, Reference_Id = 3, Reference_For_Id = 1010, Reference_For_Type = "element_value"  },
+                new ReferenceRef { Id = 19, Reference_Id = 4, Reference_For_Id = 1011, Reference_For_Type = "element_value"  },
             }.AsQueryable();
 
         public static IQueryable<Specialty> specialtyDb = new List<Specialty>()
@@ -234,6 +238,41 @@ namespace RadElement.Service.Tests.Mocks.Data
                 new SpecialtyElementRef { Id = 6, SpecialtyId = 1, ElementId = 307  },
                 new SpecialtyElementRef { Id = 7, SpecialtyId = 3, ElementId = 307  },
                 new SpecialtyElementRef { Id = 8, SpecialtyId = 4, ElementId = 283  }
+            }.AsQueryable();
+
+        public static IQueryable<Image> imagesDb = new List<Image>()
+            {
+                new Image { Id = 1, LocalUrl = "https://assist.acr.org", SourceUrl = "https://assist.acr.org", Caption = "Image 1",
+                            Height = 0, Width = 0, Rights = "none"  },
+                new Image { Id = 2, LocalUrl = "https://assist.acr.org", SourceUrl = "https://assist.acr.org", Caption = "Image 2",
+                            Height = 0, Width = 0, Rights = "none"  },
+                new Image { Id = 3, LocalUrl = "https://assist.acr.org", SourceUrl = "https://assist.acr.org", Caption = "Image 3",
+                            Height = 0, Width = 0, Rights = "none"  },
+                new Image { Id = 4, LocalUrl = "https://assist.acr.org", SourceUrl = "https://assist.acr.org", Caption = "Image 4",
+                            Height = 0, Width = 0, Rights = "none"  }
+            }.AsQueryable();
+
+        public static IQueryable<ImageRef> imageRefDb = new List<ImageRef>()
+            {
+                new ImageRef { Id = 1, Image_Id = 1, Image_For_Id = 53, Image_For_Type = "set" },
+                new ImageRef { Id = 2, Image_Id = 2, Image_For_Id = 53, Image_For_Type = "set" },
+                new ImageRef { Id = 3, Image_Id = 2, Image_For_Id = 66, Image_For_Type = "set"  },
+                new ImageRef { Id = 4, Image_Id = 3, Image_For_Id = 72, Image_For_Type = "set"  },
+                new ImageRef { Id = 5, Image_Id = 4, Image_For_Id = 74, Image_For_Type = "set"  },
+                new ImageRef { Id = 6, Image_Id = 1, Image_For_Id = 340, Image_For_Type = "element" },
+                new ImageRef { Id = 7, Image_Id = 2, Image_For_Id = 340, Image_For_Type = "element" },
+                new ImageRef { Id = 8, Image_Id = 2, Image_For_Id = 338, Image_For_Type = "element"  },
+                new ImageRef { Id = 9, Image_Id = 3, Image_For_Id = 307, Image_For_Type = "element"  },
+                new ImageRef { Id = 10, Image_Id = 4, Image_For_Id = 283, Image_For_Type = "element"  },
+                new ImageRef { Id = 11, Image_Id = 1, Image_For_Id = 1001, Image_For_Type = "element_value" },
+                new ImageRef { Id = 12, Image_Id = 2, Image_For_Id = 1002, Image_For_Type = "element_value"  },
+                new ImageRef { Id = 13, Image_Id = 3, Image_For_Id = 1003, Image_For_Type = "element_value"  },
+                new ImageRef { Id = 14, Image_Id = 4, Image_For_Id = 1007, Image_For_Type = "element_value"  },
+                new ImageRef { Id = 15, Image_Id = 1, Image_For_Id = 1008, Image_For_Type = "element_value" },
+                new ImageRef { Id = 16, Image_Id = 2, Image_For_Id = 1008, Image_For_Type = "element_value" },
+                new ImageRef { Id = 17, Image_Id = 2, Image_For_Id = 1009, Image_For_Type = "element_value"  },
+                new ImageRef { Id = 18, Image_Id = 3, Image_For_Id = 1010, Image_For_Type = "element_value"  },
+                new ImageRef { Id = 19, Image_Id = 4, Image_For_Id = 1011, Image_For_Type = "element_value"  },
             }.AsQueryable();
 
         #endregion

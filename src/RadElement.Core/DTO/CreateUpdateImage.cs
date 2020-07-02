@@ -1,12 +1,7 @@
-﻿namespace RadElement.Core.Domain
+﻿namespace RadElement.Core.DTO
 {
-    public class Image
+    public class CreateUpdateImage
     {
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// Gets or sets the local URL.
         /// </summary>

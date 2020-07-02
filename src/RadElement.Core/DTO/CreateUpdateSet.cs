@@ -86,6 +86,11 @@ namespace RadElement.Core.DTO
         public List<int> ReferencesRef { get; set; }
 
         /// <summary>
+        /// Gets or sets the images reference.
+        /// </summary>
+        public List<int> ImagesRef { get; set; }
+
+        /// <summary>
         /// Gets or sets the specialties.
         /// </summary>
         public List<SpecialtyValue> Specialties { get; set; }

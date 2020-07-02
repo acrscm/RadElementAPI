@@ -29,6 +29,11 @@ namespace RadElement.Core.DTO
         public List<Reference> References { get; set; }
 
         /// <summary>
+        /// Gets or sets the images.
+        /// </summary>
+        public List<Image> Images { get; set; }
+
+        /// <summary>
         /// Gets or sets the person information.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

@@ -243,15 +243,15 @@ namespace RadElement.Service
         }
 
         /// <summary>
-        /// Removes the element set references.
+        /// Removes the references.
         /// </summary>
         /// <param name="reference">The reference.</param>
         private void RemoveReferences(Reference reference)
         {
-            var setRefs = radElementDbContext.ReferenceRef.Where(x => x.Reference_Id == reference.Id);
-            if (setRefs != null && setRefs.Any())
+            var refs = radElementDbContext.ReferenceRef.Where(x => x.Reference_Id == reference.Id);
+            if (refs != null && refs.Any())
             {
-                radElementDbContext.ReferenceRef.RemoveRange(setRefs);
+                radElementDbContext.ReferenceRef.RemoveRange(refs);
                 radElementDbContext.SaveChanges();
             }
         }

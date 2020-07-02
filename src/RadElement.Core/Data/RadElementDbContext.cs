@@ -163,6 +163,7 @@ namespace RadElement.Core.Data
         /// </summary>
         public virtual DbSet<SpecialtyElementRef> SpecialtyElementRef { get; set; }
 
+
         /// <summary>
         /// <para>
         /// Override this method to configure the database (and other options) to be used for this context.

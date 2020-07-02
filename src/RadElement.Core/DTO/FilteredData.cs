@@ -60,8 +60,18 @@ namespace RadElement.Core.DTO
         public Reference Reference { get; set; }
 
         /// <summary>
+        /// Gets or sets the image.
+        /// </summary>
+        public Image Image { get; set; }
+
+        /// <summary>
         /// Gets or sets the element value reference.
         /// </summary>
         public Reference ElementValueReference { get; set; }
+
+        /// <summary>
+        /// Gets or sets the element value image.
+        /// </summary>
+        public Image ElementValueImage { get; set; }
     }
 }

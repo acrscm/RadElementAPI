@@ -297,6 +297,7 @@ namespace RadElement.Service.Tests
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -317,6 +318,7 @@ namespace RadElement.Service.Tests
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
 
             var result = await service.CreateElement(setId, dataElement);
             Assert.NotNull(result);
@@ -335,6 +337,7 @@ namespace RadElement.Service.Tests
             dataElement.Name = "Tumuor";
             dataElement.ValueType = elementType;
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -358,6 +361,7 @@ namespace RadElement.Service.Tests
             dataElement.Definition = "Tumuor vein";
             dataElement.ValueType = elementType;
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
 
             if (dataElement.ValueType == DataElementType.Integer)
             {
@@ -375,9 +379,33 @@ namespace RadElement.Service.Tests
                 dataElement.Options.AddRange(
                     new List<Option>()
                     {
-                        new Option { Name = "value1", Value = "1", Definition = "1", Images = "1" },
-                        new Option { Name = "value2", Value = "2", Definition = "2", Images = "2" },
-                        new Option { Name = "value3", Value = "3", Definition = "3", Images = "3" }
+                        new Option {
+                            Name = "value1",
+                            Value = "1",
+                            Definition = "1",
+                            Images = "1",
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
+                        },
+                        new Option {
+                            Name = "value2",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
+                        },
+                        new Option {
+                            Name = "value1",
+                            Value = "2",
+                            Definition = "2",
+                            Images = "2",
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
+                        },
                     }
                 );
             }
@@ -424,21 +452,27 @@ namespace RadElement.Service.Tests
                             Value = "1", 
                             Definition = "1", 
                             Images = "1",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                     }
                 );
@@ -453,6 +487,7 @@ namespace RadElement.Service.Tests
             };
             dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(true);
             var result = await service.CreateElement(setId, dataElement);
@@ -497,21 +532,27 @@ namespace RadElement.Service.Tests
                             Value = "1",
                             Definition = "1",
                             Images = "1",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                     }
                 );
@@ -526,6 +567,7 @@ namespace RadElement.Service.Tests
             };
             dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
             dataElement.Specialties = new List<SpecialtyValue>()
             { 
                 new SpecialtyValue { Value = "BR" }, 
@@ -632,21 +674,27 @@ namespace RadElement.Service.Tests
                             Value = "1",
                             Definition = "1",
                             Images = "1",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                     }
                 );
@@ -661,6 +709,7 @@ namespace RadElement.Service.Tests
             };
             dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
 
             IntializeMockData(false);
             var result = await service.UpdateElement(setId, elementId, dataElement);
@@ -703,21 +752,27 @@ namespace RadElement.Service.Tests
                             Value = "1",
                             Definition = "1",
                             Images = "1",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value2",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                         new Option {
                             Name = "value1",
                             Value = "2",
                             Definition = "2",
                             Images = "2",
-                            IndexCodeReferences = new List<int>() { 1, 2, 3 }
+                            IndexCodeReferences = new List<int>() { 1, 2, 3 },
+                            ImagesRef = new List<int> { 1, 2, 3 },
+                            ReferencesRef = new List<int> { 1, 2, 3 }
                         },
                     }
                 );
@@ -732,6 +787,7 @@ namespace RadElement.Service.Tests
             };
             dataElement.IndexCodeReferences = new List<int>() { 1, 2, 3 };
             dataElement.ReferencesRef = new List<int> { 1, 2, 3 };
+            dataElement.ImagesRef = new List<int> { 1, 2, 3 };
             dataElement.Specialties = new List<SpecialtyValue>()
             {
                 new SpecialtyValue { Value = "BR" },
@@ -924,6 +980,17 @@ namespace RadElement.Service.Tests
                 mockSpecialtyElementRef.As<IQueryable<SpecialtyElementRef>>().Setup(m => m.ElementType).Returns(MockDataContext.specialtyElementDb.ElementType);
                 mockSpecialtyElementRef.As<IQueryable<SpecialtyElementRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.specialtyElementDb.GetEnumerator());
 
+                var mockImage = new Mock<DbSet<Image>>();
+                mockImage.As<IQueryable<Image>>().Setup(m => m.Provider).Returns(MockDataContext.imagesDb.Provider);
+                mockImage.As<IQueryable<Image>>().Setup(m => m.Expression).Returns(MockDataContext.imagesDb.Expression);
+                mockImage.As<IQueryable<Image>>().Setup(m => m.ElementType).Returns(MockDataContext.imagesDb.ElementType);
+                mockImage.As<IQueryable<Image>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.imagesDb.GetEnumerator());
+
+                var mockImageRef = new Mock<DbSet<ImageRef>>();
+                mockImageRef.As<IQueryable<ImageRef>>().Setup(m => m.Provider).Returns(MockDataContext.imageRefDb.Provider);
+                mockImageRef.As<IQueryable<ImageRef>>().Setup(m => m.Expression).Returns(MockDataContext.imageRefDb.Expression);
+                mockImageRef.As<IQueryable<ImageRef>>().Setup(m => m.ElementType).Returns(MockDataContext.imageRefDb.ElementType);
+                mockImageRef.As<IQueryable<ImageRef>>().Setup(m => m.GetEnumerator()).Returns(MockDataContext.imageRefDb.GetEnumerator());
                 mockRadElementContext.Setup(c => c.Element).Returns(mockElement.Object);
                 mockRadElementContext.Setup(c => c.ElementSet).Returns(mockSet.Object);
                 mockRadElementContext.Setup(c => c.ElementSetRef).Returns(mockElementSetRef.Object);
@@ -944,6 +1011,8 @@ namespace RadElement.Service.Tests
                 mockRadElementContext.Setup(c => c.Specialty).Returns(mockSpecialty.Object);
                 mockRadElementContext.Setup(c => c.SpecialtyElementSetRef).Returns(mockSpecialtyElementSetRef.Object);
                 mockRadElementContext.Setup(c => c.SpecialtyElementRef).Returns(mockSpecialtyElementRef.Object);
+                mockRadElementContext.Setup(c => c.Image).Returns(mockImage.Object);
+                mockRadElementContext.Setup(c => c.ImageRef).Returns(mockImageRef.Object);
             }
 
             var mockConfigurationManager = new Mock<IConfigurationManager>();
