@@ -14,6 +14,6 @@
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
-   	 <file src="RadElement.API\bin\Release\netcoreapp3.1\publish\**\*.*" target="" />	
+   	 <file src="src\RadElement.API\bin\Release\netcoreapp3.1\publish\**\*.*" target="" />	
   </files>
 </package>
