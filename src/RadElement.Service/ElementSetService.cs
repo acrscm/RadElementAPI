@@ -281,8 +281,8 @@ namespace RadElement.Service
                             elementSet.AgeLowerBound = content.AgeLowerBound;
                             elementSet.AgeUpperBound = content.AgeUpperBound;
                             elementSet.Version = content.Version;
-                            elementSet.VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.Now;
-                            elementSet.Deleted_At = content.DeletedAt ?? DateTime.Now;
+                            elementSet.VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.UtcNow;
+                            elementSet.Deleted_At = content.DeletedAt;
 
                             radElementDbContext.SaveChanges();
 
