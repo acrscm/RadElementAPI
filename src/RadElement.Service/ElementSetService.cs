@@ -219,8 +219,7 @@ namespace RadElement.Service
                         Status = "Proposed",
                         StatusDate = DateTime.UtcNow,
                         Version = content.Version,
-                        VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.UtcNow,
-                        Deleted_At = content.DeletedAt
+                        VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.UtcNow
                     };
 
                     radElementDbContext.ElementSet.Add(set);
@@ -282,7 +281,6 @@ namespace RadElement.Service
                             elementSet.AgeUpperBound = content.AgeUpperBound;
                             elementSet.Version = content.Version;
                             elementSet.VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.UtcNow;
-                            elementSet.Deleted_At = content.DeletedAt;
 
                             radElementDbContext.SaveChanges();
 
