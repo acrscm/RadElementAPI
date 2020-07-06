@@ -219,8 +219,8 @@ namespace RadElement.Service
                         Status = "Proposed",
                         StatusDate = DateTime.UtcNow,
                         Version = content.Version,
-                        VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.Now,
-                        Deleted_At = content.DeletedAt ?? DateTime.Now
+                        VersionDate = content.VersionDate != null ? content.VersionDate : DateTime.UtcNow,
+                        Deleted_At = content.DeletedAt
                     };
 
                     radElementDbContext.ElementSet.Add(set);
