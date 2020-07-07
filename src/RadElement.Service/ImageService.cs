@@ -133,6 +133,24 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Image fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
+                    var matchedImage = radElementDbContext.Image.ToList().Where(
+                        x => string.Equals(x.SourceUrl.Trim(), image.SourceUrl.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.LocalUrl.Trim(), image.LocalUrl.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.Caption.Trim(), image.Caption.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.Rights.Trim(), image.Rights.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             x.Width == image.Width && x.Height == image.Height).FirstOrDefault();
+
+                    if (matchedImage != null)
+                    {
+
+                        var imageDetails = new ImageIdDetails()
+                        {
+                            ImageId = matchedImage.Id.ToString()
+                        };
+
+                        return await Task.FromResult(new JsonResult(imageDetails, HttpStatusCode.OK));
+                    }
+
                     var imageData = new Image()
                     {
                         LocalUrl = image.LocalUrl,

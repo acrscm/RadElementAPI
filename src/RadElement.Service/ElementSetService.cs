@@ -286,7 +286,6 @@ namespace RadElement.Service
 
                             RemoveElementSetIndexCodeRefs(id);
                             RemoveElementSetSpecialtyRefs(id);
-                            RemoveElementSetReferences(id);
                             RemoveElementSetReferenceRefs(id);
                             RemoveElementSetImageRefs(id);
                             RemoveElementSetPersonRefs(id);
@@ -667,30 +666,6 @@ namespace RadElement.Service
             {
                 radElementDbContext.ImageRef.RemoveRange(imageRefs);
                 radElementDbContext.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Removes the element set references.
-        /// </summary>
-        /// <param name="setId">The set identifier.</param>
-        private void RemoveElementSetReferences(int setId)
-        {
-            var references = (from reference in radElementDbContext.Reference
-
-                              join eleSetReferenceRef in radElementDbContext.ReferenceRef on (int)reference.Id equals eleSetReferenceRef.Reference_Id into eleSetReferenceRef
-                              from elementSetReferenceRef in eleSetReferenceRef.DefaultIfEmpty()
-
-                              where elementSetReferenceRef.Reference_For_Id == setId
-                              select new { reference }).Distinct().ToList();
-
-            if (references != null && references.Any())
-            {
-                foreach (var reference in references)
-                {
-                    radElementDbContext.Reference.RemoveRange(reference.reference);
-                    radElementDbContext.SaveChanges();
-                }
             }
         }
 

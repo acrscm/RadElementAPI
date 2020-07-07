@@ -133,6 +133,23 @@ namespace RadElement.Service
                         return await Task.FromResult(new JsonResult("Reference fields are invalid.", HttpStatusCode.BadRequest));
                     }
 
+                    var matchedReference = radElementDbContext.Reference.ToList().Where(
+                        x => string.Equals(x.Citation?.Trim(), reference.Citation?.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.Doi_Uri?.Trim(), reference.DoiUri?.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             string.Equals(x.Url?.Trim(), reference.Url?.Trim(), StringComparison.InvariantCultureIgnoreCase) &&
+                             x.Pubmed_Id == reference.PubmedId).FirstOrDefault();
+
+                    if (matchedReference != null)
+                    {
+
+                        var referenceDetails = new ReferenceIdDetails()
+                        {
+                            ReferenceId = matchedReference.Id.ToString()
+                        };
+
+                        return await Task.FromResult(new JsonResult(referenceDetails, HttpStatusCode.OK));
+                    }
+
                     var referenceData = new Reference()
                     {
                         Citation = reference.Citation,
