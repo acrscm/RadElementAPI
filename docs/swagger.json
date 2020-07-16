@@ -523,6 +523,222 @@
         }
       }
     },
+    "/radelement/api/v1/images": {
+      "get": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Gets the references.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [
+              "UserIdExists"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Creates the image.",
+        "requestBody": {
+          "description": "The image.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateImage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [
+              "UserIdExists"
+            ]
+          }
+        ]
+      }
+    },
+    "/radelement/api/v1/images/{imageId}": {
+      "get": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Gets the image.",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "path",
+            "description": "The image identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [
+              "UserIdExists"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Updates the image.",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "path",
+            "description": "The image identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The image.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUpdateImage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [
+              "UserIdExists"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Deletes the image.",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "path",
+            "description": "The image identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [
+              "UserIdExists"
+            ]
+          }
+        ]
+      }
+    },
+    "/radelement/api/v1/images/search": {
+      "get": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Searches the images.",
+        "parameters": [
+          {
+            "name": "searchKeyword",
+            "in": "query",
+            "description": "The search keyword.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [
+              "UserIdExists"
+            ]
+          }
+        ]
+      }
+    },
     "/radelement/api/v1/indexcodes": {
       "get": {
         "tags": [
@@ -1458,6 +1674,14 @@
               "format": "int32"
             },
             "nullable": true
+          },
+          "imagesRef": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1536,6 +1760,11 @@
         "properties": {
           "elementId": {
             "type": "string",
+            "nullable": true
+          },
+          "parentId": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "name": {
@@ -1661,6 +1890,14 @@
             "nullable": true
           },
           "referencesRef": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "imagesRef": {
             "type": "array",
             "items": {
               "type": "integer",
@@ -1816,6 +2053,14 @@
             },
             "nullable": true
           },
+          "imagesRef": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
           "specialties": {
             "maxLength": 2,
             "type": "array",
@@ -1917,11 +2162,49 @@
             },
             "nullable": true
           },
+          "imagesRef": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
           "specialties": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SpecialtyValue"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUpdateImage": {
+        "type": "object",
+        "properties": {
+          "localUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "caption": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rights": {
+            "type": "string",
             "nullable": true
           }
         },
