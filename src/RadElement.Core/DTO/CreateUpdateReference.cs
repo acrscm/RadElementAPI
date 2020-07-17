@@ -8,7 +8,7 @@ namespace RadElement.Core.DTO
         /// Gets or sets the citation.
         /// </summary>
         [Required]
-        [MaxLength(255)]
+        [MaxLength(500)]
         public string Citation { get; set; }
 
         /// <summary>
