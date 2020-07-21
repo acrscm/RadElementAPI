@@ -139,7 +139,8 @@ namespace RadElement.Service
                     if (indexCodeSystem != null)
                     {
                         var indexCodeDetails = radElementDbContext.IndexCode.Where(x => string.Equals(x.System, indexCode.System, StringComparison.InvariantCultureIgnoreCase) &&
-                                                                                        string.Equals(x.Code, indexCode.Code, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                                                                                        string.Equals(x.Code, indexCode.Code, StringComparison.InvariantCultureIgnoreCase) &&
+                                                                                        string.Equals(x.Display, indexCode.Display, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                         if (indexCodeDetails != null)
                         {
                             var indexCodeIdDetails = new IndexCodeIdDetails()
