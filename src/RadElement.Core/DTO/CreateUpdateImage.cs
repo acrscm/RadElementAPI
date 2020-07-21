@@ -25,19 +25,16 @@ namespace RadElement.Core.DTO
         /// <summary>
         /// Gets or sets the height.
         /// </summary>
-        [Required]
         public int Height { get; set; }
 
         /// <summary>
         /// Gets or sets the width.
         /// </summary>
-        [Required]
         public int Width { get; set; }
 
         /// <summary>
         /// Gets or sets the rights.
         /// </summary>
-        [Required]
         public string Rights { get; set; }
     }
 }
