@@ -391,7 +391,7 @@ namespace RadElement.Service
                                 Element element = new Element()
                                 {
                                     Name = dataElement.Name,
-                                    ParentId = dataElement.ParentId,
+                                    ParentId = setInternalId,
                                     ShortName = dataElement.ShortName ?? string.Empty,
                                     Definition = dataElement.Definition ?? string.Empty,
                                     ValueType = GetElementValueType(dataElement.ValueType),
