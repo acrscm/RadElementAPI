@@ -20,6 +20,7 @@ namespace RadElement.Core.DTO
         /// Gets or sets the source URL.
         /// </summary>
         [Required]
+        [Url]
         public string SourceUrl { get; set; }
 
         /// <summary>
