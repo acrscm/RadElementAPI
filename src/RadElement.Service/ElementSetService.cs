@@ -91,8 +91,8 @@ namespace RadElement.Service
                                         join eleSetSpecialtyRef in radElementDbContext.SpecialtyElementSetRef on elementSet.Id equals eleSetSpecialtyRef.ElementSetId into eleSetSpecialtyRefs
                                         from elementSetSpecialtyRef in eleSetSpecialtyRefs.DefaultIfEmpty()
 
-                                        join eleSetSpecialty in radElementDbContext.Specialty on elementSetSpecialtyRef.SpecialtyId equals eleSetSpecialty.Id into eleSetSpecialities
-                                        from elementSetSpecialty in eleSetSpecialities.DefaultIfEmpty()
+                                        join eleSetSpecialty in radElementDbContext.Specialty on elementSetSpecialtyRef.SpecialtyId equals eleSetSpecialty.Id into eleSetSpecialties
+                                        from elementSetSpecialty in eleSetSpecialties.DefaultIfEmpty()
 
                                         join eleSetReferenceRef in radElementDbContext.ReferenceRef on elementSet.Id equals eleSetReferenceRef.Reference_For_Id into eleSetReferenceRefs
                                         from elementSetReferenceRef in eleSetReferenceRefs.DefaultIfEmpty()
@@ -212,7 +212,6 @@ namespace RadElement.Service
                         Description = content.Description,
                         ContactName = content.ContactName,
                         ParentId = content.ParentId,
-                        Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null,
                         BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null,
                         AgeLowerBound = content.AgeLowerBound,
                         AgeUpperBound = content.AgeUpperBound,
@@ -275,7 +274,6 @@ namespace RadElement.Service
                             elementSet.Description = content.Description;
                             elementSet.ContactName = content.ContactName;
                             elementSet.ParentId = content.ParentId;
-                            elementSet.Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null;
                             elementSet.BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null;
                             elementSet.AgeLowerBound = content.AgeLowerBound;
                             elementSet.AgeUpperBound = content.AgeUpperBound;
@@ -495,12 +493,12 @@ namespace RadElement.Service
         /// Adds the element set specialty refs.
         /// </summary>
         /// <param name="setId">The set identifier.</param>
-        /// <param name="specialities">The specialities.</param>
-        private void AddElementSetSpecialtyRefs(int setId, List<SpecialtyValue> specialities)
+        /// <param name="specialties">The specialties.</param>
+        private void AddElementSetSpecialtyRefs(int setId, List<SpecialtyValue> specialties)
         {
-            if (specialities != null && specialities.Any())
+            if (specialties != null && specialties.Any())
             {
-                foreach (var specialty in specialities)
+                foreach (var specialty in specialties)
                 {
                     var spec = radElementDbContext.Specialty.Where(x => string.Equals(x.Code, specialty.Value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     if (spec != null)

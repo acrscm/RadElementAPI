@@ -109,8 +109,8 @@ namespace RadElement.Service
                                             join eleSpecialtyRef in radElementDbContext.SpecialtyElementRef on element.Id equals eleSpecialtyRef.ElementId into eleSpecialtyRefs
                                             from elementSpecialtyRef in eleSpecialtyRefs.DefaultIfEmpty()
 
-                                            join eleSpecialty in radElementDbContext.Specialty on elementSpecialtyRef.SpecialtyId equals eleSpecialty.Id into eleSpecialities
-                                            from elementSpecialty in eleSpecialities.DefaultIfEmpty()
+                                            join eleSpecialty in radElementDbContext.Specialty on elementSpecialtyRef.SpecialtyId equals eleSpecialty.Id into eleSpecialties
+                                            from elementSpecialty in eleSpecialties.DefaultIfEmpty()
 
                                             join eleReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleReferenceRef.Reference_For_Id into eleReferenceRefs
                                             from elementReferenceRef in eleReferenceRefs.DefaultIfEmpty()
@@ -222,8 +222,8 @@ namespace RadElement.Service
                                             join eleSpecialtyRef in radElementDbContext.SpecialtyElementRef on element.Id equals eleSpecialtyRef.ElementId into eleSpecialtyRefs
                                             from elementSpecialtyRef in eleSpecialtyRefs.DefaultIfEmpty()
 
-                                            join eleSpecialty in radElementDbContext.Specialty on elementSpecialtyRef.SpecialtyId equals eleSpecialty.Id into eleSpecialities
-                                            from elementSpecialty in eleSpecialities.DefaultIfEmpty()
+                                            join eleSpecialty in radElementDbContext.Specialty on elementSpecialtyRef.SpecialtyId equals eleSpecialty.Id into eleSpecialties
+                                            from elementSpecialty in eleSpecialties.DefaultIfEmpty()
 
                                             join eleReferenceRef in radElementDbContext.ReferenceRef on (int)element.Id equals eleReferenceRef.Reference_For_Id into eleReferenceRefs
                                             from elementReferenceRef in eleReferenceRefs.DefaultIfEmpty()
@@ -836,12 +836,12 @@ namespace RadElement.Service
         /// Adds the element specialty refs.
         /// </summary>
         /// <param name="elementId">The element identifier.</param>
-        /// <param name="specialities">The specialities.</param>
-        private void AddElementSpecialtyRefs(uint elementId, List<SpecialtyValue> specialities)
+        /// <param name="specialties">The specialties.</param>
+        private void AddElementSpecialtyRefs(uint elementId, List<SpecialtyValue> specialties)
         {
-            if (specialities != null && specialities.Any())
+            if (specialties != null && specialties.Any())
             {
-                foreach (var specialty in specialities)
+                foreach (var specialty in specialties)
                 {
                     var spec = radElementDbContext.Specialty.Where(x => string.Equals(x.Code, specialty.Value, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     if (spec != null)
