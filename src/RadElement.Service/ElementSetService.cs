@@ -212,6 +212,7 @@ namespace RadElement.Service
                         Description = content.Description,
                         ContactName = content.ContactName,
                         ParentId = content.ParentId,
+                        Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null,
                         BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null,
                         AgeLowerBound = content.AgeLowerBound,
                         AgeUpperBound = content.AgeUpperBound,
@@ -273,7 +274,7 @@ namespace RadElement.Service
                             elementSet.Name = content.Name.Trim();
                             elementSet.Description = content.Description;
                             elementSet.ContactName = content.ContactName;
-                            elementSet.ParentId = content.ParentId;
+                            elementSet.Modality = content.Modality != null && content.Modality.Any() ? string.Join(",", content.Modality) : null;
                             elementSet.BiologicalSex = content.BiologicalSex != null && content.BiologicalSex.Any() ? string.Join(",", content.BiologicalSex) : null;
                             elementSet.AgeLowerBound = content.AgeLowerBound;
                             elementSet.AgeUpperBound = content.AgeUpperBound;

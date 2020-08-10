@@ -30,6 +30,11 @@ namespace RadElement.Core.DTO
         public int? ParentId { get; set; }
 
         /// <summary>
+        /// Gets or sets the modality.
+        /// </summary>
+        public List<ModalityType> Modality { get; set; }
+
+        /// <summary>
         /// Gets or sets the Biological sex.
         /// </summary>
         public List<BiologicalSex> BiologicalSex { get; set; }
