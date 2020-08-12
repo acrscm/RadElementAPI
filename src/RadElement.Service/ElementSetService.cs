@@ -162,7 +162,8 @@ namespace RadElement.Service
                 {
                     var filteredSets = (from elementSet in radElementDbContext.ElementSet
 
-                                        where (elementSet.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
+                                        where elementSet.Status != ElementSetStatus.Retired.ToString() &&
+                                              (elementSet.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) ||
                                                ("RDES" + elementSet.Id.ToString()).Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase))
 
                                         select new FilteredData

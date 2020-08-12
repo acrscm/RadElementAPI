@@ -326,7 +326,8 @@ namespace RadElement.Service
                                             join eleSet in radElementDbContext.ElementSet on elementSetRef.ElementSetId equals eleSet.Id into eleSets
                                             from elementSet in eleSets.DefaultIfEmpty()
 
-                                            where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase)
+                                            where element.Name.Contains(searchKeyword, StringComparison.InvariantCultureIgnoreCase) &&
+                                                  element.Status != ElementStatus.Retired.ToString()
 
                                             select new FilteredData
                                             {
