@@ -155,6 +155,7 @@ namespace RadElement.API
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IOrganizationService, OrganizationService>();
             services.AddTransient<IIndexCodeService, IndexCodeService>();
+            services.AddTransient<ISpecialtyService, SpecialtyService>();
             services.AddTransient<IReferenceService, ReferenceService>(); 
             services.AddTransient<IImageService, ImageService>();
             services.AddSingleton<IAuthorizationHandler, UserIdExistsRequirementHandler>();

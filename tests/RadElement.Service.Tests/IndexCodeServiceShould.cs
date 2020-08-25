@@ -238,8 +238,8 @@ namespace RadElement.Service.Tests
         }
 
         [Theory]
-        [InlineData("RID28662", "RADLEX", "Attenuation 1")]
-        [InlineData("RID11086", "RADLEX", "Attenuation 2")]
+        [InlineData("RID28662", "RADLEX", "Attenuation")]
+        [InlineData("RID11086", "RADLEX", "Unenhanced phase")]
         public async void CreateIndexCodeShouldReturnIndexCodeIdIfAlreadyExists(string code, string system, string display)
         {
             var indexCode = new CreateUpdateIndexCode();

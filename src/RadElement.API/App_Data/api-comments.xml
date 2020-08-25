@@ -511,6 +511,44 @@
             <param name="referencesId">The references identifier.</param>
             <returns></returns>
         </member>
+        <member name="T:RadElement.API.Controllers.SpecialtyController">
+            <summary>
+            Endpoint for specialty controller
+            </summary>
+            <seealso cref="T:RadElement.API.Controllers.BaseController" />
+        </member>
+        <member name="F:RadElement.API.Controllers.SpecialtyController.specialtyService">
+            <summary>
+            The person service
+            </summary>
+        </member>
+        <member name="M:RadElement.API.Controllers.SpecialtyController.#ctor(RadElement.Core.Services.ISpecialtyService,Microsoft.Extensions.Logging.ILogger{RadElement.API.Controllers.PersonController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RadElement.API.Controllers.SpecialtyController"/> class.
+            </summary>
+            <param name="specialtyService">The specialty service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:RadElement.API.Controllers.SpecialtyController.GetSpecialties">
+            <summary>
+            Gets the specialties.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.SpecialtyController.GetSpecialty(System.Int32)">
+            <summary>
+            Gets the specialty.
+            </summary>
+            <param name="specialtyId">The specialty identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RadElement.API.Controllers.SpecialtyController.SearchSpecialties(System.String)">
+            <summary>
+            Searches the specialties.
+            </summary>
+            <param name="searchKeyword">The search keyword.</param>
+            <returns></returns>
+        </member>
         <member name="T:RadElement.API.Filters.AuthorizationHeaderOperationFilter">
             <summary>
             Provides the filter for authorization headers
