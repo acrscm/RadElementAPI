@@ -141,9 +141,10 @@ namespace RadElement.API
 
             services.AddCors(o => o.AddPolicy("AllowAllOrigins", builder =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
+                builder.AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .SetIsOriginAllowed((host) => true)
+                   .AllowCredentials();
             }));
 
             services.AddSingleton<AuthorizationConfig>(authConfig);
@@ -204,7 +205,6 @@ namespace RadElement.API
 
             app.UseResponseCompression();
             app.UseStaticFiles();
-            app.UseCors("AllowAllOrigins");
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -214,6 +214,7 @@ namespace RadElement.API
                 c.SwaggerEndpoint(Configuration["Environment:ApplicationURL"] + "/swagger/" + Configuration["Version"] + "/swagger.json", Configuration["Title"] + " " + Configuration["Version"]);
             });
 
+            app.UseCors("AllowAllOrigins");
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
